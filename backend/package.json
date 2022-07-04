@@ -1,0 +1,26 @@
+{
+  "name": "mern_listing_test",
+  "version": "1.0.0",
+  "description": "MERN lisiting test",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "server": "nodemon server.js"
+  },
+  "author": "Zoltan Karolyi",
+  "license": "MIT",
+  "dependencies": {
+    "cli-color": "^2.0.2",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "express-async-handler": "^1.2.0",
+    "mongoose": "^6.3.4",
+    "validator": "^13.7.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.16"
+  },
+  "nodemonConfig": {
+    "delay": "2000"
+  }
+}
