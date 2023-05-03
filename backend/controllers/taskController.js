@@ -1,7 +1,8 @@
 const asyncHandler = require("express-async-handler");
 const { errorTrigger } = require("../middlewares/errorMiddleware");
-const { taskValidation } = require("../middlewares/componentMiddleware");
-const { Collection, Task } = require("../models/index");
+const { taskValidation } = require("../middlewares/taskMiddleware");
+const { collectionAccess } = require("../middlewares/collectionMiddleware");
+const { Task } = require("../models/index");
 
 /*
   @desc Get tasks
@@ -9,16 +10,8 @@ const { Collection, Task } = require("../models/index");
   @access Private
 */
 const getTasks = asyncHandler(async (req, res) => {
-  // check collection exists
-  let collection;
-  try {
-    collection = await Collection.findOne({
-      _id: req.params.collection_id,
-    });
-  } catch (e) {
-    collection = false;
-  }
-  if (!collection) errorTrigger(res, 400, "Collection was sent does not exist");
+  // stop and wait until related collection will be checked
+  await collectionAccess(req.params.collection_id, req.user.id, res);
 
   // options for query
   let options = {
@@ -163,20 +156,14 @@ const getTasks = asyncHandler(async (req, res) => {
   @access Private
 */
 const createTask = asyncHandler(async (req, res) => {
-  // check collection exists
-  let collection;
-  try {
-    collection = await Collection.findOne({
-      _id: req.body.collection_id,
-    });
-  } catch (e) {
-    collection = false;
-  }
-  if (!collection) errorTrigger(res, 400, "Collection was sent does not exist");
+  // stop and wait until related collection will be checked
+  await collectionAccess(req.body.collection_id, req.user.id, res);
 
   // server side validation and processing
   req.body = taskValidation(req.body);
-  if (req.body.error) errorTrigger(res, 400, req.body.error);
+  if (req.body.error) {
+    errorTrigger(res, 400, req.body.error);
+  }
 
   // create task
   const task = await Task.create({
@@ -196,9 +183,14 @@ const createTask = asyncHandler(async (req, res) => {
   @access Private
 */
 const updateTask = asyncHandler(async (req, res) => {
+  // stop and wait until related collection will be checked
+  await collectionAccess(req.body.collection_id, req.user.id, res);
+
   // server side validation and processing
   req.body = taskValidation(req.body);
-  if (req.body.error) errorTrigger(res, 400, req.body.error);
+  if (req.body.error) {
+    errorTrigger(res, 400, req.body.error);
+  }
 
   // if task exists then it will be updated
   const task = await Task.findOneAndUpdate(
@@ -231,11 +223,16 @@ const updateTask = asyncHandler(async (req, res) => {
   @access Private
 */
 const deleteTask = asyncHandler(async (req, res) => {
+  // stop and wait until related collection will be checked
+  await collectionAccess(req.body.collection_id, req.user.id, res);
+
   // find the task and if exists, remove that
   const task = await Task.findOneAndRemove({ _id: req.params.id });
 
   // if no task exists
-  if (!task) errorTrigger(res, 400, "Task cannot be found");
+  if (!task) {
+    errorTrigger(res, 400, "Task cannot be found");
+  }
 
   // return removed task
   res.status(200).json(task);

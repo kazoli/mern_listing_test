@@ -8,7 +8,7 @@ const connectDB = async () => {
       clc.cyan.underline(`MongoDB Connected: ${conn.connection.host}`)
     );
   } catch (error) {
-    console.log(error);
+    console.error(error);
     process.exit(1);
   }
 };

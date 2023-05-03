@@ -1,13 +1,15 @@
 const express = require("express");
 const router = express.Router();
+const userMiddleware = require("../middleware/userMiddleware");
 const collections = require("../controllers/collectionController");
 
 router
   .route("/")
-  .get(collections.getCollections)
-  .post(collections.createCollection)
-  //collection ID is comming among posted data
-  .put(collections.updateCollection);
-router.route("/:id").delete(collections.deleteCollection);
+  .get(userMiddleware.authentication, collections.getCollections)
+  .post(userMiddleware.authentication, collections.createCollection)
+  .put(userMiddleware.authentication, collections.updateCollection);
+router
+  .route("/:id")
+  .delete(userMiddleware.authentication, collections.deleteCollection);
 
 module.exports = router;

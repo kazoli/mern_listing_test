@@ -326,7 +326,7 @@ const Tasks: React.FC = () => {
           {paginator}
           <section className="list-container">
             <div className="list-grid">
-              {tasks.data?.map((task, index) => (
+              {tasks.data.map((task, index) => (
                 <Task
                   key={index}
                   index={index}

@@ -1,7 +1,7 @@
 const errorTrigger = (res, statusCode, message) => {
   res.status(statusCode);
   throw new Error(message);
-}
+};
 
 const errorHandler = (err, req, res, next) => {
   // prettier-ignore

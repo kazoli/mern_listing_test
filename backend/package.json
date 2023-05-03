@@ -21,6 +21,6 @@
     "nodemon": "^2.0.16"
   },
   "nodemonConfig": {
-    "delay": "2000"
+    "delay": "1000"
   }
 }

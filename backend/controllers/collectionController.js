@@ -1,6 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const { errorTrigger } = require("../middlewares/errorMiddleware");
-const { collectionValidation } = require("../middlewares/componentMiddleware");
+const { collectionValidation } = require("../middlewares/collectionMiddleware");
 const { Collection, Task } = require("../models/index");
 
 /*
@@ -11,7 +11,7 @@ const { Collection, Task } = require("../models/index");
 const getCollections = asyncHandler(async (req, res) => {
   // options for query
   let options = {
-    conditions: {},
+    conditions: { user_id: req.user.id }, // set user_id in conditions
     limit: 0,
     skip: 0,
     nextSkip: 0,
@@ -30,7 +30,7 @@ const getCollections = asyncHandler(async (req, res) => {
       .replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&")
       .replace(/\s+/g, "|");
     // $options: "i" for case insensitive
-    options.conditions = { name: { $regex: keywords, $options: "i" } };
+    options.conditions.name = { $regex: keywords, $options: "i" };
   } else {
     req.query.keywords = ""; // for return value
   }
@@ -123,10 +123,10 @@ const getCollections = asyncHandler(async (req, res) => {
 const createCollection = asyncHandler(async (req, res) => {
   // server side validation and processing
   req.body = collectionValidation(req.body);
-  if (req.body.error) errorTrigger(res, 400, req.body.error);
 
   // create collection
   const collection = await Collection.create({
+    user_id: req.user.id,
     name: req.body.name,
   });
 
@@ -142,12 +142,12 @@ const createCollection = asyncHandler(async (req, res) => {
 const updateCollection = asyncHandler(async (req, res) => {
   // server side validation and processing
   req.body = collectionValidation(req.body);
-  if (req.body.error) errorTrigger(res, 400, req.body.error);
 
   // if collection exists then it will be updated
   const collection = await Collection.findOneAndUpdate(
     {
       _id: req.body._id,
+      user_id: req.user.id,
     },
     {
       $set: {
@@ -161,7 +161,9 @@ const updateCollection = asyncHandler(async (req, res) => {
   );
 
   // if no collection exists
-  if (!collection) errorTrigger(res, 400, "Collection cannot be found");
+  if (!collection) {
+    errorTrigger(res, 400, "Collection does not exist or no access granted");
+  }
 
   // return updated collection
   res.status(200).json(collection);
@@ -174,14 +176,17 @@ const updateCollection = asyncHandler(async (req, res) => {
 */
 const deleteCollection = asyncHandler(async (req, res) => {
   // find the collection and if exists, remove that
-  const collection = await Collection.findOneAndRemove({ _id: req.params.id });
+  const collection = await Collection.findOneAndRemove({
+    _id: req.params.id,
+    user_id: req.user.id,
+  });
 
   if (collection) {
     // remove related tasks as well
     await Task.deleteMany({ collection_id: req.params.id });
   } else {
-    // if no collection exists
-    errorTrigger(res, 400, "Collection cannot be found");
+    // if no collection exists or user has no access to
+    errorTrigger(res, 400, "Collection does not exist or no access granted");
   }
 
   // return removed collection

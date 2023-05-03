@@ -15,6 +15,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // router part
+app.use("/api/users", require("./routes/userRoutes"));
 app.use("/api/collections", require("./routes/collectionRoutes"));
 app.use("/api/tasks", require("./routes/taskRoutes"));
 
