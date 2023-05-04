@@ -130,6 +130,11 @@ const createCollection = asyncHandler(async (req, res) => {
     name: req.body.name,
   });
 
+  // if collection cannot be created
+  if (!collection) {
+    errorTrigger(res, 409, "Collection could not be created");
+  }
+
   // return created collection
   res.status(200).json(collection);
 });
@@ -162,7 +167,7 @@ const updateCollection = asyncHandler(async (req, res) => {
 
   // if no collection exists
   if (!collection) {
-    errorTrigger(res, 400, "Collection does not exist or no access granted");
+    errorTrigger(res, 401, "Collection is not available");
   }
 
   // return updated collection
@@ -186,7 +191,7 @@ const deleteCollection = asyncHandler(async (req, res) => {
     await Task.deleteMany({ collection_id: req.params.id });
   } else {
     // if no collection exists or user has no access to
-    errorTrigger(res, 400, "Collection does not exist or no access granted");
+    errorTrigger(res, 401, "Collection is not available");
   }
 
   // return removed collection

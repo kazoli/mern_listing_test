@@ -1,9 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const userMiddleware = require("../middleware/userMiddleware");
+const userMiddleware = require("../middlewares/userMiddleware");
 const tasks = require("../controllers/taskController");
 
-router.route("/:collection_id").get(userMiddleware.auth, tasks.getTasks);
+router
+  .route("/:collection_id")
+  .get(userMiddleware.authentication, tasks.getTasks);
 router
   .route("/")
   .post(userMiddleware.authentication, tasks.createTask)

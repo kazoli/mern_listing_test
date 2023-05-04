@@ -188,9 +188,6 @@ const updateTask = asyncHandler(async (req, res) => {
 
   // server side validation and processing
   req.body = taskValidation(req.body);
-  if (req.body.error) {
-    errorTrigger(res, 400, req.body.error);
-  }
 
   // if task exists then it will be updated
   const task = await Task.findOneAndUpdate(
@@ -211,7 +208,9 @@ const updateTask = asyncHandler(async (req, res) => {
   );
 
   // if no task exists
-  if (!task) errorTrigger(res, 400, "Task cannot be found");
+  if (!task) {
+    errorTrigger(res, 401, "Task cannot be found");
+  }
 
   // return updated task
   res.status(200).json(task);
@@ -231,7 +230,7 @@ const deleteTask = asyncHandler(async (req, res) => {
 
   // if no task exists
   if (!task) {
-    errorTrigger(res, 400, "Task cannot be found");
+    errorTrigger(res, 401, "Task cannot be found");
   }
 
   // return removed task

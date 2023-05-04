@@ -15,7 +15,7 @@ const collectionAccess = asyncHandler(async (collection_id, user_id, res) => {
     collection = false;
   }
   if (!collection) {
-    errorTrigger(res, 400, "Collection does not available");
+    errorTrigger(res, 401, "Collection is not available");
   }
 });
 
@@ -23,9 +23,9 @@ const collectionAccess = asyncHandler(async (collection_id, user_id, res) => {
 const collectionValidation = (values) => {
   // validate name and trim white spaces
   values.name = values.name.trim();
-  const error = validateInput(values.name, 3, 50);
+  const error = validateInput("Collection name", values.name, 3, 50);
   if (error) {
-    errorTrigger(res, 400, error);
+    errorTrigger(res, 422, error);
   }
   return values;
 };

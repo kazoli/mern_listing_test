@@ -1,10 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const userMiddleware = require("../middleware/userMiddleware");
+const userMiddleware = require("../middlewares/userMiddleware");
 const users = require("../controllers/userController");
 
 router.route("/login").post(users.loginUser);
-router.route("/register").post(users.createUser);
+router.route("/register").post(users.registerUser);
 router
   .route("/profile")
   .get(userMiddleware.authentication, users.getUser)

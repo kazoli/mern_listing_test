@@ -7,15 +7,15 @@ const taskValidation = (values) => {
 
   // validate name and trim white spaces
   values.name = values.name.trim();
-  error = validateInput(values.name, 3, 200);
+  error = validateInput("Task name", values.name, 3, 200);
   if (error) {
-    errorTrigger(res, 400, error);
+    errorTrigger(res, 422, error);
   }
 
   // validate complete is boolean
   error = validateBoolean("Complete", values.complete);
   if (error) {
-    errorTrigger(res, 400, error);
+    errorTrigger(res, 422, error);
   }
   // create a real boolean if 0, 1 or string form was sent
   values.complete = JSON.parse(values.complete) ? true : false;

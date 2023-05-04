@@ -1,31 +1,33 @@
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 const asyncHandler = require("express-async-handler");
 const { User } = require("../models/index");
 const { errorTrigger } = require("./errorMiddleware");
 
-// Generate JWT
-const generateJWT = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: "30d",
+// Set a JWT cookie for user authentication
+const setJwtCookie = (id, res) => {
+  const token = jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: "14d",
   });
+  res.cookie("jwt", token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "strict",
+    maxAge: 1209600000, // 14 day
+  });
+};
+
+// Hash password
+const hashPassword = async (password) => {
+  const salt = await bcrypt.genSalt(10);
+  return await bcrypt.hash(password, salt);
 };
 
 // Authetntication with JWT
 const authentication = asyncHandler(async (req, res, next) => {
-  let token = false;
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith("Bearer")
-  ) {
-    try {
-      // get token from header
-      token = req.headers.authorization.split(" ")[1];
-    } catch (error) {
-      console.error(error);
-    }
-  }
+  const token = req.cookies.jwt;
   if (!token) {
-    errorTrigger(res, 403, "Token is missing");
+    errorTrigger(res, 401, "Token is missing");
   }
 
   let decoded;
@@ -33,30 +35,69 @@ const authentication = asyncHandler(async (req, res, next) => {
     // verify token
     decoded = jwt.verify(token, process.env.JWT_SECRET);
   } catch (err) {
-    errorTrigger(res, 403, "Invalid token");
+    errorTrigger(res, 401, "Invalid token");
   }
 
   // get user from the token
-  req.user = await User.findById(decoded.id).select("-password");
+  req.user = await User.findById(decoded.id);
   if (!req.user) {
-    errorTrigger(res, 403, "User cannot be found");
+    errorTrigger(res, 401, "User cannot be found");
   }
 
-  // generate a new token
-  req.user.token = generateJWT(req.user.id);
+  // set a new JWT cookie
+  setJwtCookie(req.user.id, res);
 
   next();
 });
 
 // validation of user profile data
-const userValidation = (values) => {
-  // validate email
-  const error = validateEmail(values.email);
+const userProfileValidation = (values, update, res) => {
+  // check values exist
+  if (
+    !values.name ||
+    !values.email ||
+    !values.password ||
+    (update && values.oldPassword === undefined)
+  ) {
+    errorTrigger(res, 422, "Some of user profile data are missing");
+  }
+
+  // trim accidental white spaces
+  values.name = values.name.trim();
+  values.email = values.email.trim();
+  values.password = values.password.trim();
+
+  let error;
+  // validate name field
+  error = validateInput("User's name", values.name, 3, 200);
   if (error) {
-    errorTrigger(res, 400, error);
+    errorTrigger(res, 422, error);
+  }
+
+  // validate email
+  error = validateEmail("Email", values.email);
+  if (error) {
+    errorTrigger(res, 422, error);
+  }
+
+  if (update) {
+    values.oldPassword = values.oldPassword.trim();
+  }
+
+  // validate password
+  if (!update || values.password !== values.oldPassword) {
+    error = validatePassword("Password", values.password);
+    if (error) {
+      errorTrigger(res, 422, error);
+    }
   }
 
   return values;
 };
 
-module.exports = { authentication, generateJWT, userValidation };
+module.exports = {
+  setJwtCookie,
+  hashPassword,
+  authentication,
+  userProfileValidation,
+};
