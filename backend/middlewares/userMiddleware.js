@@ -3,9 +3,14 @@ const bcrypt = require("bcryptjs");
 const asyncHandler = require("express-async-handler");
 const { User } = require("../models/index");
 const { errorTrigger } = require("./errorMiddleware");
+const {
+  validateInput,
+  validateEmail,
+  validatePassword,
+} = require("./validationMiddleware");
 
 // Set a JWT cookie for user authentication
-const setJwtCookie = (id, res) => {
+const setJwt = (id, res) => {
   const token = jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: "14d",
   });
@@ -27,7 +32,7 @@ const hashPassword = async (password) => {
 const authentication = asyncHandler(async (req, res, next) => {
   const token = req.cookies.jwt;
   if (!token) {
-    errorTrigger(res, 401, "Token is missing");
+    errorTrigger(res, 401, "Cookie jwt is missing");
   }
 
   let decoded;
@@ -45,7 +50,7 @@ const authentication = asyncHandler(async (req, res, next) => {
   }
 
   // set a new JWT cookie
-  setJwtCookie(req.user.id, res);
+  setJwt(req.user.id, res);
 
   next();
 });
@@ -54,9 +59,9 @@ const authentication = asyncHandler(async (req, res, next) => {
 const userProfileValidation = (values, update, res) => {
   // check values exist
   if (
-    !values.name ||
-    !values.email ||
-    !values.password ||
+    values.name === undefined ||
+    values.email === undefined ||
+    values.password === undefined ||
     (update && values.oldPassword === undefined)
   ) {
     errorTrigger(res, 422, "Some of user profile data are missing");
@@ -85,7 +90,10 @@ const userProfileValidation = (values, update, res) => {
   }
 
   // validate password
-  if (!update || values.password !== values.oldPassword) {
+  if (
+    !update ||
+    (values.password.length && values.password !== values.oldPassword)
+  ) {
     error = validatePassword("Password", values.password);
     if (error) {
       errorTrigger(res, 422, error);
@@ -96,7 +104,7 @@ const userProfileValidation = (values, update, res) => {
 };
 
 module.exports = {
-  setJwtCookie,
+  setJwt,
   hashPassword,
   authentication,
   userProfileValidation,

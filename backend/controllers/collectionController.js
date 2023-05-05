@@ -122,7 +122,7 @@ const getCollections = asyncHandler(async (req, res) => {
 */
 const createCollection = asyncHandler(async (req, res) => {
   // server side validation and processing
-  req.body = collectionValidation(req.body);
+  req.body = collectionValidation(req.body, res);
 
   // create collection
   const collection = await Collection.create({

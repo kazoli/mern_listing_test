@@ -2,7 +2,7 @@ const { errorTrigger } = require("./errorMiddleware");
 const { validateInput, validateBoolean } = require("./validationMiddleware");
 
 // validation of values of a task
-const taskValidation = (values) => {
+const taskValidation = (values, res) => {
   let error;
 
   // validate name and trim white spaces

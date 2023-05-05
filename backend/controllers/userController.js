@@ -3,7 +3,7 @@ const asyncHandler = require("express-async-handler");
 const { User, Collection, Task } = require("../models/index");
 const { errorTrigger } = require("../middlewares/errorMiddleware");
 const {
-  setJwtCookie,
+  setJwt,
   hashPassword,
   userProfileValidation,
 } = require("../middlewares/userMiddleware");
@@ -34,7 +34,7 @@ const registerUser = asyncHandler(async (req, res) => {
   });
   if (user) {
     // set a new JWT cookie
-    setJwtCookie(user.id, res);
+    setJwt(user.id, res);
     res.status(201).json({
       _id: user.id,
       name: user.name,
@@ -58,14 +58,14 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 
   // trim accidental white spaces
-  values.email = values.email.trim();
-  values.password = values.password.trim();
+  req.body.email = req.body.email.trim();
+  req.body.password = req.body.password.trim();
 
   // check user exists and password is valid
-  const user = await User.findOne({ email });
-  if (user && (await bcrypt.compare(password, user.password))) {
+  const user = await User.findOne({ email: req.body.email });
+  if (user && (await bcrypt.compare(req.body.password, user.password))) {
     // set a new JWT cookie
-    setJwtCookie(user.id, res);
+    setJwt(user.id, res);
     res.status(200).json({
       _id: user.id,
       name: user.name,
@@ -82,6 +82,8 @@ const loginUser = asyncHandler(async (req, res) => {
   @access Private
 */
 const getUser = asyncHandler(async (req, res) => {
+  // override password
+  req.user.password = "";
   res.status(200).json(req.user);
 });
 
@@ -102,10 +104,11 @@ const updateUser = asyncHandler(async (req, res) => {
     // require old password to check
     if (await bcrypt.compare(req.body.oldPassword, req.user.password)) {
       const password =
-        req.body.password === req.body.oldPassword
+        !req.body.password || req.body.password === req.body.oldPassword
           ? req.user.password
           : await hashPassword(req.body.password);
       fields = {
+        name: req.body.name,
         email: req.body.email,
         password: password,
       };

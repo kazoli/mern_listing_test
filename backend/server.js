@@ -1,14 +1,18 @@
 require("dotenv").config();
 const path = require("path");
 const express = require("express");
-const { errorHandler } = require("./middlewares/errorMiddleware");
 const connectDB = require("./config/db");
 const port = process.env.PORT || 5000;
+const cookieParser = require("cookie-parser");
+const { errorHandler } = require("./middlewares/errorMiddleware");
 
 // call DB connection
 connectDB();
 
 const app = express();
+
+// parse cookies
+app.use(cookieParser());
 
 // parse query
 app.use(express.json());

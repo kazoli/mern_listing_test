@@ -3,8 +3,8 @@ const router = express.Router();
 const userMiddleware = require("../middlewares/userMiddleware");
 const users = require("../controllers/userController");
 
-router.route("/login").post(users.loginUser);
 router.route("/register").post(users.registerUser);
+router.route("/login").post(users.loginUser);
 router
   .route("/profile")
   .get(userMiddleware.authentication, users.getUser)

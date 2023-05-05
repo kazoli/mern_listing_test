@@ -11,7 +11,11 @@ const { Task } = require("../models/index");
 */
 const getTasks = asyncHandler(async (req, res) => {
   // stop and wait until related collection will be checked
-  await collectionAccess(req.params.collection_id, req.user.id, res);
+  const collection = await collectionAccess(
+    req.params.collection_id,
+    req.user.id,
+    res
+  );
 
   // options for query
   let options = {
@@ -160,10 +164,7 @@ const createTask = asyncHandler(async (req, res) => {
   await collectionAccess(req.body.collection_id, req.user.id, res);
 
   // server side validation and processing
-  req.body = taskValidation(req.body);
-  if (req.body.error) {
-    errorTrigger(res, 400, req.body.error);
-  }
+  req.body = taskValidation(req.body, res);
 
   // create task
   const task = await Task.create({
