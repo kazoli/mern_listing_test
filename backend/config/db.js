@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const clc = require("cli-color");
+const mongoose = require('mongoose');
+const clc = require('cli-color');
 
 const connectDB = async () => {
   try {

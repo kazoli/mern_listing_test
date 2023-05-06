@@ -1,21 +1,21 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const collectionSchema = mongoose.Schema(
   {
     user_id: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: "User",
+      ref: 'User',
     },
     name: {
       type: String,
-      required: [true, "Name field of collection must have to be set"],
+      required: [true, 'Name field of collection must have to be set'],
     },
   },
   {
-    collection: "collections",
+    collection: 'collections',
     timestamps: true,
-  }
+  },
 );
 
-module.exports = mongoose.model("Collection", collectionSchema);
+module.exports = mongoose.model('Collection', collectionSchema);

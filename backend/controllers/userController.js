@@ -1,12 +1,12 @@
-const bcrypt = require("bcryptjs");
-const asyncHandler = require("express-async-handler");
-const { User, Collection, Task } = require("../models/index");
-const { errorTrigger } = require("../middlewares/errorMiddleware");
+const bcrypt = require('bcryptjs');
+const asyncHandler = require('express-async-handler');
+const { User, Collection, Task } = require('../models/index');
+const { errorTrigger } = require('../middlewares/errorMiddleware');
 const {
-  setJwt,
+  setJwtCookie,
   hashPassword,
   userProfileValidation,
-} = require("../middlewares/userMiddleware");
+} = require('../middlewares/userMiddleware');
 
 /*
   @desc Register a new user
@@ -20,7 +20,7 @@ const registerUser = asyncHandler(async (req, res) => {
   // check if user exists
   const userExists = await User.findOne({ email: req.body.email });
   if (userExists) {
-    errorTrigger(res, 405, "User already exists");
+    errorTrigger(res, 405, 'User already exists');
   }
 
   // get hashed password
@@ -34,7 +34,7 @@ const registerUser = asyncHandler(async (req, res) => {
   });
   if (user) {
     // set a new JWT cookie
-    setJwt(user.id, res);
+    setJwtCookie(user.id, res);
     res.status(201).json({
       _id: user.id,
       name: user.name,
@@ -42,7 +42,7 @@ const registerUser = asyncHandler(async (req, res) => {
     });
   } else {
     res.status(400);
-    throw new Error("User cannot be created");
+    throw new Error('User cannot be created');
   }
 });
 
@@ -54,7 +54,7 @@ const registerUser = asyncHandler(async (req, res) => {
 const loginUser = asyncHandler(async (req, res) => {
   // check email and password exist and not empty
   if (!req.body.email || !req.body.password) {
-    errorTrigger(res, 400, "Missing login data");
+    errorTrigger(res, 400, 'Missing login data');
   }
 
   // trim accidental white spaces
@@ -65,14 +65,14 @@ const loginUser = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email: req.body.email });
   if (user && (await bcrypt.compare(req.body.password, user.password))) {
     // set a new JWT cookie
-    setJwt(user.id, res);
+    setJwtCookie(user.id, res);
     res.status(200).json({
       _id: user.id,
       name: user.name,
       email: user.email,
     });
   } else {
-    errorTrigger(res, 401, "Bad login data");
+    errorTrigger(res, 401, 'Bad login data');
   }
 });
 
@@ -83,7 +83,7 @@ const loginUser = asyncHandler(async (req, res) => {
 */
 const getUser = asyncHandler(async (req, res) => {
   // override password
-  req.user.password = "";
+  req.user.password = '';
   res.status(200).json(req.user);
 });
 
@@ -97,10 +97,7 @@ const updateUser = asyncHandler(async (req, res) => {
   req.body = userProfileValidation(req.body, true, res);
 
   let fields = {};
-  if (
-    req.body.email !== req.user.email ||
-    req.body.password !== req.body.oldPassword
-  ) {
+  if (req.body.email !== req.user.email || req.body.password !== req.body.oldPassword) {
     // require old password to check
     if (await bcrypt.compare(req.body.oldPassword, req.user.password)) {
       const password =
@@ -113,7 +110,7 @@ const updateUser = asyncHandler(async (req, res) => {
         password: password,
       };
     } else {
-      errorTrigger(res, 401, "Old password is not correct");
+      errorTrigger(res, 401, 'Old password is not correct');
     }
   } else {
     // no password checking is required
@@ -132,7 +129,7 @@ const updateUser = asyncHandler(async (req, res) => {
     {
       new: true,
       upsert: false, // true - creates new if given does not exist
-    }
+    },
   );
   res.status(200).json({
     _id: req.user._id,
@@ -147,29 +144,33 @@ const updateUser = asyncHandler(async (req, res) => {
   @access Private
 */
 const deleteUser = asyncHandler(async (req, res) => {
-  const collectionIds = await Collection.find({
-    user_id: req.user.id,
-  }).select("_id");
+  // require password for deletion
+  if (await bcrypt.compare(req.body.password, req.user.password)) {
+    // find the user and if exists, remove that
+    const user = await User.findOneAndRemove({
+      _id: req.user.id,
+    });
 
-  // // find the user and if exists, remove that
-  // const user = await User.findOneAndRemove({
-  //   _id: req.user.id,
-  // });
+    if (user) {
+      // find all collection ids related to user
+      const collections = await Collection.find({
+        user_id: req.user.id,
+      }).select('_id');
+      const collectionIds = collections.map((collection) => collection._id);
 
-  // if (user) {
-  //   // find all collection ids related to user
-  //   const collectionIds = await Collection.find({
-  //     user_id: req.user.id,
-  //   }).select("_id");
-  //   await Collection.deleteMany({ user_id: req.user.id });
-  //   await Task.deleteMany({ collection_id: { $in: collectionIds } });
-  // } else {
-  //   // if no collection exists or user has no access to
-  //   errorTrigger(res, 401, "User is not ");
-  // }
+      // delete all collections related to deleted user
+      await Collection.deleteMany({ user_id: req.user.id });
+      //delete all tasks related to deleted collections
+      await Task.deleteMany({ collection_id: { $in: collectionIds } });
+    } else {
+      errorTrigger(res, 401, 'User cannot be deleted');
+    }
 
-  // return removed user
-  res.status(200).json(collectionIds);
+    // return removed user
+    res.status(200).json(user);
+  } else {
+    errorTrigger(res, 401, 'Password is not correct');
+  }
 });
 
 module.exports = {

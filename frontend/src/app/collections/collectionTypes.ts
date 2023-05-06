@@ -1,26 +1,27 @@
-// collection query parts interface
-export interface tsCollectionQueryParts {
+// Type of posted collection data
+export type tCollectionDataSave = {
+  name: string;
+};
+
+// Type of full collection data
+export type tCollectionData = tCollectionDataSave & {
+  _id: string;
+  user_id: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+// Type of collection query parts
+export type tCollectionQueryParts = {
   keywords: string;
   sort: string;
   limit: string;
   page: string;
-}
+};
 
-// posted collection interface
-export interface tsCollectionDataSave {
-  _id: string;
-  name: string;
-}
-
-// full collection interface
-export interface tsCollectionData extends tsCollectionDataSave {
-  createdAt: string;
-  updatedAt: string;
-}
-
-// collection state interface
-export interface tsCollectionState {
-  status: "idle" | "loading" | "warning" | "failed";
+// Type of collection state
+export type tCollectionState = {
+  status: 'idle' | 'loading' | 'warning' | 'failed';
   highlighted: boolean | string;
   refreshPage: boolean;
   refreshButton: boolean;
@@ -28,6 +29,6 @@ export interface tsCollectionState {
   resetSearch: boolean;
   message: string;
   isNextPage: boolean;
-  data: null | tsCollectionData[];
-  queryParts: tsCollectionQueryParts;
-}
+  data: null | tCollectionData[];
+  queryParts: tCollectionQueryParts;
+};

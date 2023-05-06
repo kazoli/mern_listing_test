@@ -1,23 +1,19 @@
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
-const asyncHandler = require("express-async-handler");
-const { User } = require("../models/index");
-const { errorTrigger } = require("./errorMiddleware");
-const {
-  validateInput,
-  validateEmail,
-  validatePassword,
-} = require("./validationMiddleware");
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
+const asyncHandler = require('express-async-handler');
+const { User } = require('../models/index');
+const { errorTrigger } = require('./errorMiddleware');
+const { validateInput, validateEmail, validatePassword } = require('./validationMiddleware');
 
 // Set a JWT cookie for user authentication
-const setJwt = (id, res) => {
+const setJwtCookie = (id, res) => {
   const token = jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: "14d",
+    expiresIn: '14d',
   });
-  res.cookie("jwt", token, {
+  res.cookie('jwt', token, {
     httpOnly: true,
     secure: true,
-    sameSite: "strict",
+    sameSite: 'strict',
     maxAge: 1209600000, // 14 day
   });
 };
@@ -32,7 +28,7 @@ const hashPassword = async (password) => {
 const authentication = asyncHandler(async (req, res, next) => {
   const token = req.cookies.jwt;
   if (!token) {
-    errorTrigger(res, 401, "Cookie jwt is missing");
+    errorTrigger(res, 401, 'Cookie jwt is missing');
   }
 
   let decoded;
@@ -40,17 +36,17 @@ const authentication = asyncHandler(async (req, res, next) => {
     // verify token
     decoded = jwt.verify(token, process.env.JWT_SECRET);
   } catch (err) {
-    errorTrigger(res, 401, "Invalid token");
+    errorTrigger(res, 401, 'Invalid token');
   }
 
   // get user from the token
   req.user = await User.findById(decoded.id);
   if (!req.user) {
-    errorTrigger(res, 401, "User cannot be found");
+    errorTrigger(res, 401, 'User cannot be found');
   }
 
   // set a new JWT cookie
-  setJwt(req.user.id, res);
+  setJwtCookie(req.user.id, res);
 
   next();
 });
@@ -64,7 +60,7 @@ const userProfileValidation = (values, update, res) => {
     values.password === undefined ||
     (update && values.oldPassword === undefined)
   ) {
-    errorTrigger(res, 422, "Some of user profile data are missing");
+    errorTrigger(res, 422, 'Some of user profile data are missing');
   }
 
   // trim accidental white spaces
@@ -80,7 +76,7 @@ const userProfileValidation = (values, update, res) => {
   }
 
   // validate email
-  error = validateEmail("Email", values.email);
+  error = validateEmail('Email', values.email);
   if (error) {
     errorTrigger(res, 422, error);
   }
@@ -90,11 +86,8 @@ const userProfileValidation = (values, update, res) => {
   }
 
   // validate password
-  if (
-    !update ||
-    (values.password.length && values.password !== values.oldPassword)
-  ) {
-    error = validatePassword("Password", values.password);
+  if (!update || (values.password.length && values.password !== values.oldPassword)) {
+    error = validatePassword('Password', values.password);
     if (error) {
       errorTrigger(res, 422, error);
     }
@@ -104,7 +97,7 @@ const userProfileValidation = (values, update, res) => {
 };
 
 module.exports = {
-  setJwt,
+  setJwtCookie,
   hashPassword,
   authentication,
   userProfileValidation,

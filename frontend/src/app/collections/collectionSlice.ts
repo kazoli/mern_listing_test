@@ -1,82 +1,57 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { tCollectionQueryParts, tCollectionState } from './collectionTypes';
 import {
   createCollection,
   deleteCollection,
   getCollections,
   updateCollection,
-} from "./collectionService";
-import { tsCollectionQueryParts, tsCollectionState } from "./collectionTypes";
-
-const initialState: tsCollectionState = {
-  status: "idle",
-  highlighted: false,
-  refreshPage: false,
-  refreshButton: false,
-  editor: false,
-  resetSearch: false,
-  data: null,
-  message: "",
-  isNextPage: false,
-  queryParts: {
-    keywords: "",
-    sort: "",
-    limit: "",
-    page: "",
-  },
-};
+} from './collectionThunks';
+import { collectionInitialState } from './collectionInitialStates';
 
 const collectionSlice = createSlice({
-  name: "collections",
-  initialState,
+  name: 'collections',
+  initialState: collectionInitialState,
   reducers: {
     resetCollectionState: (state) => {
-      state.status = "idle";
-      state.message = "";
+      state.status = 'idle';
+      state.message = '';
     },
     buildURL: (state) => {
       //query elements array
       let query: string[] = [];
       // build query based on queryParts
-      let key: keyof tsCollectionQueryParts;
+      let key: keyof tCollectionQueryParts;
       for (key in state.queryParts) {
         if (state.queryParts[key].length) {
           query.push(`${key}=${state.queryParts[key]}`);
         }
       }
       // join the query elments into a string or get empty
-      const queryString: string = query.length
-        ? encodeURI("?" + query.join("&"))
-        : "";
+      const queryString: string = query.length ? encodeURI('?' + query.join('&')) : '';
       // change old URL with the new one in the browser
       window.history.pushState(
         {},
-        "",
-        window.location.origin + window.location.pathname + queryString
+        '',
+        window.location.origin + window.location.pathname + queryString,
       );
     },
     refreshPage: (state) => {
       state.refreshButton = false;
       state.refreshPage = true;
     },
-    toogleEditor: (
-      state,
-      action: PayloadAction<tsCollectionState["editor"]>
-    ) => {
+    toogleEditor: (state, action: PayloadAction<tCollectionState['editor']>) => {
       state.editor = action.payload;
     },
-    toogleHighlighted: (
-      state,
-      action: PayloadAction<tsCollectionState["highlighted"]>
-    ) => {
+    toogleHighlighted: (state, action: PayloadAction<tCollectionState['highlighted']>) => {
       state.highlighted = action.payload;
     },
     updateCollectionQueryParts: (
       state,
       action: PayloadAction<{
-        queryPart: keyof tsCollectionQueryParts;
+        queryPart: keyof tCollectionQueryParts;
         value: string;
-        refreshPage: tsCollectionState["refreshPage"];
-      }>
+        refreshPage: tCollectionState['refreshPage'];
+      }>,
     ) => {
       state.queryParts[action.payload.queryPart] = action.payload.value;
       state.refreshPage = action.payload.refreshPage;
@@ -84,9 +59,9 @@ const collectionSlice = createSlice({
         // hide refresh button
         state.refreshButton = false;
         // if page selector was the trigger to not set default the page number
-        if (action.payload.queryPart !== "page") {
+        if (action.payload.queryPart !== 'page') {
           // set page default to avoid redirect first page message from server
-          state.queryParts.page = "";
+          state.queryParts.page = '';
         }
       }
     },
@@ -94,10 +69,10 @@ const collectionSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getCollections.pending, (state) => {
-        state.status = "loading";
+        state.status = 'loading';
       })
       .addCase(getCollections.fulfilled, (state, action) => {
-        state.status = action.payload.message ? "warning" : "idle";
+        state.status = action.payload.message ? 'warning' : 'idle';
         state.refreshPage = false;
         state.data = action.payload.data;
         state.resetSearch = action.payload.queryParts.keywords.length > 0;
@@ -109,75 +84,71 @@ const collectionSlice = createSlice({
         state.queryParts.page = action.payload.queryParts.page;
       })
       .addCase(getCollections.rejected, (state, action) => {
-        state.status = "failed";
+        state.status = 'failed';
         state.data = [];
-        state.message = action.payload ? action.payload : "Unknown error";
+        state.message = action.payload ? action.payload : 'Unknown error';
       })
       .addCase(createCollection.pending, (state) => {
-        state.status = "loading";
+        state.status = 'loading';
       })
       .addCase(createCollection.fulfilled, (state, action) => {
-        state.status = "idle";
+        state.status = 'idle';
         state.refreshButton = true;
         state.editor = false;
         state.highlighted = action.payload._id;
         //if collection would be null
-        state.data = state.data
-          ? [action.payload, ...state.data]
-          : [action.payload];
+        state.data = state.data ? [action.payload, ...state.data] : [action.payload];
         state.message =
-          "Collection successfully created. To reorder your collections, click on the blue refresh button below.";
+          'Collection successfully created. To reorder your collections, click on the blue refresh button below.';
       })
       .addCase(createCollection.rejected, (state, action) => {
-        state.status = "failed";
-        state.message = action.payload ? action.payload : "Unknown error";
+        state.status = 'failed';
+        state.message = action.payload ? action.payload : 'Unknown error';
       })
       .addCase(updateCollection.pending, (state) => {
-        state.status = "loading";
+        state.status = 'loading';
       })
       .addCase(updateCollection.fulfilled, (state, action) => {
-        state.status = "idle";
+        state.status = 'idle';
         state.refreshButton = true;
         state.editor = false;
         // if collection would be null
         if (state.data) {
           state.data = state.data.map((collection) =>
-            collection._id === action.payload._id ? action.payload : collection
+            collection._id === action.payload._id ? action.payload : collection,
           );
         } else {
           state.data = [action.payload];
         }
         state.message =
-          "Successful update. To reorder your collections, click on the blue refresh button below.";
+          'Successful update. To reorder your collections, click on the blue refresh button below.';
       })
       .addCase(updateCollection.rejected, (state, action) => {
-        state.status = "failed";
-        state.message = action.payload ? action.payload : "Unknown error";
+        state.status = 'failed';
+        state.message = action.payload ? action.payload : 'Unknown error';
       })
       .addCase(deleteCollection.pending, (state) => {
-        state.status = "loading";
+        state.status = 'loading';
       })
       .addCase(deleteCollection.fulfilled, (state, action) => {
-        state.status = "idle";
+        state.status = 'idle';
         state.refreshButton = true;
         state.editor = false;
         // if collection would be null
         if (state.data) {
-          state.data = state.data.filter(
-            (collection) => collection._id !== action.payload._id
-          );
+          state.data = state.data.filter((collection) => collection._id !== action.payload._id);
           if (!state.data.length) {
             state.refreshPage = true;
-            state.message = "Successful deletion.";
+            state.message = 'Successful deletion.';
           } else {
             state.message =
-              "Successful deletion. To reorder your collections, click on the blue refresh button below.";
+              'Successful deletion. To reorder your collections, click on the blue refresh button below.';
           }
         }
       })
       .addCase(deleteCollection.rejected, (state, action) => {
-        state.status = "failed";
-        state.message = action.payload ? action.payload : "Unknown error";
+        state.status = 'failed';
+        state.message = action.payload ? action.payload : 'Unknown error';
       });
   },
 });

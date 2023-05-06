@@ -1,4 +1,4 @@
-const validator = require("validator");
+const validator = require('validator');
 
 // General input validation
 const validateInput = (element, value, minLength, maxLength) => {
@@ -26,9 +26,7 @@ const validateBoolean = (element, value) => {
 
 // Validate email
 const validateEmail = (element, value) => {
-  return validator.isEmail(value)
-    ? false
-    : `${element} needs to be valid format`;
+  return validator.isEmail(value) ? false : `${element} needs to be valid format`;
 };
 
 // Validate the password is strong enough

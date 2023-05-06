@@ -1,8 +1,8 @@
-const asyncHandler = require("express-async-handler");
-const { errorTrigger } = require("../middlewares/errorMiddleware");
-const { taskValidation } = require("../middlewares/taskMiddleware");
-const { collectionAccess } = require("../middlewares/collectionMiddleware");
-const { Task } = require("../models/index");
+const asyncHandler = require('express-async-handler');
+const { errorTrigger } = require('../middlewares/errorMiddleware');
+const { taskValidation } = require('../middlewares/taskMiddleware');
+const { collectionAccess } = require('../middlewares/collectionMiddleware');
+const { Task } = require('../models/index');
 
 /*
   @desc Get tasks
@@ -11,11 +11,7 @@ const { Task } = require("../models/index");
 */
 const getTasks = asyncHandler(async (req, res) => {
   // stop and wait until related collection will be checked
-  const collection = await collectionAccess(
-    req.params.collection_id,
-    req.user.id,
-    res
-  );
+  const collection = await collectionAccess(req.params.collection_id, req.user.id, res);
 
   // options for query
   let options = {
@@ -24,7 +20,7 @@ const getTasks = asyncHandler(async (req, res) => {
     skip: 0,
     nextSkip: 0,
     sort: {},
-    collation: { locale: "en", strength: 2 },
+    collation: { locale: 'en', strength: 2 },
   };
 
   // set conditions and remove starting and trailing spaces
@@ -34,53 +30,53 @@ const getTasks = asyncHandler(async (req, res) => {
     // escaping all special characters for regex
     // set OR conditions among words for database query
     keywords = req.query.keywords
-      .replace(/\s+/g, " ")
-      .replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&")
-      .replace(/\s+/g, "|");
+      .replace(/\s+/g, ' ')
+      .replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
+      .replace(/\s+/g, '|');
     // $options: "i" for case insensitive
     switch (req.query.searchType) {
-      case "name":
-      case "tags":
+      case 'name':
+      case 'tags':
         options.conditions[req.query.searchType] = {
           $regex: keywords,
-          $options: "i",
+          $options: 'i',
         };
         break;
       default:
-        options.conditions["$or"] = [
-          { name: { $regex: keywords, $options: "i" } },
-          { tags: { $regex: keywords, $options: "i" } },
+        options.conditions['$or'] = [
+          { name: { $regex: keywords, $options: 'i' } },
+          { tags: { $regex: keywords, $options: 'i' } },
         ];
-        req.query.searchType = ""; // for return value
+        req.query.searchType = ''; // for return value
     }
   } else {
-    req.query.keywords = ""; // for return value
-    req.query.searchType = ""; // for return value
+    req.query.keywords = ''; // for return value
+    req.query.searchType = ''; // for return value
   }
 
   // show incomplete / complete / both
   switch (req.query.completion) {
-    case "complete":
+    case 'complete':
       options.conditions.complete = true;
       break;
-    case "incomplete":
+    case 'incomplete':
       options.conditions.complete = false;
       break;
     default:
-      req.query.completion = ""; // for return value
+      req.query.completion = ''; // for return value
   }
 
   // set limit
   switch (req.query.limit) {
-    case "p36":
+    case 'p36':
       options.limit = 36;
       break;
-    case "p60":
+    case 'p60':
       options.limit = 60;
       break;
     default:
       options.limit = 12;
-      req.query.limit = ""; // for return value
+      req.query.limit = ''; // for return value
   }
 
   // set page
@@ -90,29 +86,29 @@ const getTasks = asyncHandler(async (req, res) => {
     options.nextSkip = options.limit * page;
   } else {
     options.nextSkip = options.limit;
-    req.query.page = ""; // for return value
+    req.query.page = ''; // for return value
   }
 
   // set sort
   switch (req.query.sort) {
     default: // for return value
-      req.query.sort = "";
+      req.query.sort = '';
       options.sort = { name: 1 };
       break;
-    case "nameDESC":
+    case 'nameDESC':
       options.sort = { name: -1 };
       break;
-    case "createdASC":
+    case 'createdASC':
       options.sort = { createdAt: 1 };
       break;
-    case "createdDESC":
+    case 'createdDESC':
       options.sort = { createdAt: -1 };
       break;
   }
 
   // loop to handle fallback to page 1 if no results at bigger page number
   let tasks = [],
-    message = "",
+    message = '',
     fallback;
   do {
     // request data from database based on options
@@ -125,8 +121,8 @@ const getTasks = asyncHandler(async (req, res) => {
     if (fallback) {
       options.skip = 0;
       options.nextSkip = options.limit;
-      req.query.page = ""; // for return value
-      message = "Redirect to first page because requested page cannot be found";
+      req.query.page = ''; // for return value
+      message = 'Redirect to first page because requested page cannot be found';
     }
   } while (fallback);
 
@@ -205,12 +201,12 @@ const updateTask = asyncHandler(async (req, res) => {
     {
       new: true, // true - return new document after update
       upsert: false, // true - create new if given does not exist
-    }
+    },
   );
 
   // if no task exists
   if (!task) {
-    errorTrigger(res, 401, "Task cannot be found");
+    errorTrigger(res, 401, 'Task cannot be found');
   }
 
   // return updated task
@@ -231,7 +227,7 @@ const deleteTask = asyncHandler(async (req, res) => {
 
   // if no task exists
   if (!task) {
-    errorTrigger(res, 401, "Task cannot be found");
+    errorTrigger(res, 401, 'Task cannot be found');
   }
 
   // return removed task

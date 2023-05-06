@@ -1,10 +1,10 @@
-require("dotenv").config();
-const path = require("path");
-const express = require("express");
-const connectDB = require("./config/db");
+require('dotenv').config();
+const path = require('path');
+const express = require('express');
+const connectDB = require('./config/db');
+const cookieParser = require('cookie-parser');
+const { errorHandler } = require('./middlewares/errorMiddleware');
 const port = process.env.PORT || 5000;
-const cookieParser = require("cookie-parser");
-const { errorHandler } = require("./middlewares/errorMiddleware");
 
 // call DB connection
 connectDB();
@@ -19,26 +19,22 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // router part
-app.use("/api/users", require("./routes/userRoutes"));
-app.use("/api/collections", require("./routes/collectionRoutes"));
-app.use("/api/tasks", require("./routes/taskRoutes"));
+app.use('/api/users', require('./routes/userRoutes'));
+app.use('/api/collections', require('./routes/collectionRoutes'));
+app.use('/api/tasks', require('./routes/taskRoutes'));
 
 // serve frontend
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "../frontend/build")));
-  app.get("*", (req, res) =>
-    res.sendFile(
-      path.resolve(__dirname, "../", "frontend", "build", "index.html")
-    )
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../frontend/build')));
+  app.get('*', (req, res) =>
+    res.sendFile(path.resolve(__dirname, '../', 'frontend', 'build', 'index.html')),
   );
 } else {
-  app.get("/", (req, res) => res.send("Please set to production first!"));
+  app.get('/', (req, res) => res.send('Please set to production first!'));
 }
 
 // call error handler from middlewares
 app.use(errorHandler);
 
 // port that backend is listening to handle requests
-app.listen(port, (error) =>
-  console.log(error ? error : `Server started on port ${port}`)
-);
+app.listen(port, (error) => console.log(error ? error : `Server started on port ${port}`));

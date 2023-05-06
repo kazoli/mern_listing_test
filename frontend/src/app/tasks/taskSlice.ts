@@ -1,77 +1,52 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { createTask, deleteTask, getTasks, updateTask } from "./taskService";
-import { tsTaskQueryParts, tsTaskState } from "./taskTypes";
-
-const initialState: tsTaskState = {
-  status: "idle",
-  highlighted: false,
-  refreshPage: false,
-  refreshButton: false,
-  editor: false,
-  resetSearch: false,
-  collection: null,
-  data: [],
-  message: "",
-  isNextPage: false,
-  queryParts: {
-    keywords: "",
-    searchType: "",
-    completion: "",
-    sort: "",
-    limit: "",
-    page: "",
-  },
-};
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { tTaskQueryParts, tTaskState } from './taskTypes';
+import { taskInitialState } from './taskInitialStates';
+import { createTask, deleteTask, getTasks, updateTask } from './taskThunks';
 
 const taskSlice = createSlice({
-  name: "tasks",
-  initialState,
+  name: 'tasks',
+  initialState: taskInitialState,
   reducers: {
     resetTaskState: (state) => {
-      state.status = "idle";
-      state.message = "";
+      state.status = 'idle';
+      state.message = '';
     },
     buildURL: (state) => {
       //query elements array
       let query: string[] = [];
       // build query based on queryParts
-      let key: keyof tsTaskQueryParts;
+      let key: keyof tTaskQueryParts;
       for (key in state.queryParts) {
         if (state.queryParts[key].length) {
           query.push(`${key}=${state.queryParts[key]}`);
         }
       }
       // join the query elments into a string or get empty
-      const queryString: string = query.length
-        ? encodeURI("?" + query.join("&"))
-        : "";
+      const queryString: string = query.length ? encodeURI('?' + query.join('&')) : '';
       // change old URL with the new one in the browser
       window.history.pushState(
         {},
-        "",
-        window.location.origin + window.location.pathname + queryString
+        '',
+        window.location.origin + window.location.pathname + queryString,
       );
     },
     refreshPage: (state) => {
       state.refreshButton = false;
       state.refreshPage = true;
     },
-    toogleEditor: (state, action: PayloadAction<tsTaskState["editor"]>) => {
+    toogleEditor: (state, action: PayloadAction<tTaskState['editor']>) => {
       state.editor = action.payload;
     },
-    toogleHighlighted: (
-      state,
-      action: PayloadAction<tsTaskState["highlighted"]>
-    ) => {
+    toogleHighlighted: (state, action: PayloadAction<tTaskState['highlighted']>) => {
       state.highlighted = action.payload;
     },
     updateTaskQueryParts: (
       state,
       action: PayloadAction<{
-        queryPart: keyof tsTaskQueryParts;
+        queryPart: keyof tTaskQueryParts;
         value: string;
-        refreshPage: tsTaskState["refreshPage"];
-      }>
+        refreshPage: tTaskState['refreshPage'];
+      }>,
     ) => {
       state.queryParts[action.payload.queryPart] = action.payload.value;
       state.refreshPage = action.payload.refreshPage;
@@ -79,9 +54,9 @@ const taskSlice = createSlice({
         // hide refresh button
         state.refreshButton = false;
         // if page selector was the trigger to not set default the page number
-        if (action.payload.queryPart !== "page") {
+        if (action.payload.queryPart !== 'page') {
           // set page default to avoid redirect first page message from server
-          state.queryParts.page = "";
+          state.queryParts.page = '';
         }
       }
     },
@@ -89,10 +64,10 @@ const taskSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getTasks.pending, (state) => {
-        state.status = "loading";
+        state.status = 'loading';
       })
       .addCase(getTasks.fulfilled, (state, action) => {
-        state.status = action.payload.message ? "warning" : "idle";
+        state.status = action.payload.message ? 'warning' : 'idle';
         state.refreshPage = false;
         state.collection = action.payload.collection;
         state.data = action.payload.data;
@@ -107,76 +82,72 @@ const taskSlice = createSlice({
         state.queryParts.page = action.payload.queryParts.page;
       })
       .addCase(getTasks.rejected, (state, action) => {
-        state.status = "failed";
+        state.status = 'failed';
         state.refreshPage = false;
         state.data = [];
-        state.message = action.payload ? action.payload : "Unknown error";
+        state.message = action.payload ? action.payload : 'Unknown error';
       })
       .addCase(createTask.pending, (state) => {
-        state.status = "loading";
+        state.status = 'loading';
       })
       .addCase(createTask.fulfilled, (state, action) => {
-        state.status = "idle";
+        state.status = 'idle';
         state.refreshButton = true;
         state.editor = false;
         state.highlighted = action.payload._id;
         //if collection would be null
-        state.data = state.data
-          ? [action.payload, ...state.data]
-          : [action.payload];
+        state.data = state.data ? [action.payload, ...state.data] : [action.payload];
         state.message =
-          "Task successfully created. To reorder your tasks, click on the blue refresh button below.";
+          'Task successfully created. To reorder your tasks, click on the blue refresh button below.';
       })
       .addCase(createTask.rejected, (state, action) => {
-        state.status = "failed";
-        state.message = action.payload ? action.payload : "Unknown error";
+        state.status = 'failed';
+        state.message = action.payload ? action.payload : 'Unknown error';
       })
       .addCase(updateTask.pending, (state) => {
-        state.status = "loading";
+        state.status = 'loading';
       })
       .addCase(updateTask.fulfilled, (state, action) => {
-        state.status = "idle";
+        state.status = 'idle';
         state.refreshButton = true;
         state.editor = false;
         // if collection would be null
         if (state.data) {
           state.data = state.data.map((task) =>
-            task._id === action.payload._id ? action.payload : task
+            task._id === action.payload._id ? action.payload : task,
           );
         } else {
           state.data = [action.payload];
         }
         state.message =
-          "Successful update. To reorder your tasks, click on the blue refresh button below.";
+          'Successful update. To reorder your tasks, click on the blue refresh button below.';
       })
       .addCase(updateTask.rejected, (state, action) => {
-        state.status = "failed";
-        state.message = action.payload ? action.payload : "Unknown error";
+        state.status = 'failed';
+        state.message = action.payload ? action.payload : 'Unknown error';
       })
       .addCase(deleteTask.pending, (state) => {
-        state.status = "loading";
+        state.status = 'loading';
       })
       .addCase(deleteTask.fulfilled, (state, action) => {
-        state.status = "idle";
+        state.status = 'idle';
         state.refreshButton = true;
         state.editor = false;
         // if collection would be null
         if (state.data) {
-          state.data = state.data.filter(
-            (task) => task._id !== action.payload._id
-          );
+          state.data = state.data.filter((task) => task._id !== action.payload._id);
           if (!state.data.length) {
             state.refreshPage = true;
-            state.message = "Successful deletion.";
+            state.message = 'Successful deletion.';
           } else {
             state.message =
-              "Successful deletion. To reorder your tasks, click on the blue refresh button below.";
+              'Successful deletion. To reorder your tasks, click on the blue refresh button below.';
           }
         }
       })
       .addCase(deleteTask.rejected, (state, action) => {
-        state.status = "failed";
-        state.message = action.payload ? action.payload : "Unknown error";
+        state.status = 'failed';
+        state.message = action.payload ? action.payload : 'Unknown error';
       });
   },
 });

@@ -1,7 +1,7 @@
-const asyncHandler = require("express-async-handler");
-const { errorTrigger } = require("../middlewares/errorMiddleware");
-const { collectionValidation } = require("../middlewares/collectionMiddleware");
-const { Collection, Task } = require("../models/index");
+const asyncHandler = require('express-async-handler');
+const { errorTrigger } = require('../middlewares/errorMiddleware');
+const { collectionValidation } = require('../middlewares/collectionMiddleware');
+const { Collection, Task } = require('../models/index');
 
 /*
   @desc Get collections
@@ -16,7 +16,7 @@ const getCollections = asyncHandler(async (req, res) => {
     skip: 0,
     nextSkip: 0,
     sort: {},
-    collation: { locale: "en", strength: 2 },
+    collation: { locale: 'en', strength: 2 },
   };
 
   // set conditions and remove starting and trailing spaces
@@ -26,26 +26,26 @@ const getCollections = asyncHandler(async (req, res) => {
     // escaping all special characters for regex
     // set OR conditions among words for database query
     keywords = req.query.keywords
-      .replace(/\s+/g, " ")
-      .replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&")
-      .replace(/\s+/g, "|");
+      .replace(/\s+/g, ' ')
+      .replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
+      .replace(/\s+/g, '|');
     // $options: "i" for case insensitive
-    options.conditions.name = { $regex: keywords, $options: "i" };
+    options.conditions.name = { $regex: keywords, $options: 'i' };
   } else {
-    req.query.keywords = ""; // for return value
+    req.query.keywords = ''; // for return value
   }
 
   // set limit
   switch (req.query.limit) {
-    case "p36":
+    case 'p36':
       options.limit = 36;
       break;
-    case "p60":
+    case 'p60':
       options.limit = 60;
       break;
     default:
       options.limit = 12;
-      req.query.limit = ""; // for return value
+      req.query.limit = ''; // for return value
   }
   // set page
   if (req.query.page && req.query.page.match(/^\d+$/) && req.query.page > 0) {
@@ -54,29 +54,29 @@ const getCollections = asyncHandler(async (req, res) => {
     options.nextSkip = options.limit * page;
   } else {
     options.nextSkip = options.limit;
-    req.query.page = ""; // for return value
+    req.query.page = ''; // for return value
   }
 
   // set sort
   switch (req.query.sort) {
     default: // for return value
-      req.query.sort = "";
+      req.query.sort = '';
       options.sort = { name: 1 };
       break;
-    case "nameDESC":
+    case 'nameDESC':
       options.sort = { name: -1 };
       break;
-    case "createdASC":
+    case 'createdASC':
       options.sort = { createdAt: 1 };
       break;
-    case "createdDESC":
+    case 'createdDESC':
       options.sort = { createdAt: -1 };
       break;
   }
 
   // loop to handle fallback to page 1 if no results at bigger page number
   let collections = [],
-    message = "",
+    message = '',
     fallback;
   do {
     // request data from database based on options
@@ -89,8 +89,8 @@ const getCollections = asyncHandler(async (req, res) => {
     if (fallback) {
       options.skip = 0;
       options.nextSkip = options.limit;
-      req.query.page = ""; // for return value
-      message = "Redirect to first page because requested page cannot be found";
+      req.query.page = ''; // for return value
+      message = 'Redirect to first page because requested page cannot be found';
     }
   } while (fallback);
 
@@ -132,7 +132,7 @@ const createCollection = asyncHandler(async (req, res) => {
 
   // if collection cannot be created
   if (!collection) {
-    errorTrigger(res, 409, "Collection could not be created");
+    errorTrigger(res, 409, 'Collection could not be created');
   }
 
   // return created collection
@@ -162,12 +162,12 @@ const updateCollection = asyncHandler(async (req, res) => {
     {
       new: true, // true - return new document after update
       upsert: false, // true - create new if given does not exist
-    }
+    },
   );
 
   // if no collection exists
   if (!collection) {
-    errorTrigger(res, 401, "Collection is not available");
+    errorTrigger(res, 401, 'Collection is not available');
   }
 
   // return updated collection
@@ -191,7 +191,7 @@ const deleteCollection = asyncHandler(async (req, res) => {
     await Task.deleteMany({ collection_id: req.params.id });
   } else {
     // if no collection exists or user has no access to
-    errorTrigger(res, 401, "Collection is not available");
+    errorTrigger(res, 401, 'Collection is not available');
   }
 
   // return removed collection
