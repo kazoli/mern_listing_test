@@ -48,7 +48,7 @@ export const updateCollection = createAsyncThunk<
 // delete a collection through an async thunk of redux toolkit
 export const deleteCollection = createAsyncThunk<
   tCollectionData,
-  tCollectionDataSave['_id'],
+  tCollectionData['_id'],
   { rejectValue: string }
 >('collections/deleteCollection', async (collection_id, thunkAPI) => {
   try {

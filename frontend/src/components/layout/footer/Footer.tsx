@@ -1,5 +1,9 @@
 const Footer: React.FC = () => {
-  return <footer>Footer</footer>;
+  return (
+    <footer>
+      <div className="layout-positioner">Designed by Kazoli.</div>
+    </footer>
+  );
 };
 
 export default Footer;

@@ -1,5 +1,5 @@
 import { AiOutlineLeft, AiOutlineRight, AiOutlineVerticalRight } from 'react-icons/ai';
-import { tTaskQueryParts, tTaskState } from '../../app/tasks/taskTypes';
+import { tTaskQueryParts, tTaskState } from '../../app/task/taskTypes';
 
 type tProps = {
   page: tTaskQueryParts['page'];

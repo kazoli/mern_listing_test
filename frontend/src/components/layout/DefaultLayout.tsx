@@ -20,7 +20,7 @@ const DefaultLayout = (props: tProps) => {
     <>
       {props.loading && <Loading />}
       <Header />
-      <main>{props.children}</main>
+      <main className="layout-positioner">{props.children}</main>
       <Footer />
       <JumpTop />
     </>

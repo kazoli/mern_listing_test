@@ -1,11 +1,11 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import userReducer from '../users/userSlice';
-import collectionReducer from '../collections/collectionSlice';
-import taskReducer from '../tasks/taskSlice';
+import userReducer from '../user/userSlice';
+import collectionReducer from '../collection/collectionSlice';
+import taskReducer from '../task/taskSlice';
 
 export const store = configureStore({
   reducer: {
-    users: userReducer,
+    user: userReducer,
     collections: collectionReducer,
     tasks: taskReducer,
   },

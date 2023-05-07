@@ -5,7 +5,7 @@ import axios from 'axios';
 
 // Register user
 export const registerUser = createAsyncThunk<tUserData, tUserDataSave, { rejectValue: string }>(
-  'users/registerUser',
+  'user/registerUser',
   async (userData, thunkAPI) => {
     try {
       const response = await axios.post('/api/users/register', userData);
@@ -18,7 +18,7 @@ export const registerUser = createAsyncThunk<tUserData, tUserDataSave, { rejectV
 
 // Login user
 export const loginUser = createAsyncThunk<tUserData, tUserDataLogin, { rejectValue: string }>(
-  'users/loginUser',
+  'user/loginUser',
   async (userData, thunkAPI) => {
     try {
       const response = await axios.post('/api/users/login', userData);

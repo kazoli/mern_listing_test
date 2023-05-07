@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useAppDispatch } from '../../app/general/hooks';
-import { tCollectionData } from '../../app/collections/collectionTypes';
-import { createCollection, updateCollection } from '../../app/collections/collectionThunks';
-import { toogleEditor, toogleHighlighted } from '../../app/collections/collectionSlice';
+import { tCollectionData } from '../../app/collection/collectionTypes';
+import { createCollection, updateCollection } from '../../app/collection/collectionThunks';
+import { toogleEditor, toogleHighlighted } from '../../app/collection/collectionSlice';
 import { processName } from '../../app/general/validations';
 import TextareaAutosize from 'react-textarea-autosize';
 

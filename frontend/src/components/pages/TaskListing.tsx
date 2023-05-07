@@ -10,7 +10,7 @@ import {
   AiOutlineFolderOpen,
   AiOutlineLeftCircle,
 } from 'react-icons/ai';
-import { tTaskQueryParts } from '../../app/tasks/taskTypes';
+import { tTaskQueryParts } from '../../app/task/taskTypes';
 import {
   buildURL,
   toogleHighlighted,
@@ -18,15 +18,15 @@ import {
   toogleEditor,
   resetTaskState,
   updateTaskQueryParts,
-} from '../../app/tasks/taskSlice';
-import { getTasks } from '../../app/tasks/taskThunks';
-import Task from '../task/Task';
+} from '../../app/task/taskSlice';
+import { getTasks } from '../../app/task/taskThunks';
+import UserCheckLoggedIn from '../user/UserCheckLoggedIn';
+import DefaultLayout from '../layout/DefaultLayout';
 import Paginator from '../general/Paginator';
-import Spinner from '../layout/general/Loading';
+import Task from '../task/Task';
 import TaskEditorPopup from '../task/TaskEditorPopup';
 import RefreshButton from '../general/RefreshButton';
-import DropDownMenu from '../form/DropDownMenu';
-import DefaultLayout from '../layout/DefaultLayout';
+import DropDownMenu from '../general/DropDownMenu';
 
 type tSearch = {
   keywords: tTaskQueryParts['keywords'];
@@ -34,6 +34,10 @@ type tSearch = {
 };
 
 const Tasks: React.FC = () => {
+  UserCheckLoggedIn({
+    navigateToLogin: true,
+  });
+
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const params = useParams();
@@ -46,7 +50,9 @@ const Tasks: React.FC = () => {
 
   useEffect(() => {
     // set page title to selected collection name
-    if (tasks.collection) document.title = tasks.collection.name;
+    if (tasks.collection) {
+      document.title = tasks.collection.name;
+    }
   }, [tasks.collection]);
 
   useEffect(() => {

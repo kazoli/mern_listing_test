@@ -3,7 +3,7 @@ import { registerUser, loginUser } from './userThunks';
 import { userInitialState } from './userInitialStates';
 
 const userSlice = createSlice({
-  name: 'users',
+  name: 'user',
   initialState: userInitialState,
   reducers: {
     resetUserState: (state) => {

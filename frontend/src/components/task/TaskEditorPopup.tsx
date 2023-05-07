@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { AiOutlineExclamationCircle, AiOutlinePlusCircle } from 'react-icons/ai';
-import { createTask, updateTask } from '../../app/tasks/taskThunks';
-import { toogleEditor, toogleHighlighted } from '../../app/tasks/taskSlice';
-import { tTaskData } from '../../app/tasks/taskTypes';
+import { createTask, updateTask } from '../../app/task/taskThunks';
+import { toogleEditor, toogleHighlighted } from '../../app/task/taskSlice';
+import { tTaskData } from '../../app/task/taskTypes';
 import { processName, processTags } from '../../app/general/validations';
 import TagEditor from './TaskTagEditor';
 import TextareaAutosize from 'react-textarea-autosize';

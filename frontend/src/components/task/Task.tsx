@@ -1,8 +1,8 @@
 import { useAppDispatch } from '../../app/general/hooks';
-import { deleteTask, updateTask } from '../../app/tasks/taskThunks';
-import { toogleEditor } from '../../app/tasks/taskSlice';
+import { deleteTask, updateTask } from '../../app/task/taskThunks';
+import { toogleEditor } from '../../app/task/taskSlice';
 import { AiOutlineCheck, AiOutlineDelete, AiOutlineEdit, AiOutlineReload } from 'react-icons/ai';
-import { tTaskData, tTaskState } from '../../app/tasks/taskTypes';
+import { tTaskData, tTaskState } from '../../app/task/taskTypes';
 
 type tProps = {
   index: number;

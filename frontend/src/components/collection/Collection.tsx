@@ -1,8 +1,8 @@
 import { AiOutlineDelete, AiOutlineEdit, AiOutlineRightCircle } from 'react-icons/ai';
 import { useAppDispatch } from '../../app/general/hooks';
-import { tCollectionData, tCollectionState } from '../../app/collections/collectionTypes';
-import { toogleEditor } from '../../app/collections/collectionSlice';
-import { deleteCollection } from '../../app/collections/collectionThunks';
+import { tCollectionData, tCollectionState } from '../../app/collection/collectionTypes';
+import { toogleEditor } from '../../app/collection/collectionSlice';
+import { deleteCollection } from '../../app/collection/collectionThunks';
 
 type tProps = {
   index: number;

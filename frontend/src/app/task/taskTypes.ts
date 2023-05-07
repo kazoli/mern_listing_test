@@ -1,4 +1,4 @@
-import { tCollectionData } from '../collections/collectionTypes';
+import { tCollectionData } from '../collection/collectionTypes';
 
 // Type of posted task data
 export type tTaskDataSave = {

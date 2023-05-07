@@ -1,8 +1,8 @@
 import { toast } from 'react-toastify';
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../app/general/hooks';
-import { tCollectionQueryParts } from '../../app/collections/collectionTypes';
-import { getCollections } from '../../app/collections/collectionThunks';
+import { tCollectionQueryParts } from '../../app/collection/collectionTypes';
+import { getCollections } from '../../app/collection/collectionThunks';
 import {
   buildURL,
   refreshPage,
@@ -10,36 +10,41 @@ import {
   toogleEditor,
   toogleHighlighted,
   updateCollectionQueryParts,
-} from '../../app/collections/collectionSlice';
+} from '../../app/collection/collectionSlice';
 import { FcSearch } from 'react-icons/fc';
 import {
   AiOutlineCloseCircle,
   AiOutlineExclamationCircle,
   AiOutlinePlusCircle,
 } from 'react-icons/ai';
+import UserCheckLoggedIn from '../user/UserCheckLoggedIn';
 import DefaultLayout from '../layout/DefaultLayout';
 import Paginator from '../general/Paginator';
 import CollectionEditorPopup from '../collection/CollectionEditorPopup';
 import RefreshButton from '../general/RefreshButton';
-import DropDownMenu from '../form/DropDownMenu';
+import DropDownMenu from '../general/DropDownMenu';
 import Collection from '../collection/Collection';
 
 type tSearch = {
   keywords: tCollectionQueryParts['keywords'];
 };
 
-const Collections = () => {
-  const dispatch = useAppDispatch();
-  const collections = useAppSelector((state) => state.collections);
-
-  const [search, setSearch] = useState<tSearch>({
-    keywords: '',
+const Collections: React.FC = () => {
+  UserCheckLoggedIn({
+    navigateToLogin: true,
   });
 
   useEffect(() => {
     // set page title
     document.title = 'Collections';
   }, []);
+
+  const dispatch = useAppDispatch();
+  const collections = useAppSelector((state) => state.collections);
+
+  const [search, setSearch] = useState<tSearch>({
+    keywords: '',
+  });
 
   useEffect(() => {
     // if page refreshing has triggered then it requests data from backend
