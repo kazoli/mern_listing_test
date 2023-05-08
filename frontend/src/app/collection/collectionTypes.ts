@@ -1,3 +1,5 @@
+import { tTypeMap } from '../general/types';
+
 // Type of posted collection data
 export type tCollectionDataSave = {
   name: string;
@@ -11,13 +13,32 @@ export type tCollectionData = tCollectionDataSave & {
   updatedAt: string;
 };
 
+// Type of collection list sort
+export type tCollectionListSort = {
+  default: string;
+  nameDESC: string;
+  createdDESC: string;
+  createdASC: string;
+};
+
+// Type of collection list limit
+export type tCollectionListLimit = {
+  default: string;
+  p36: string;
+  p60: string;
+};
+
 // Type of collection query parts
 export type tCollectionQueryParts = {
   keywords: string;
-  sort: string;
-  limit: string;
+  sort: keyof tCollectionListSort;
+  limit: keyof tCollectionListLimit;
   page: string;
 };
+
+// Type of collection mapped query parts
+export type tCollectionMappedQueryParts =
+  tTypeMap<tCollectionQueryParts>[keyof tTypeMap<tCollectionQueryParts>];
 
 // Type of collection state
 export type tCollectionState = {

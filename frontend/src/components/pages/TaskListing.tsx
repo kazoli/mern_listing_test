@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../app/general/hooks';
+import { useCheckJwtExists } from '../../app/user/userHooks';
 import { toast } from 'react-toastify';
 import { FcSearch } from 'react-icons/fc';
 import {
@@ -9,24 +10,31 @@ import {
   AiOutlineExclamationCircle,
   AiOutlineFolderOpen,
   AiOutlineLeftCircle,
+  AiOutlineRightCircle,
 } from 'react-icons/ai';
 import { tTaskQueryParts } from '../../app/task/taskTypes';
 import {
-  buildURL,
-  toogleHighlighted,
-  refreshPage,
-  toogleEditor,
-  resetTaskState,
-  updateTaskQueryParts,
+  taskResetState,
+  taskBuildURL,
+  taskRefreshPage,
+  taskToogleEditor,
+  taskToogleHighlighted,
+  taskUpdateQueryParts,
 } from '../../app/task/taskSlice';
 import { getTasks } from '../../app/task/taskThunks';
-import UserCheckLoggedIn from '../user/UserCheckLoggedIn';
 import DefaultLayout from '../layout/DefaultLayout';
 import Paginator from '../general/Paginator';
 import Task from '../task/Task';
 import TaskEditorPopup from '../task/TaskEditorPopup';
 import RefreshButton from '../general/RefreshButton';
 import DropDownMenu from '../general/DropDownMenu';
+import DropDownListLabel from '../general/DropDownListLabel';
+import {
+  taskListCompletion,
+  taskListLimit,
+  taskListSearchType,
+  taskListSort,
+} from '../../app/task/taskInitialStates';
 
 type tSearch = {
   keywords: tTaskQueryParts['keywords'];
@@ -34,9 +42,8 @@ type tSearch = {
 };
 
 const Tasks: React.FC = () => {
-  UserCheckLoggedIn({
-    navigateToLogin: true,
-  });
+  // check JWT exists
+  useCheckJwtExists(true);
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -45,7 +52,7 @@ const Tasks: React.FC = () => {
 
   const [search, setSearch] = useState<tSearch>({
     keywords: '',
-    searchType: '',
+    searchType: 'default',
   });
 
   useEffect(() => {
@@ -67,7 +74,7 @@ const Tasks: React.FC = () => {
     // set highlighted false
     if (tasks.highlighted !== false) {
       // this needs to be bigger than effect time
-      setTimeout(() => dispatch(toogleHighlighted(false)), 1500);
+      setTimeout(() => dispatch(taskToogleHighlighted(false)), 1500);
     }
   }, [dispatch, tasks.highlighted]);
 
@@ -76,7 +83,7 @@ const Tasks: React.FC = () => {
       if (tasks.collection === null) {
         if (tasks.status === 'idle') {
           // trigger to request first data from backend
-          dispatch(refreshPage());
+          dispatch(taskRefreshPage());
         } else {
           // error occured in first loading
           toast.error(tasks.message, { toastId: 'load-error' });
@@ -101,9 +108,9 @@ const Tasks: React.FC = () => {
           }
         }
         // reset status to idle and remove message
-        dispatch(resetTaskState());
+        dispatch(taskResetState());
         // rebuild url for browser by returned and valid filter values
-        dispatch(buildURL());
+        dispatch(taskBuildURL());
         // update search fields with response data
         setSearch({
           keywords: tasks.queryParts.keywords,
@@ -116,7 +123,7 @@ const Tasks: React.FC = () => {
   const updateTaskQuery = (keywords: tSearch['keywords'], searchType: tSearch['searchType']) => {
     // set redux keywords
     dispatch(
-      updateTaskQueryParts({
+      taskUpdateQueryParts({
         queryPart: 'keywords',
         value: keywords,
         refreshPage: false,
@@ -124,7 +131,7 @@ const Tasks: React.FC = () => {
     );
     // set redux searchType and request a page refresh
     dispatch(
-      updateTaskQueryParts({
+      taskUpdateQueryParts({
         queryPart: 'searchType',
         value: searchType,
         refreshPage: true,
@@ -139,7 +146,7 @@ const Tasks: React.FC = () => {
       refreshPage={tasks.refreshPage}
       selectAction={(value) =>
         dispatch(
-          updateTaskQueryParts({
+          taskUpdateQueryParts({
             queryPart: 'page',
             value: value,
             refreshPage: true,
@@ -158,7 +165,7 @@ const Tasks: React.FC = () => {
             collection_id={params.collection_id}
           />
         )}
-        {tasks.refreshButton && <RefreshButton action={() => dispatch(refreshPage())} />}
+        {tasks.refreshButton && <RefreshButton action={() => dispatch(taskRefreshPage())} />}
         <section className="task-collection-title">
           <AiOutlineFolderOpen className="icon" />
           <label>
@@ -196,18 +203,19 @@ const Tasks: React.FC = () => {
             />
             <div className="search-control-block">
               <DropDownMenu
-                selected={search.searchType}
-                options={{
-                  '': 'Search in name and tags',
-                  name: 'Search in name only',
-                  tags: 'Search in tags only',
-                }}
-                selectAction={(value) =>
+                wrapperClass="list-drop-down-menu"
+                optionClass="icon-wrapper click"
+                trigger={
+                  <DropDownListLabel text={taskListSearchType[tasks.queryParts.searchType]} />
+                }
+                options={taskListSearchType}
+                action={(value) =>
                   setSearch({
                     ...search,
-                    searchType: value,
+                    searchType: value as tTaskQueryParts['searchType'],
                   })
                 }
+                optionIcon={<AiOutlineRightCircle className="icon" />}
               />
               <button
                 className="search-submit click"
@@ -230,14 +238,20 @@ const Tasks: React.FC = () => {
                 </a>
               </nav>
               <nav>
-                <label className="icon-wrapper click" onClick={() => dispatch(toogleEditor(true))}>
+                <label
+                  className="icon-wrapper click"
+                  onClick={() => dispatch(taskToogleEditor(true))}
+                >
                   <AiOutlinePlusCircle className="icon" />
                   <span>Add a new task</span>
                 </label>
               </nav>
               {tasks.resetSearch && (
                 <nav>
-                  <label className="icon-wrapper click" onClick={() => updateTaskQuery('', '')}>
+                  <label
+                    className="icon-wrapper click"
+                    onClick={() => updateTaskQuery('', 'default')}
+                  >
                     <AiOutlineCloseCircle className="icon" />
                     <span>Reset search</span>
                   </label>
@@ -246,56 +260,54 @@ const Tasks: React.FC = () => {
             </div>
             <div>
               <DropDownMenu
-                selected={tasks.queryParts.completion}
-                options={{
-                  '': 'All statuses',
-                  complete: 'Complete tasks only',
-                  incomplete: 'Incomplete tasks only',
-                }}
-                selectAction={(value) =>
+                wrapperClass="list-drop-down-menu"
+                optionClass="icon-wrapper click"
+                trigger={
+                  <DropDownListLabel text={taskListCompletion[tasks.queryParts.completion]} />
+                }
+                options={taskListCompletion}
+                action={(value) =>
                   dispatch(
-                    updateTaskQueryParts({
+                    taskUpdateQueryParts({
                       queryPart: 'completion',
                       value: value,
                       refreshPage: true,
                     }),
                   )
                 }
+                optionIcon={<AiOutlineRightCircle className="icon" />}
               />
               <DropDownMenu
-                selected={tasks.queryParts.sort}
-                options={{
-                  '': 'Name (A-Z)',
-                  nameDESC: 'Name (Z-A)',
-                  createdDESC: 'Recently created at front',
-                  createdASC: 'Formerly created at front',
-                }}
-                selectAction={(value) =>
+                wrapperClass="list-drop-down-menu"
+                optionClass="icon-wrapper click"
+                trigger={<DropDownListLabel text={taskListSort[tasks.queryParts.sort]} />}
+                options={taskListSort}
+                action={(value) =>
                   dispatch(
-                    updateTaskQueryParts({
-                      queryPart: 'sort',
+                    taskUpdateQueryParts({
+                      queryPart: 'completion',
                       value: value,
                       refreshPage: true,
                     }),
                   )
                 }
+                optionIcon={<AiOutlineRightCircle className="icon" />}
               />
               <DropDownMenu
-                selected={tasks.queryParts.limit}
-                options={{
-                  '': '12 / page',
-                  p36: '36 / page',
-                  p60: '60 / page',
-                }}
-                selectAction={(value) =>
+                wrapperClass="list-drop-down-menu"
+                optionClass="icon-wrapper click"
+                trigger={<DropDownListLabel text={taskListLimit[tasks.queryParts.limit]} />}
+                options={taskListLimit}
+                action={(value) =>
                   dispatch(
-                    updateTaskQueryParts({
+                    taskUpdateQueryParts({
                       queryPart: 'limit',
                       value: value,
                       refreshPage: true,
                     }),
                   )
                 }
+                optionIcon={<AiOutlineRightCircle className="icon" />}
               />
             </div>
           </div>

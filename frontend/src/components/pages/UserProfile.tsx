@@ -1,12 +1,11 @@
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../app/general/hooks';
-import UserCheckLoggedIn from '../user/UserCheckLoggedIn';
+import { useCheckJwtExists } from '../../app/user/userHooks';
 import DefaultLayout from '../layout/DefaultLayout';
 
 const UserProfile = () => {
-  UserCheckLoggedIn({
-    navigateToLogin: true,
-  });
+  // check JWT exists
+  useCheckJwtExists(true);
 
   useEffect(() => {
     // set page title

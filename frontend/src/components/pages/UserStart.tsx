@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../app/general/hooks';
-import UserCheckLoggedIn from '../user/UserCheckLoggedIn';
+import { useCheckJwtExists } from '../../app/user/userHooks';
 import DefaultLayout from '../layout/DefaultLayout';
 
 type tProps = {
@@ -8,9 +8,8 @@ type tProps = {
 };
 
 const UserStart: React.FC<tProps> = (props) => {
-  UserCheckLoggedIn({
-    navigateToLogin: false,
-  });
+  // check JWT exists
+  useCheckJwtExists(false);
 
   useEffect(() => {
     // set page title

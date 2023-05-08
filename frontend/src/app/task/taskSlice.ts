@@ -1,54 +1,58 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { tTaskQueryParts, tTaskState } from './taskTypes';
+import { tTaskMappedQueryParts, tTaskQueryParts, tTaskState } from './taskTypes';
 import { taskInitialState } from './taskInitialStates';
 import { createTask, deleteTask, getTasks, updateTask } from './taskThunks';
+import { buildUrl } from '../general/middlewares';
 
 const taskSlice = createSlice({
   name: 'tasks',
   initialState: taskInitialState,
   reducers: {
-    resetTaskState: (state) => {
+    taskResetState: (state) => {
       state.status = 'idle';
       state.message = '';
     },
-    buildURL: (state) => {
-      //query elements array
-      let query: string[] = [];
-      // build query based on queryParts
-      let key: keyof tTaskQueryParts;
-      for (key in state.queryParts) {
-        if (state.queryParts[key].length) {
-          query.push(`${key}=${state.queryParts[key]}`);
-        }
-      }
-      // join the query elments into a string or get empty
-      const queryString: string = query.length ? encodeURI('?' + query.join('&')) : '';
-      // change old URL with the new one in the browser
-      window.history.pushState(
-        {},
-        '',
-        window.location.origin + window.location.pathname + queryString,
-      );
+    taskBuildURL: (state) => {
+      buildUrl<tTaskQueryParts>(state.queryParts);
+
+      // TODO delete after testing
+      // //query elements array
+      // let query: string[] = [];
+      // // build query based on queryParts
+      // let key: keyof tTaskQueryParts;
+      // for (key in state.queryParts) {
+      //   if (state.queryParts[key].length) {
+      //     query.push(`${key}=${state.queryParts[key]}`);
+      //   }
+      // }
+      // // join the query elments into a string or get empty
+      // const queryString: string = query.length ? encodeURI('?' + query.join('&')) : '';
+      // // change old URL with the new one in the browser
+      // window.history.pushState(
+      //   {},
+      //   '',
+      //   window.location.origin + window.location.pathname + queryString,
+      // );
     },
-    refreshPage: (state) => {
+    taskRefreshPage: (state) => {
       state.refreshButton = false;
       state.refreshPage = true;
     },
-    toogleEditor: (state, action: PayloadAction<tTaskState['editor']>) => {
+    taskToogleEditor: (state, action: PayloadAction<tTaskState['editor']>) => {
       state.editor = action.payload;
     },
-    toogleHighlighted: (state, action: PayloadAction<tTaskState['highlighted']>) => {
+    taskToogleHighlighted: (state, action: PayloadAction<tTaskState['highlighted']>) => {
       state.highlighted = action.payload;
     },
-    updateTaskQueryParts: (
+    taskUpdateQueryParts: (
       state,
       action: PayloadAction<{
         queryPart: keyof tTaskQueryParts;
-        value: string;
+        value: tTaskMappedQueryParts;
         refreshPage: tTaskState['refreshPage'];
       }>,
     ) => {
-      state.queryParts[action.payload.queryPart] = action.payload.value;
+      (state.queryParts[action.payload.queryPart] as tTaskMappedQueryParts) = action.payload.value;
       state.refreshPage = action.payload.refreshPage;
       if (action.payload.refreshPage) {
         // hide refresh button
@@ -153,11 +157,11 @@ const taskSlice = createSlice({
 });
 
 export const {
-  resetTaskState,
-  buildURL,
-  refreshPage,
-  toogleHighlighted,
-  toogleEditor,
-  updateTaskQueryParts,
+  taskResetState,
+  taskBuildURL,
+  taskRefreshPage,
+  taskToogleEditor,
+  taskToogleHighlighted,
+  taskUpdateQueryParts,
 } = taskSlice.actions;
 export default taskSlice.reducer;

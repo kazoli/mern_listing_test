@@ -1,5 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { tCollectionQueryParts, tCollectionState } from './collectionTypes';
+import {
+  tCollectionMappedQueryParts,
+  tCollectionQueryParts,
+  tCollectionState,
+} from './collectionTypes';
 import {
   createCollection,
   deleteCollection,
@@ -7,53 +11,61 @@ import {
   updateCollection,
 } from './collectionThunks';
 import { collectionInitialState } from './collectionInitialStates';
+import { buildUrl } from '../general/middlewares';
 
 const collectionSlice = createSlice({
   name: 'collections',
   initialState: collectionInitialState,
   reducers: {
-    resetCollectionState: (state) => {
+    collectionResetState: (state) => {
       state.status = 'idle';
       state.message = '';
     },
-    buildURL: (state) => {
-      //query elements array
-      let query: string[] = [];
-      // build query based on queryParts
-      let key: keyof tCollectionQueryParts;
-      for (key in state.queryParts) {
-        if (state.queryParts[key].length) {
-          query.push(`${key}=${state.queryParts[key]}`);
-        }
-      }
-      // join the query elments into a string or get empty
-      const queryString: string = query.length ? encodeURI('?' + query.join('&')) : '';
-      // change old URL with the new one in the browser
-      window.history.pushState(
-        {},
-        '',
-        window.location.origin + window.location.pathname + queryString,
-      );
+    collectionBuildURL: (state) => {
+      buildUrl<tCollectionQueryParts>(state.queryParts);
+
+      // TODO delete
+      // //query elements array
+      // let query: string[] = [];
+      // // build query based on queryParts
+      // let key: keyof tCollectionQueryParts;
+      // for (key in state.queryParts) {
+      //   if (state.queryParts[key].length) {
+      //     query.push(`${key}=${state.queryParts[key]}`);
+      //   }
+      // }
+      // // join the query elments into a string or get empty
+      // const queryString: string = query.length ? encodeURI('?' + query.join('&')) : '';
+      // // change old URL with the new one in the browser
+      // window.history.pushState(
+      //   {},
+      //   '',
+      //   window.location.origin + window.location.pathname + queryString,
+      // );
     },
-    refreshPage: (state) => {
+    collectionRefreshPage: (state) => {
       state.refreshButton = false;
       state.refreshPage = true;
     },
-    toogleEditor: (state, action: PayloadAction<tCollectionState['editor']>) => {
+    collectionToogleEditor: (state, action: PayloadAction<tCollectionState['editor']>) => {
       state.editor = action.payload;
     },
-    toogleHighlighted: (state, action: PayloadAction<tCollectionState['highlighted']>) => {
+    collectionToogleHighlighted: (
+      state,
+      action: PayloadAction<tCollectionState['highlighted']>,
+    ) => {
       state.highlighted = action.payload;
     },
-    updateCollectionQueryParts: (
+    collectionUpdateQueryParts: (
       state,
       action: PayloadAction<{
         queryPart: keyof tCollectionQueryParts;
-        value: string;
+        value: tCollectionMappedQueryParts;
         refreshPage: tCollectionState['refreshPage'];
       }>,
     ) => {
-      state.queryParts[action.payload.queryPart] = action.payload.value;
+      (state.queryParts[action.payload.queryPart] as tCollectionMappedQueryParts) =
+        action.payload.value;
       state.refreshPage = action.payload.refreshPage;
       if (action.payload.refreshPage) {
         // hide refresh button
@@ -154,11 +166,11 @@ const collectionSlice = createSlice({
 });
 
 export const {
-  resetCollectionState,
-  buildURL,
-  refreshPage,
-  toogleHighlighted,
-  toogleEditor,
-  updateCollectionQueryParts,
+  collectionResetState,
+  collectionBuildURL,
+  collectionRefreshPage,
+  collectionToogleEditor,
+  collectionToogleHighlighted,
+  collectionUpdateQueryParts,
 } = collectionSlice.actions;
 export default collectionSlice.reducer;

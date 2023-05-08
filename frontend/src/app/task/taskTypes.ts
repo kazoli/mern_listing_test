@@ -1,4 +1,5 @@
 import { tCollectionData } from '../collection/collectionTypes';
+import { tTypeMap } from '../general/types';
 
 // Type of posted task data
 export type tTaskDataSave = {
@@ -17,15 +18,47 @@ export type tTaskData = tTaskDataSave & {
   updatedAt: string;
 };
 
+// Type of task list search type
+export type tTaskListSearchType = {
+  default: string;
+  name: string;
+  tags: string;
+};
+
+// Type of task list completion
+export type tTaskListCompletion = {
+  default: string;
+  complete: string;
+  incomplete: string;
+};
+
+// Type of task list sort
+export type tTaskListSort = {
+  default: string;
+  nameDESC: string;
+  createdDESC: string;
+  createdASC: string;
+};
+
+// Type of task list limit
+export type tTaskListLimit = {
+  default: string;
+  p36: string;
+  p60: string;
+};
+
 // Type of task query parts
 export type tTaskQueryParts = {
   keywords: string;
-  searchType: string;
-  completion: string;
-  sort: string;
-  limit: string;
+  searchType: keyof tTaskListSearchType;
+  completion: keyof tTaskListCompletion;
+  sort: keyof tTaskListSort;
+  limit: keyof tTaskListLimit;
   page: string;
 };
+
+// Type of task mapped query parts
+export type tTaskMappedQueryParts = tTypeMap<tTaskQueryParts>[keyof tTypeMap<tTaskQueryParts>];
 
 // Type of task state
 export type tTaskState = {

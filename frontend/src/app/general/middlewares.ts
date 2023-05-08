@@ -13,6 +13,22 @@ export const cookieManager = {
   },
 };
 
+// Build URL
+export const buildUrl = <t extends { [key: string]: string }>(queryParts: t) => {
+  //query elements array
+  let query: string[] = [];
+  // build query based on queryParts
+  for (const key in queryParts) {
+    if (queryParts[key].length) {
+      query = [...query, `${key}=${queryParts[key]}`];
+    }
+  }
+  // join the query elments into a string or get empty
+  const queryString = query.length ? encodeURI('?' + query.join('&')) : '';
+  // change old URL with the new one in the browser
+  window.history.pushState({}, '', window.location.origin + window.location.pathname + queryString);
+};
+
 // Scroll to an element
 export const scrollToElement = (
   element: Element | (Window & typeof globalThis) = window,

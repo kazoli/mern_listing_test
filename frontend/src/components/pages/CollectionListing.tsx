@@ -1,38 +1,43 @@
 import { toast } from 'react-toastify';
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../app/general/hooks';
+import { useCheckJwtExists } from '../../app/user/userHooks';
 import { tCollectionQueryParts } from '../../app/collection/collectionTypes';
 import { getCollections } from '../../app/collection/collectionThunks';
 import {
-  buildURL,
-  refreshPage,
-  resetCollectionState,
-  toogleEditor,
-  toogleHighlighted,
-  updateCollectionQueryParts,
+  collectionBuildURL,
+  collectionRefreshPage,
+  collectionResetState,
+  collectionToogleEditor,
+  collectionToogleHighlighted,
+  collectionUpdateQueryParts,
 } from '../../app/collection/collectionSlice';
 import { FcSearch } from 'react-icons/fc';
 import {
   AiOutlineCloseCircle,
   AiOutlineExclamationCircle,
   AiOutlinePlusCircle,
+  AiOutlineRightCircle,
 } from 'react-icons/ai';
-import UserCheckLoggedIn from '../user/UserCheckLoggedIn';
 import DefaultLayout from '../layout/DefaultLayout';
 import Paginator from '../general/Paginator';
 import CollectionEditorPopup from '../collection/CollectionEditorPopup';
 import RefreshButton from '../general/RefreshButton';
-import DropDownMenu from '../general/DropDownMenu';
 import Collection from '../collection/Collection';
+import {
+  collectionListLimit,
+  collectionListSort,
+} from '../../app/collection/collectionInitialStates';
+import DropDownMenu from '../general/DropDownMenu';
+import DropDownListLabel from '../general/DropDownListLabel';
 
 type tSearch = {
   keywords: tCollectionQueryParts['keywords'];
 };
 
 const Collections: React.FC = () => {
-  UserCheckLoggedIn({
-    navigateToLogin: true,
-  });
+  // check JWT exists
+  useCheckJwtExists(true);
 
   useEffect(() => {
     // set page title
@@ -58,7 +63,7 @@ const Collections: React.FC = () => {
     // set highlighted false
     if (collections.highlighted !== false) {
       // this needs to be bigger than effect time
-      setTimeout(() => dispatch(toogleHighlighted(false)), 1500);
+      setTimeout(() => dispatch(collectionToogleHighlighted(false)), 1500);
     }
   }, [dispatch, collections.highlighted]);
 
@@ -67,12 +72,12 @@ const Collections: React.FC = () => {
       if (collections.data === null) {
         if (collections.status === 'idle') {
           // trigger to request first data from backend
-          dispatch(refreshPage());
+          dispatch(collectionRefreshPage());
         } else {
           // error occured
           toast.error(collections.message);
           // reset status to idle and remove message
-          dispatch(resetCollectionState());
+          dispatch(collectionResetState());
         }
       } else {
         if (collections.message !== '') {
@@ -92,9 +97,9 @@ const Collections: React.FC = () => {
           }
         }
         // reset status to idle and remove message
-        dispatch(resetCollectionState());
+        dispatch(collectionResetState());
         // rebuild url for browser by returned and valid filter values
-        dispatch(buildURL());
+        dispatch(collectionBuildURL());
         // update search fields with response data
         setSearch({
           keywords: collections.queryParts.keywords,
@@ -106,7 +111,7 @@ const Collections: React.FC = () => {
   const updateCollectionQuery = (keywords: tSearch['keywords']) => {
     // set redux keywords and request a page refresh
     dispatch(
-      updateCollectionQueryParts({
+      collectionUpdateQueryParts({
         queryPart: 'keywords',
         value: keywords,
         refreshPage: true,
@@ -121,7 +126,7 @@ const Collections: React.FC = () => {
       refreshPage={collections.refreshPage}
       selectAction={(value) =>
         dispatch(
-          updateCollectionQueryParts({
+          collectionUpdateQueryParts({
             queryPart: 'page',
             value: value,
             refreshPage: true,
@@ -143,7 +148,9 @@ const Collections: React.FC = () => {
             }
           />
         )}
-        {collections.refreshButton && <RefreshButton action={() => dispatch(refreshPage())} />}
+        {collections.refreshButton && (
+          <RefreshButton action={() => dispatch(collectionRefreshPage())} />
+        )}
         <section className="filter-wrapper">
           <div className="search-bar">
             <input
@@ -172,7 +179,10 @@ const Collections: React.FC = () => {
           <div className="action-bar">
             <div>
               <nav>
-                <label className="icon-wrapper click" onClick={() => dispatch(toogleEditor(true))}>
+                <label
+                  className="icon-wrapper click"
+                  onClick={() => dispatch(collectionToogleEditor(true))}
+                >
                   <AiOutlinePlusCircle className="icon" />
                   <span>Add a new collection</span>
                 </label>
@@ -188,39 +198,40 @@ const Collections: React.FC = () => {
             </div>
             <div>
               <DropDownMenu
-                selected={collections.queryParts.sort}
-                options={{
-                  '': 'Name (A-Z)',
-                  nameDESC: 'Name (Z-A)',
-                  createdDESC: 'Recently created at front',
-                  createdASC: 'Formerly created at front',
-                }}
-                selectAction={(value) =>
+                wrapperClass="list-drop-down-menu"
+                optionClass="icon-wrapper click"
+                trigger={
+                  <DropDownListLabel text={collectionListSort[collections.queryParts.sort]} />
+                }
+                options={collectionListSort}
+                action={(value) =>
                   dispatch(
-                    updateCollectionQueryParts({
+                    collectionUpdateQueryParts({
                       queryPart: 'sort',
                       value: value,
                       refreshPage: true,
                     }),
                   )
                 }
+                optionIcon={<AiOutlineRightCircle className="icon" />}
               />
               <DropDownMenu
-                selected={collections.queryParts.limit}
-                options={{
-                  '': '12 / page',
-                  p36: '36 / page',
-                  p60: '60 / page',
-                }}
-                selectAction={(value) =>
+                wrapperClass="list-drop-down-menu"
+                optionClass="icon-wrapper click"
+                trigger={
+                  <DropDownListLabel text={collectionListLimit[collections.queryParts.limit]} />
+                }
+                options={collectionListLimit}
+                action={(value) =>
                   dispatch(
-                    updateCollectionQueryParts({
+                    collectionUpdateQueryParts({
                       queryPart: 'limit',
                       value: value,
                       refreshPage: true,
                     }),
                   )
                 }
+                optionIcon={<AiOutlineRightCircle className="icon" />}
               />
             </div>
           </div>

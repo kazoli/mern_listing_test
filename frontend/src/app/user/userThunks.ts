@@ -28,3 +28,16 @@ export const loginUser = createAsyncThunk<tUserData, tUserDataLogin, { rejectVal
     }
   },
 );
+
+// Get user
+export const getUser = createAsyncThunk<tUserData, void, { rejectValue: string }>(
+  'user/getUser',
+  async (_, thunkAPI) => {
+    try {
+      const response = await axios.get('/api/users/profile');
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(errorHandler(error));
+    }
+  },
+);
