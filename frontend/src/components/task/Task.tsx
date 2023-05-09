@@ -1,6 +1,6 @@
 import { useAppDispatch } from '../../app/general/hooks';
 import { deleteTask, updateTask } from '../../app/task/taskThunks';
-import { toogleEditor } from '../../app/task/taskSlice';
+import { taskToogleEditor } from '../../app/task/taskSlice';
 import { AiOutlineCheck, AiOutlineDelete, AiOutlineEdit, AiOutlineReload } from 'react-icons/ai';
 import { tTaskData, tTaskState } from '../../app/task/taskTypes';
 
@@ -72,7 +72,7 @@ const Task: React.FC<tProps> = ({ index, task, highlighted }) => {
             <AiOutlineEdit
               className="icon click"
               title="Edit task"
-              onClick={() => dispatch(toogleEditor(index))}
+              onClick={() => dispatch(taskToogleEditor(index))}
             />
           </>
         )}

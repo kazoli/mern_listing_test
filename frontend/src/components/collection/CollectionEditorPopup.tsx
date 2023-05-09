@@ -2,7 +2,10 @@ import { useEffect, useState } from 'react';
 import { useAppDispatch } from '../../app/general/hooks';
 import { tCollectionData } from '../../app/collection/collectionTypes';
 import { createCollection, updateCollection } from '../../app/collection/collectionThunks';
-import { toogleEditor, toogleHighlighted } from '../../app/collection/collectionSlice';
+import {
+  collectionToogleEditor,
+  collectionToogleHighlighted,
+} from '../../app/collection/collectionSlice';
 import { processName } from '../../app/general/validations';
 import TextareaAutosize from 'react-textarea-autosize';
 
@@ -39,7 +42,7 @@ const CollectionEditorPopup: React.FC<tProps> = ({ collection }) => {
     // validation name
     if (!processName(formData.name, validation.name)) return;
     // highlight the updated collection
-    if (collection) dispatch(toogleHighlighted(collection._id));
+    if (collection) dispatch(collectionToogleHighlighted(collection._id));
     // udpate or create a collection
     dispatch(formData._id ? updateCollection(formData) : createCollection(formData));
   };
@@ -68,7 +71,7 @@ const CollectionEditorPopup: React.FC<tProps> = ({ collection }) => {
           <button className="button click" onClick={onSubmit}>
             Save
           </button>
-          <button className="button click" onClick={() => dispatch(toogleEditor(false))}>
+          <button className="button click" onClick={() => dispatch(collectionToogleEditor(false))}>
             Cancel
           </button>
         </section>

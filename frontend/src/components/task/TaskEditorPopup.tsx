@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { AiOutlineExclamationCircle, AiOutlinePlusCircle } from 'react-icons/ai';
 import { createTask, updateTask } from '../../app/task/taskThunks';
-import { toogleEditor, toogleHighlighted } from '../../app/task/taskSlice';
+import { taskToogleEditor, taskToogleHighlighted } from '../../app/task/taskSlice';
 import { tTaskData } from '../../app/task/taskTypes';
 import { processName, processTags } from '../../app/general/validations';
 import TagEditor from './TaskTagEditor';
@@ -54,7 +54,7 @@ const TaskEditorPopup: React.FC<tProps> = ({ task, collection_id }) => {
     // validation tags
     if (formData.tags.length && !processTags(formData.tags, validation.tag)) return;
     // highlight the updated task
-    if (task) dispatch(toogleHighlighted(task._id));
+    if (task) dispatch(taskToogleHighlighted(task._id));
     // udpate or create a task
     dispatch(formData._id ? updateTask(formData) : createTask(formData));
   };
@@ -118,7 +118,7 @@ const TaskEditorPopup: React.FC<tProps> = ({ task, collection_id }) => {
           <button className="button click" onClick={onSubmit}>
             Save
           </button>
-          <button className="button click" onClick={() => dispatch(toogleEditor(false))}>
+          <button className="button click" onClick={() => dispatch(taskToogleEditor(false))}>
             Cancel
           </button>
         </section>

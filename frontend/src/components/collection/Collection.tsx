@@ -1,7 +1,7 @@
 import { AiOutlineDelete, AiOutlineEdit, AiOutlineRightCircle } from 'react-icons/ai';
 import { useAppDispatch } from '../../app/general/hooks';
 import { tCollectionData, tCollectionState } from '../../app/collection/collectionTypes';
-import { toogleEditor } from '../../app/collection/collectionSlice';
+import { collectionToogleEditor } from '../../app/collection/collectionSlice';
 import { deleteCollection } from '../../app/collection/collectionThunks';
 
 type tProps = {
@@ -52,7 +52,7 @@ const Collection: React.FC<tProps> = ({ index, collection, highlighted }) => {
         <AiOutlineEdit
           className="icon click"
           title="Edit collection"
-          onClick={() => dispatch(toogleEditor(index))}
+          onClick={() => dispatch(collectionToogleEditor(index))}
         />
         <AiOutlineDelete
           className="icon click"

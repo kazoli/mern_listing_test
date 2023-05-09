@@ -63,11 +63,17 @@ const Tasks: React.FC = () => {
   }, [tasks.collection]);
 
   useEffect(() => {
+    let timerId: NodeJS.Timeout;
     // if page refreshing has triggered then it requests data from backend
     if (tasks.refreshPage) {
       // waiting 50 ms for creating query string in URL
-      setTimeout(() => dispatch(getTasks(params.collection_id + window.location.search)), 50);
+      timerId = setTimeout(
+        () => dispatch(getTasks(params.collection_id + window.location.search)),
+        150,
+      );
     }
+    // if redirect occurs because of JWT missing, then cancel dispatch
+    return () => clearTimeout(timerId);
   }, [dispatch, tasks.refreshPage, params.collection_id]);
 
   useEffect(() => {

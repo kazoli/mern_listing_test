@@ -52,11 +52,14 @@ const Collections: React.FC = () => {
   });
 
   useEffect(() => {
+    let timerId: NodeJS.Timeout;
     // if page refreshing has triggered then it requests data from backend
     if (collections.refreshPage) {
       // waiting 50 ms for creating query string in URL
-      setTimeout(() => dispatch(getCollections(window.location.search)), 50);
+      timerId = setTimeout(() => dispatch(getCollections(window.location.search)), 150);
     }
+    // if redirect occurs because of JWT missing, then cancel dispatch
+    return () => clearTimeout(timerId);
   }, [dispatch, collections.refreshPage]);
 
   useEffect(() => {

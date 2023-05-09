@@ -5,8 +5,8 @@ import { cookieManager } from '../../app/general/middlewares';
 // Check if JWT exist and according to it navigate to the right page
 export const useCheckJwtExists = (navigateToLogin: boolean) => {
   const navigate = useNavigate();
+  const jwt = cookieManager.get('jwt');
   useEffect(() => {
-    const jwt = cookieManager.get('jwt');
     if (navigateToLogin) {
       if (!jwt) {
         // if no jwt, navigate to login
@@ -16,5 +16,6 @@ export const useCheckJwtExists = (navigateToLogin: boolean) => {
       // if on login or register page and jwt exists, back to main
       navigate('/');
     }
-  }, [navigate, navigateToLogin]);
+  }, [jwt, navigate, navigateToLogin]);
+  return jwt;
 };
