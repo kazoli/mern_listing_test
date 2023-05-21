@@ -10,7 +10,7 @@ type tProps = {
 
 const TagEditor: React.FC<tProps> = ({ index, tag, formData, setFormData }) => {
   return (
-    <div className="tag-editor-wrapper">
+    <div className="tag-form-block">
       <div
         className="icon-wrapper circle click"
         title="Remove tag"

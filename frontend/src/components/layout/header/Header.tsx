@@ -1,19 +1,21 @@
 import { useEffect, useState } from 'react';
 import HeaderLogo from './HeaderLogo';
-import HeaderProfile from './HeaderProfile';
+import HeaderMenu from './HeaderMenu';
 
 const Header: React.FC = () => {
-  const [position, setPosition] = useState('');
+  const initialClass = '';
+  const [positionClass, setpositionClass] = useState(initialClass);
+  const hideMenu = initialClass === positionClass ? initialClass : 'hidden';
 
   // header show only at up scrolling
   useEffect(() => {
-    const prev = { top: window.scrollY, position: '' };
+    const prev = { top: window.scrollY, positionClass: initialClass };
     const updateScrollDirection = () => {
-      const currPosition = window.scrollY > prev.top ? 'hidden' : '';
-      if (prev.position !== currPosition) {
+      const currpositionClass = window.scrollY > prev.top ? 'header-hidden' : initialClass;
+      if (prev.positionClass !== currpositionClass) {
         // scroll direction change
-        setPosition(currPosition);
-        prev.position = currPosition;
+        setpositionClass(currpositionClass);
+        prev.positionClass = currpositionClass;
       }
       prev.top = window.scrollY;
     };
@@ -25,10 +27,10 @@ const Header: React.FC = () => {
   }, []);
 
   return (
-    <header className={`${position}`}>
+    <header className={`${positionClass}`}>
       <div className="layout-positioner header-inside-wrapper">
         <HeaderLogo />
-        <HeaderProfile />
+        <HeaderMenu hideMenu={hideMenu} />
       </div>
     </header>
   );

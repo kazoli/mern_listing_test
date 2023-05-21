@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../app/general/hooks';
-import { useCheckJwtExists } from '../../app/user/userHooks';
+import { useCheckLoggedIn } from '../../app/user/userHooks';
 import { toast } from 'react-toastify';
 import { FcSearch } from 'react-icons/fc';
 import {
@@ -42,8 +42,8 @@ type tSearch = {
 };
 
 const Tasks: React.FC = () => {
-  // check JWT exists
-  useCheckJwtExists(true);
+  // check user is logged in
+  useCheckLoggedIn(true);
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -209,11 +209,13 @@ const Tasks: React.FC = () => {
             />
             <div className="search-control-block">
               <DropDownMenu
-                wrapperClass="list-drop-down-menu"
+                wrapperClass="list-drop-down-wrapper"
+                listClass="list-drop-down-menu"
                 optionClass="icon-wrapper click"
                 trigger={
                   <DropDownListLabel text={taskListSearchType[tasks.queryParts.searchType]} />
                 }
+                ignoredOption={tasks.queryParts.searchType}
                 options={taskListSearchType}
                 action={(value) =>
                   setSearch({
@@ -266,11 +268,13 @@ const Tasks: React.FC = () => {
             </div>
             <div>
               <DropDownMenu
-                wrapperClass="list-drop-down-menu"
+                wrapperClass="list-drop-down-wrapper"
+                listClass="list-drop-down-menu"
                 optionClass="icon-wrapper click"
                 trigger={
                   <DropDownListLabel text={taskListCompletion[tasks.queryParts.completion]} />
                 }
+                ignoredOption={tasks.queryParts.completion}
                 options={taskListCompletion}
                 action={(value) =>
                   dispatch(
@@ -284,9 +288,11 @@ const Tasks: React.FC = () => {
                 optionIcon={<AiOutlineRightCircle className="icon" />}
               />
               <DropDownMenu
-                wrapperClass="list-drop-down-menu"
+                wrapperClass="list-drop-down-wrapper"
+                listClass="list-drop-down-menu"
                 optionClass="icon-wrapper click"
                 trigger={<DropDownListLabel text={taskListSort[tasks.queryParts.sort]} />}
+                ignoredOption={tasks.queryParts.sort}
                 options={taskListSort}
                 action={(value) =>
                   dispatch(
@@ -300,9 +306,11 @@ const Tasks: React.FC = () => {
                 optionIcon={<AiOutlineRightCircle className="icon" />}
               />
               <DropDownMenu
-                wrapperClass="list-drop-down-menu"
+                wrapperClass="list-drop-down-wrapper"
+                listClass="list-drop-down-menu"
                 optionClass="icon-wrapper click"
                 trigger={<DropDownListLabel text={taskListLimit[tasks.queryParts.limit]} />}
+                ignoredOption={tasks.queryParts.limit}
                 options={taskListLimit}
                 action={(value) =>
                   dispatch(

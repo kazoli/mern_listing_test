@@ -1,7 +1,7 @@
 import { toast } from 'react-toastify';
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../app/general/hooks';
-import { useCheckJwtExists } from '../../app/user/userHooks';
+import { useCheckLoggedIn } from '../../app/user/userHooks';
 import { tCollectionQueryParts } from '../../app/collection/collectionTypes';
 import { getCollections } from '../../app/collection/collectionThunks';
 import {
@@ -36,8 +36,8 @@ type tSearch = {
 };
 
 const Collections: React.FC = () => {
-  // check JWT exists
-  useCheckJwtExists(true);
+  // check user is logged in
+  // useCheckLoggedIn(true);
 
   useEffect(() => {
     // set page title
@@ -201,11 +201,13 @@ const Collections: React.FC = () => {
             </div>
             <div>
               <DropDownMenu
-                wrapperClass="list-drop-down-menu"
+                wrapperClass="list-drop-down-wrapper"
+                listClass="list-drop-down-menu"
                 optionClass="icon-wrapper click"
                 trigger={
                   <DropDownListLabel text={collectionListSort[collections.queryParts.sort]} />
                 }
+                ignoredOption={collections.queryParts.sort}
                 options={collectionListSort}
                 action={(value) =>
                   dispatch(
@@ -219,11 +221,13 @@ const Collections: React.FC = () => {
                 optionIcon={<AiOutlineRightCircle className="icon" />}
               />
               <DropDownMenu
-                wrapperClass="list-drop-down-menu"
+                wrapperClass="list-drop-down-wrapper"
+                listClass="list-drop-down-menu"
                 optionClass="icon-wrapper click"
                 trigger={
                   <DropDownListLabel text={collectionListLimit[collections.queryParts.limit]} />
                 }
+                ignoredOption={collections.queryParts.limit}
                 options={collectionListLimit}
                 action={(value) =>
                   dispatch(

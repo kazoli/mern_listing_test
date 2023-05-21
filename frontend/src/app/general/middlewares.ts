@@ -19,7 +19,7 @@ export const buildUrl = <t extends { [key: string]: string }>(queryParts: t) => 
   let query: string[] = [];
   // build query based on queryParts
   for (const key in queryParts) {
-    if (queryParts[key].length) {
+    if (queryParts[key].length && queryParts[key] !== 'default') {
       query = [...query, `${key}=${queryParts[key]}`];
     }
   }
