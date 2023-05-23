@@ -1,12 +1,20 @@
+// Type of full user data validation limits
+export type tUserValidationLimits = {
+  minName: number;
+  maxName: number;
+  minPassword: number;
+  maxPassword: number;
+};
+
 // Type of posted user logint data
 export type tUserDataLogin = {
-  name: string;
   email: string;
+  password: string;
 };
 
 // Type of posted user profile data
 export type tUserDataSave = tUserDataLogin & {
-  password: string;
+  name: string;
   oldPassword?: string;
 };
 

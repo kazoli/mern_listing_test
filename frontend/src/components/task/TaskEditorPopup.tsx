@@ -8,7 +8,7 @@ import { AiOutlineExclamationCircle, AiOutlinePlusCircle } from 'react-icons/ai'
 import PopUp from '../general/PopUp';
 import TagEditor from './TaskTagEditor';
 import FormTextArea from '../form/FormTextArea';
-import FromButton from '../form/FromButton';
+import FormButtonBlock from '../form/FormButtonBlock';
 
 type tProps = {
   task: tTaskData | false;
@@ -54,11 +54,11 @@ const TaskEditorPopup: React.FC<tProps> = ({ task, collection_id }) => {
   };
   const buttons = [
     {
-      label: 'Save',
+      text: 'Save',
       action: onSubmit,
     },
     {
-      label: 'Cancel',
+      text: 'Cancel',
       action: () => dispatch(taskToogleEditor(false)),
     },
   ];
@@ -80,6 +80,7 @@ const TaskEditorPopup: React.FC<tProps> = ({ task, collection_id }) => {
     <PopUp>
       <FormTextArea
         label="Task name"
+        placeholder={`From ${3} to ${50} characters`}
         minLength={3}
         maxLength={200}
         value={formData.name}
@@ -90,6 +91,7 @@ const TaskEditorPopup: React.FC<tProps> = ({ task, collection_id }) => {
           })
         }
         preventEnter={true}
+        error=""
       />
       <section className="form-block">
         <label>Tags</label>
@@ -126,7 +128,7 @@ const TaskEditorPopup: React.FC<tProps> = ({ task, collection_id }) => {
           </div>
         )}
       </section>
-      <FromButton buttons={buttons} />
+      <FormButtonBlock buttons={buttons} />
     </PopUp>
   );
 };

@@ -225,16 +225,12 @@ const Tasks: React.FC = () => {
                 }
                 optionIcon={<AiOutlineRightCircle className="icon" />}
               />
-              <button
-                className="search-submit click"
-                onClick={() => {
-                  if (search.keywords.length) {
-                    updateTaskQuery(search.keywords, search.searchType);
-                  }
-                }}
-              >
-                <FcSearch className="icon" />
-              </button>
+              <FcSearch
+                className="icon-wrapper click"
+                onClick={() =>
+                  search.keywords.length && updateTaskQuery(search.keywords, search.searchType)
+                }
+              />
             </div>
           </div>
           <div className="action-bar">

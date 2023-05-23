@@ -1,5 +1,5 @@
 const { errorTrigger } = require('./errorMiddleware');
-const { validateInput, validateBoolean } = require('./validationMiddleware');
+const { validateText, validateBoolean } = require('./validationMiddleware');
 
 // validation of values of a task
 const taskValidation = (values, res) => {
@@ -7,7 +7,7 @@ const taskValidation = (values, res) => {
 
   // validate name and trim white spaces
   values.name = values.name.trim();
-  error = validateInput('Task name', values.name, 3, 200);
+  error = validateText('Task name', values.name, 3, 200);
   if (error) {
     errorTrigger(res, 422, error);
   }

@@ -11,11 +11,11 @@ const Header: React.FC = () => {
   useEffect(() => {
     const prev = { top: window.scrollY, positionClass: initialClass };
     const updateScrollDirection = () => {
-      const currpositionClass = window.scrollY > prev.top ? 'header-hidden' : initialClass;
-      if (prev.positionClass !== currpositionClass) {
+      const currPositionClass = window.scrollY > prev.top ? 'header-hidden' : initialClass;
+      if (prev.positionClass !== currPositionClass) {
         // scroll direction change
-        setpositionClass(currpositionClass);
-        prev.positionClass = currpositionClass;
+        setpositionClass(currPositionClass);
+        prev.positionClass = currPositionClass;
       }
       prev.top = window.scrollY;
     };

@@ -8,7 +8,7 @@ import {
 import { useAppDispatch } from '../../app/general/hooks';
 import { processName } from '../../app/general/validations';
 import FormTextArea from '../form/FormTextArea';
-import FromButton from '../form/FromButton';
+import FormButtonBlock from '../form/FormButtonBlock';
 import PopUp from '../general/PopUp';
 
 type tProps = {
@@ -43,11 +43,11 @@ const CollectionEditorPopup: React.FC<tProps> = ({ collection }) => {
   };
   const buttons = [
     {
-      label: 'Save',
+      text: 'Save',
       action: onSubmit,
     },
     {
-      label: 'Cancel',
+      text: 'Cancel',
       action: () => dispatch(collectionToogleEditor(false)),
     },
   ];
@@ -66,6 +66,7 @@ const CollectionEditorPopup: React.FC<tProps> = ({ collection }) => {
     <PopUp>
       <FormTextArea
         label="Collection name"
+        placeholder={`From ${3} to ${50} characters`}
         minLength={3}
         maxLength={50}
         value={formData.name}
@@ -76,8 +77,9 @@ const CollectionEditorPopup: React.FC<tProps> = ({ collection }) => {
           })
         }
         preventEnter={true}
+        error=""
       />
-      <FromButton buttons={buttons} />
+      <FormButtonBlock buttons={buttons} />
     </PopUp>
   );
 };

@@ -1,6 +1,6 @@
 const asyncHandler = require('express-async-handler');
 const { errorTrigger } = require('./errorMiddleware');
-const { validateInput } = require('./validationMiddleware');
+const { validateText } = require('./validationMiddleware');
 const { Collection } = require('../models/index');
 
 // check collection exists and user has access it
@@ -29,7 +29,7 @@ const collectionValidation = (values, res) => {
   }
   // validate name and trim white spaces
   values.name = values.name.trim();
-  const error = validateInput('Collection name', values.name, 3, 50);
+  const error = validateText('Collection name', values.name, 3, 50);
   if (error) {
     errorTrigger(res, 422, error);
   }

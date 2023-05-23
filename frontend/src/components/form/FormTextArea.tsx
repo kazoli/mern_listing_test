@@ -6,23 +6,26 @@ type tProps = {
   maxLength: number;
   value: string;
   action: (value: string) => void;
+  error: string;
+  placeholder?: string;
   preventEnter?: boolean;
 };
 
 const FormTextArea: React.FC<tProps> = (props) => {
   return (
-    <section className="form-block">
+    <div className="form-block">
       <label>{props.label}</label>
       <TextareaAutosize
-        className="form-name-element autosize"
-        placeholder={`From ${props.minLength} to ${props.maxLength} characters`}
+        className="form-element autosize"
+        placeholder={props.placeholder}
         minLength={props.minLength}
         maxLength={props.maxLength}
         onKeyDown={(e) => (props.preventEnter && e.key === 'Enter' ? e.preventDefault() : e)}
         onChange={(e) => props.action(e.target.value)}
         value={props.value}
       />
-    </section>
+      {props.error && <div className="form-error">{props.error}</div>}
+    </div>
   );
 };
 

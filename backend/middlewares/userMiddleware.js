@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 const asyncHandler = require('express-async-handler');
 const { User } = require('../models/index');
 const { errorTrigger } = require('./errorMiddleware');
-const { validateInput, validateEmail, validatePassword } = require('./validationMiddleware');
+const { validateText, validateEmail, validatePassword } = require('./validationMiddleware');
 
 // Set a JWT cookie for user authentication
 const setJwtCookie = (id, res) => {
@@ -70,7 +70,7 @@ const userProfileValidation = (values, update, res) => {
 
   let error;
   // validate name field
-  error = validateInput("User's name", values.name, 3, 200);
+  error = validateText("User's name", values.name, 3, 200);
   if (error) {
     errorTrigger(res, 422, error);
   }

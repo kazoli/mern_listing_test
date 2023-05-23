@@ -1,11 +1,11 @@
 const validator = require('validator');
 
-// General input validation
-const validateInput = (element, value, minLength, maxLength) => {
+// General text validation
+const validateText = (element, value, minLength, maxLength) => {
   if (!value) {
     return `${element} cannot be empty or missing`;
   }
-  if (!value.match(/[a-z0-9]/gi)) {
+  if (!value.match(/[A-Za-z0-9]/gi)) {
     return `${element} needs to contain at least one number or letter without accents`;
   }
   if (value.length < minLength) {
@@ -31,8 +31,8 @@ const validateEmail = (element, value) => {
 
 // Validate the password is strong enough
 const validatePassword = (element, value) => {
-  const minLength = 8;
-  const maxLength = 128;
+  const minLength = 6;
+  const maxLength = 30;
   const result =
     value.length <= maxLength &&
     validator.isStrongPassword(value, {
@@ -45,11 +45,11 @@ const validatePassword = (element, value) => {
     });
   return result
     ? false
-    : `${element} needs to be between ${minLength} and ${maxLength} characters long and contain at least a lower and upper case letter, a number and a special character`;
+    : `${element} needs to be between ${minLength} and ${maxLength} characters long and contains at least a lower and upper case letter, a number and a special character`;
 };
 
 module.exports = {
-  validateInput,
+  validateText,
   validateBoolean,
   validateEmail,
   validatePassword,

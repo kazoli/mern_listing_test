@@ -36,13 +36,13 @@ type tSearch = {
 };
 
 const Collections: React.FC = () => {
-  // check user is logged in
-  // useCheckLoggedIn(true);
-
   useEffect(() => {
     // set page title
     document.title = 'Collections';
   }, []);
+
+  // check user is logged in
+  // useCheckLoggedIn(true);
 
   const dispatch = useAppDispatch();
   const collections = useAppSelector((state) => state.collections);
@@ -168,19 +168,13 @@ const Collections: React.FC = () => {
               }
               value={search.keywords}
             />
-            <div className="search-control-block">
-              <button
-                className="search-submit click"
-                onClick={() => {
-                  if (search.keywords.length) updateCollectionQuery(search.keywords);
-                }}
-              >
-                <FcSearch className="icon" />
-              </button>
-            </div>
+            <FcSearch
+              className="icon-wrapper click"
+              onClick={() => search.keywords.length && updateCollectionQuery(search.keywords)}
+            />
           </div>
           <div className="action-bar">
-            <div>
+            <section>
               <nav>
                 <label
                   className="icon-wrapper click"
@@ -198,8 +192,8 @@ const Collections: React.FC = () => {
                   </label>
                 </nav>
               )}
-            </div>
-            <div>
+            </section>
+            <section>
               <DropDownMenu
                 wrapperClass="list-drop-down-wrapper"
                 listClass="list-drop-down-menu"
@@ -240,7 +234,7 @@ const Collections: React.FC = () => {
                 }
                 optionIcon={<AiOutlineRightCircle className="icon" />}
               />
-            </div>
+            </section>
           </div>
         </section>
         {collections.data && collections.data.length > 0 ? (
