@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useAppDispatch } from '../../app/general/hooks';
-import { useCheckLoggedIn } from '../../app/user/userHooks';
-import { tUserDataSave } from '../../app/user/userTypes';
-import DefaultLayout from '../layout/DefaultLayout';
-import UserLoginRegisterHeader from '../user/UserFormHeader';
-import UserDataForm from '../user/UserDataForm';
-import { userValidateDataForm } from '../../app/user/userMiddlewares';
 import { registerUser } from '../../app/user/userThunks';
+import { tUserDataSave } from '../../app/user/userTypes';
+import { useCheckLoggedIn } from '../../app/user/userHooks';
+import { userValidateRegister } from '../../app/user/userMiddlewares';
+import DefaultLayout from '../layout/DefaultLayout';
+import UserLoginRegisterHeader from '../user/UserLoginRegisterHeader';
+import UserDataForm from '../user/UserDataForm';
 
 const UserRegister: React.FC = () => {
   useEffect(() => {
@@ -29,9 +29,9 @@ const UserRegister: React.FC = () => {
   });
 
   const onSubmit = () => {
-    userValidateDataForm(formData, setFormErrors).then((submit) => {
+    userValidateRegister(formData, setFormErrors).then((submit) => {
       if (submit) {
-        // dispatch(registerUser(formData));
+        dispatch(registerUser(formData));
       }
     });
   };

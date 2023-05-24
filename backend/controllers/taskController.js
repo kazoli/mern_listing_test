@@ -47,11 +47,11 @@ const getTasks = asyncHandler(async (req, res) => {
           { name: { $regex: keywords, $options: 'i' } },
           { tags: { $regex: keywords, $options: 'i' } },
         ];
-        req.query.searchType = ''; // for return value
+        req.query.searchType = 'default'; // for return value
     }
   } else {
     req.query.keywords = ''; // for return value
-    req.query.searchType = ''; // for return value
+    req.query.searchType = 'default'; // for return value
   }
 
   // show incomplete / complete / both
@@ -63,7 +63,7 @@ const getTasks = asyncHandler(async (req, res) => {
       options.conditions.complete = false;
       break;
     default:
-      req.query.completion = ''; // for return value
+      req.query.completion = 'default'; // for return value
   }
 
   // set limit
@@ -76,7 +76,7 @@ const getTasks = asyncHandler(async (req, res) => {
       break;
     default:
       options.limit = 12;
-      req.query.limit = ''; // for return value
+      req.query.limit = 'default'; // for return value
   }
 
   // set page
@@ -92,7 +92,7 @@ const getTasks = asyncHandler(async (req, res) => {
   // set sort
   switch (req.query.sort) {
     default: // for return value
-      req.query.sort = '';
+      req.query.sort = 'default';
       options.sort = { name: 1 };
       break;
     case 'nameDESC':

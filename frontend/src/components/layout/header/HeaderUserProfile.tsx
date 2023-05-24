@@ -40,7 +40,7 @@ const HeaderUserProfile = (props: tProps) => {
           <BsPerson />
         </button>
       }
-      options={Object.keys(user.data).length ? userLogOut : userLogIn}
+      options={user.data._id ? userLogOut : userLogIn}
       action={action}
     />
   );

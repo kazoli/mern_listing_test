@@ -1,44 +1,88 @@
-import { tUserDataSave } from './userTypes';
+import { tUserData, tUserDataLogin, tUserDataSave } from './userTypes';
 import { validateEmail, validateText, validatePassword } from '../general/validations';
-import { userValidationLimits } from './userInitialStates';
+import { userFormLabels, userValidationLimits } from './userInitialStates';
 
-// User data validation
-export const userValidateDataForm = async (
+// User register validation
+export const userValidateRegister = async (
   formData: tUserDataSave,
   setFormErrors: React.Dispatch<React.SetStateAction<tUserDataSave>>,
 ) => {
-  console.log(formData);
-  let error: string | false = false;
-  error = await validateText(
-    'Full name',
+  const name = await validateText(
+    userFormLabels.name,
     formData.name,
     userValidationLimits.minName,
     userValidationLimits.maxName,
   );
-  error = await validateEmail('Email', formData.email);
-  error = await validatePassword(
-    formData.oldPassword ? 'New password' : 'Password',
+  const email = await validateEmail(userFormLabels.email, formData.email);
+  const password = await validatePassword(
+    userFormLabels.password,
     formData.password,
     userValidationLimits.minPassword,
     userValidationLimits.maxPassword,
   );
-  const errors = await Promise.all([
-    validateText(
-      'Full name',
+  setFormErrors({
+    name,
+    email,
+    password,
+  });
+  return !name && !email && !password;
+};
+
+// User login validation
+export const userValidateLogin = async (
+  formData: tUserDataLogin,
+  setFormErrors: React.Dispatch<React.SetStateAction<tUserDataLogin>>,
+) => {
+  const email = await validateEmail(userFormLabels.email, formData.email);
+  // just only check out password is not empty, validity check in backend
+  const password = await validateText(userFormLabels.password, formData.password, 0, 1000);
+  setFormErrors({
+    email,
+    password,
+  });
+  return !email && !password;
+};
+
+// User register validation
+export const userValidateProfile = async (
+  userData: tUserData,
+  formData: tUserDataSave,
+  setFormErrors: React.Dispatch<React.SetStateAction<tUserDataSave>>,
+) => {
+  if (userData.name !== formData.name || userData.email !== formData.email || formData.password) {
+    const name = await validateText(
+      userFormLabels.name,
       formData.name,
       userValidationLimits.minName,
       userValidationLimits.maxName,
-    ),
-    validateEmail('Email', formData.email),
-    validatePassword(
-      formData.oldPassword ? 'New password' : 'Password',
-      formData.password,
-      userValidationLimits.minPassword,
-      userValidationLimits.maxPassword,
-    ),
-    formData.oldPassword && validateText('Old password', formData.oldPassword, 0, 1000),
-  ]);
-  let submit = false;
-  console.log(errors);
-  return submit;
+    );
+    const email = await validateEmail(userFormLabels.email, formData.email);
+    const password = formData.password
+      ? await validatePassword(
+          userFormLabels.password,
+          formData.password,
+          userValidationLimits.minPassword,
+          userValidationLimits.maxPassword,
+        )
+      : '';
+    const oldPassword =
+      userData.email !== formData.email || formData.password
+        ? await validateText(userFormLabels.oldPassword, formData.oldPassword!, 0, 1000)
+        : '';
+    setFormErrors({
+      name,
+      email,
+      password,
+      oldPassword,
+    });
+    return !name && !email && !password && !oldPassword;
+  } else {
+    setFormErrors({
+      name: '',
+      email: '',
+      password: '',
+      oldPassword: '',
+    });
+    return false;
+  }
 };

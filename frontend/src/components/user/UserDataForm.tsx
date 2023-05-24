@@ -1,8 +1,8 @@
 import { tButtons } from '../../app/general/types';
 import { tUserDataSave } from '../../app/user/userTypes';
+import { userFormLabels, userValidationLimits } from '../../app/user/userInitialStates';
 import FormInput from '../form/FormInput';
 import FormButtonBlock from '../form/FormButtonBlock';
-import { userValidationLimits } from '../../app/user/userInitialStates';
 
 type tProps = {
   formData: tUserDataSave;
@@ -15,7 +15,7 @@ const UserDataForm: React.FC<tProps> = (props) => {
   return (
     <section>
       <FormInput
-        label="Full name"
+        label={userFormLabels.name}
         type="text"
         value={props.formData.name}
         action={(value) => props.setFormData((prevState) => ({ ...prevState, name: value }))}
@@ -23,7 +23,7 @@ const UserDataForm: React.FC<tProps> = (props) => {
         error={props.formErrors.name}
       />
       <FormInput
-        label="Email"
+        label={userFormLabels.email}
         type="email"
         value={props.formData.email}
         action={(value) => props.setFormData((prevState) => ({ ...prevState, email: value }))}
@@ -31,7 +31,11 @@ const UserDataForm: React.FC<tProps> = (props) => {
         error={props.formErrors.email}
       />
       <FormInput
-        label={props.formData.oldPassword === undefined ? 'Password' : 'New password'}
+        label={
+          props.formData.oldPassword === undefined
+            ? userFormLabels.password
+            : userFormLabels.newPassword
+        }
         type="password"
         value={props.formData.password}
         action={(value) => props.setFormData((prevState) => ({ ...prevState, password: value }))}
@@ -41,7 +45,7 @@ const UserDataForm: React.FC<tProps> = (props) => {
       />
       {props.formData.oldPassword !== undefined && (
         <FormInput
-          label="Current password"
+          label={userFormLabels.oldPassword}
           type="password"
           value={props.formData.oldPassword}
           action={(value) =>

@@ -21,16 +21,16 @@ export const validateText = async (
   if (value.length > maxLength) {
     return `${element} can be ${maxLength} characters long`;
   }
-  return false;
+  return '';
 };
 
 // Validate an email
 export const validateEmail = async (element: string, value: string) => {
-  return validator.isEmail(value) ? false : `${element} needs to be valid format`;
+  return validator.isEmail(value) ? '' : `${element} needs to be valid format`;
 };
 
 // Validate the password is strong enough
-export const validatePassword = (
+export const validatePassword = async (
   element: string,
   value: string,
   minLength: number,
@@ -47,14 +47,14 @@ export const validatePassword = (
       returnScore: false,
     });
   return result
-    ? false
+    ? ''
     : `${element} needs to be between ${minLength} and ${maxLength} characters long and contains at least a lower and upper case letter, a number and a special character`;
 };
 
 // Validate a boolean
-export const validateBoolean = (element: string, value: string) => {
+export const validateBoolean = async (element: string, value: string) => {
   return validator.isBoolean(String(value), { loose: false })
-    ? false
+    ? ''
     : `${element} needs to be boolean value`;
 };
 

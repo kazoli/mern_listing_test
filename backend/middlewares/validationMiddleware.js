@@ -5,9 +5,6 @@ const validateText = (element, value, minLength, maxLength) => {
   if (!value) {
     return `${element} cannot be empty or missing`;
   }
-  if (!value.match(/[A-Za-z0-9]/gi)) {
-    return `${element} needs to contain at least one number or letter without accents`;
-  }
   if (value.length < minLength) {
     return `${element} needs to be at least ${minLength} characters long`;
   }

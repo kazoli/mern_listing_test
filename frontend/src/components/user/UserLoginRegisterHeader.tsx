@@ -13,12 +13,12 @@ const UserLoginRegisterHeader: React.FC = () => {
   ];
 
   return (
-    <section className="user-login-register-header">
+    <section className="user-form-header">
       {links.map((link) => (
         <NavLink
           key={link.to}
           className={({ isActive }) =>
-            isActive ? 'user-login-register-nav highlighted' : 'user-login-register-nav'
+            isActive ? 'user-form-header-element highlighted' : 'user-form-header-element'
           }
           to={link.to}
         >

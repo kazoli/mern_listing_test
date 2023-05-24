@@ -1,5 +1,6 @@
 import { tButtons } from '../../app/general/types';
 import { tUserDataLogin } from '../../app/user/userTypes';
+import { userFormLabels } from '../../app/user/userInitialStates';
 import FormInput from '../form/FormInput';
 import FormButtonBlock from '../form/FormButtonBlock';
 
@@ -14,7 +15,7 @@ const UserLoginForm: React.FC<tProps> = (props) => {
   return (
     <section>
       <FormInput
-        label="Email"
+        label={userFormLabels.email}
         type="email"
         value={props.formData.email}
         action={(value) => props.setFormData((prevState) => ({ ...prevState, email: value }))}
@@ -22,7 +23,7 @@ const UserLoginForm: React.FC<tProps> = (props) => {
         error={props.formErrors.email}
       />
       <FormInput
-        label="Password"
+        label={userFormLabels.password}
         type="password"
         value={props.formData.password}
         action={(value) => props.setFormData((prevState) => ({ ...prevState, password: value }))}

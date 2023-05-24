@@ -31,6 +31,10 @@ a {
   padding-right: 20px;
 }
 
+.pointer {
+  cursor: pointer;
+}
+
 .hidden {
   display: none !important;
 }
@@ -421,6 +425,7 @@ textarea.autosize {
 .form-error {
   margin: 0 20px;
   color: #ff0000;
+  width: 100%;
 }
 
 .form-block {
@@ -435,6 +440,10 @@ textarea.autosize {
 
 .form-block:first-of-type {
   margin: 0;
+}
+
+.form-block.text {
+  padding: 10px 20px;
 }
 
 .form-block label {
@@ -517,7 +526,7 @@ textarea.autosize {
   margin: 0 auto;
 }
 
-.user-login-register-header {
+.user-form-header {
   display: flex;
   border-radius: 2rem;
   box-shadow: 0 0 2px 0 #b0b0b0, inset 0 0 1px 0 #b0b0b0;
@@ -526,7 +535,7 @@ textarea.autosize {
   margin: 0 0 45px 0;
 }
 
-.user-login-register-nav {
+.user-form-header-element {
   flex: 1 1 50%;
   color: inherit;
   padding: 15px 10px;
@@ -535,7 +544,7 @@ textarea.autosize {
   text-align: center;
 }
 
-.user-login-register-nav.highlighted {
+.user-form-header-element.highlighted {
   box-shadow: inset 0 0 10px 0 #e0e0e0, 0 0 1px 1px #e0e0e0;
   background: #fcfcfc;
   color: inherit;
@@ -776,6 +785,8 @@ textarea.autosize {
   box-shadow: 0 0 10px 1px #000, inset 0 0 2px 0 #000;
   border-radius: 30px;
   padding: 15px;
+  max-height: 100vh;
+  overflow: auto;
 }
 
 .task-tag-edit-container {
@@ -846,7 +857,30 @@ textarea.autosize {
 }
 /*TOUCH SCREEN END*/
 
+/*WEBKIT START*/
+.scroll-bar::-webkit-scrollbar {
+  width: 10px;
+}
+
+.scroll-bar::-webkit-scrollbar-track {
+  margin: 30px 0;
+}
+
+.scroll-bar::-webkit-scrollbar-thumb {
+  background: #a3d8ff;
+  border-radius: 10rem;
+}
+
+.scroll-bar::-webkit-scrollbar-thumb:hover {
+  background: #149cff;
+}
+/*WEBKIT END*/
+
 /*FIREFOX START*/
 @-moz-document url-prefix() {
+  .scroll-bar {
+    scrollbar-color: #a3d8ff #00000000;
+    scrollbar-width: thin;
+  }
 }
 /*FIREFOX END*/

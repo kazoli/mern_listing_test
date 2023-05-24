@@ -1,4 +1,13 @@
 // Type of full user data validation limits
+export type tUserFormLabels = {
+  name: string;
+  email: string;
+  password: string;
+  newPassword: string;
+  oldPassword: string;
+};
+
+// Type of full user data validation limits
 export type tUserValidationLimits = {
   minName: number;
   maxName: number;
@@ -21,13 +30,12 @@ export type tUserDataSave = tUserDataLogin & {
 // Type of full user data
 export type tUserData = tUserDataSave & {
   _id: string;
-  collection_id: string;
   createdAt: string;
   updatedAt: string;
 };
 
 // Type of user state
 export type tUserState = {
-  status: 'idle' | 'loading' | 'warning' | 'failed';
-  data: {} | tUserData;
+  status: 'idle' | 'loading' | 'failed';
+  data: tUserData;
 };

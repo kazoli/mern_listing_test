@@ -45,8 +45,9 @@ const getCollections = asyncHandler(async (req, res) => {
       break;
     default:
       options.limit = 12;
-      req.query.limit = ''; // for return value
+      req.query.limit = 'default'; // for return value
   }
+
   // set page
   if (req.query.page && req.query.page.match(/^\d+$/) && req.query.page > 0) {
     const page = parseInt(req.query.page);
@@ -60,7 +61,7 @@ const getCollections = asyncHandler(async (req, res) => {
   // set sort
   switch (req.query.sort) {
     default: // for return value
-      req.query.sort = '';
+      req.query.sort = 'default';
       options.sort = { name: 1 };
       break;
     case 'nameDESC':

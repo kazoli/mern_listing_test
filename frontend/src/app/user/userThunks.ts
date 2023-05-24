@@ -41,3 +41,30 @@ export const getUser = createAsyncThunk<tUserData, void, { rejectValue: string }
     }
   },
 );
+
+// Update user
+export const updateUser = createAsyncThunk<tUserData, tUserDataSave, { rejectValue: string }>(
+  'user/updateUser',
+  async (userData, thunkAPI) => {
+    try {
+      const response = await axios.put('/api/users/profile', userData);
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(errorHandler(error));
+    }
+  },
+);
+
+// Delete user
+export const deleteUser = createAsyncThunk<
+  tUserData,
+  tUserData['password'],
+  { rejectValue: string }
+>('user/deleteUser', async (password, thunkAPI) => {
+  try {
+    const response = await axios.delete('/api/users/profile', { data: { password: password } });
+    return response.data;
+  } catch (error) {
+    return thunkAPI.rejectWithValue(errorHandler(error));
+  }
+});

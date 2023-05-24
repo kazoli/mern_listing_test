@@ -11,7 +11,7 @@ const setJwtCookie = (id, res) => {
     expiresIn: '14d',
   });
   res.cookie('jwt', token, {
-    httpOnly: true,
+    httpOnly: false,
     secure: true,
     sameSite: 'strict',
     maxAge: 1209600000, // 14 day
@@ -70,7 +70,7 @@ const userProfileValidation = (values, update, res) => {
 
   let error;
   // validate name field
-  error = validateText("User's name", values.name, 3, 200);
+  error = validateText('Full name', values.name, 3, 200);
   if (error) {
     errorTrigger(res, 422, error);
   }

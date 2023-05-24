@@ -25,6 +25,7 @@ const taskSchema = mongoose.Schema(
   {
     collection: 'tasks',
     timestamps: true,
+    versionKey: false,
   },
 );
 

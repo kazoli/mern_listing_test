@@ -42,7 +42,7 @@ const Collections: React.FC = () => {
   }, []);
 
   // check user is logged in
-  // useCheckLoggedIn(true);
+  useCheckLoggedIn(true);
 
   const dispatch = useAppDispatch();
   const collections = useAppSelector((state) => state.collections);

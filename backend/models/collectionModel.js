@@ -15,6 +15,7 @@ const collectionSchema = mongoose.Schema(
   {
     collection: 'collections',
     timestamps: true,
+    versionKey: false,
   },
 );
 

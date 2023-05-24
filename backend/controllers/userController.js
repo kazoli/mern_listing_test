@@ -97,7 +97,7 @@ const updateUser = asyncHandler(async (req, res) => {
   req.body = userProfileValidation(req.body, true, res);
 
   let fields = {};
-  if (req.body.email !== req.user.email || req.body.password !== req.body.oldPassword) {
+  if (req.body.email !== req.user.email || req.body.password) {
     // require old password to check
     if (await bcrypt.compare(req.body.oldPassword, req.user.password)) {
       const password =
@@ -110,7 +110,7 @@ const updateUser = asyncHandler(async (req, res) => {
         password: password,
       };
     } else {
-      errorTrigger(res, 401, 'Old password is not correct');
+      errorTrigger(res, 401, 'Current password is not correct');
     }
   } else {
     // no password checking is required
