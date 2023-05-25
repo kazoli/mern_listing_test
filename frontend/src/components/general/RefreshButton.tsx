@@ -5,10 +5,10 @@ type tProps = {
   };
 };
 
-const RefreshButton: React.FC<tProps> = ({ action }) => {
+const RefreshButton: React.FC<tProps> = (props) => {
   return (
-    <div className="refresh-button click" onClick={action}>
-      Refresh sorting
+    <div className="refresh-button click" onClick={props.action}>
+      Refresh list
     </div>
   );
 };

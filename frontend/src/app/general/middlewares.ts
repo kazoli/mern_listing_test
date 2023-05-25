@@ -40,3 +40,14 @@ export const scrollToElement = (
     behavior: behavior,
   });
 };
+
+// Format a date
+export const formatDate = (date: string, locale: string = 'en-gb') => {
+  return new Date(date).toLocaleDateString(locale, {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+  });
+};

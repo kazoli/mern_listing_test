@@ -1,18 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../app/general/hooks';
-import { useCheckLoggedIn } from '../../app/user/userHooks';
 import { toast } from 'react-toastify';
-import { FcSearch } from 'react-icons/fc';
-import {
-  AiOutlinePlusCircle,
-  AiOutlineCloseCircle,
-  AiOutlineExclamationCircle,
-  AiOutlineFolderOpen,
-  AiOutlineLeftCircle,
-  AiOutlineRightCircle,
-} from 'react-icons/ai';
 import { tTaskQueryParts } from '../../app/task/taskTypes';
+import {
+  taskListCompletion,
+  taskListLimit,
+  taskListSearchType,
+  taskListSort,
+} from '../../app/task/taskInitialStates';
+import { getTasks } from '../../app/task/taskThunks';
 import {
   taskResetState,
   taskBuildURL,
@@ -21,27 +18,31 @@ import {
   taskToogleHighlighted,
   taskUpdateQueryParts,
 } from '../../app/task/taskSlice';
-import { getTasks } from '../../app/task/taskThunks';
+import { useCheckLoggedIn } from '../../app/user/userHooks';
+import {
+  AiOutlinePlusCircle,
+  AiOutlineCloseCircle,
+  AiOutlineExclamationCircle,
+  AiOutlineLeftCircle,
+  AiOutlineRightCircle,
+} from 'react-icons/ai';
 import DefaultLayout from '../layout/DefaultLayout';
 import Paginator from '../general/Paginator';
 import Task from '../task/Task';
 import TaskEditorPopup from '../task/TaskEditorPopup';
+import ListHeaderSearchBar from '../list/ListHeaderSearchBar';
 import RefreshButton from '../general/RefreshButton';
 import DropDownMenu from '../general/DropDownMenu';
 import DropDownListLabel from '../general/DropDownListLabel';
-import {
-  taskListCompletion,
-  taskListLimit,
-  taskListSearchType,
-  taskListSort,
-} from '../../app/task/taskInitialStates';
+import { formatDate } from '../../app/general/middlewares';
+import ListHeaderTitle from '../list/ListHeaderTitle';
 
 type tSearch = {
   keywords: tTaskQueryParts['keywords'];
   searchType: tTaskQueryParts['searchType'];
 };
 
-const Tasks: React.FC = () => {
+const TaskList: React.FC = () => {
   // check user is logged in
   useCheckLoggedIn(true);
 
@@ -172,42 +173,28 @@ const Tasks: React.FC = () => {
           />
         )}
         {tasks.refreshButton && <RefreshButton action={() => dispatch(taskRefreshPage())} />}
-        <section className="task-collection-title">
-          <AiOutlineFolderOpen className="icon" />
-          <label>
-            {tasks.collection ? (
-              <>
-                {tasks.collection.name + ' - '}
-                <span className="inline-block">
-                  {new Date(tasks.collection.createdAt).toLocaleDateString('en-gb', {
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric',
-                    hour: 'numeric',
-                    minute: 'numeric',
-                  })}
-                </span>
-              </>
-            ) : (
-              'Please wait...'
-            )}
-          </label>
-        </section>
-        <section className="filter-wrapper">
-          <div className="search-bar">
-            <input
-              className="search-input"
-              type="text"
-              placeholder="Enter keywords"
-              onChange={(e) =>
-                setSearch({
-                  ...search,
-                  keywords: e.target.value,
-                })
-              }
-              value={search.keywords}
-            />
-            <div className="search-control-block">
+        <ListHeaderTitle
+          backLabel="Back to collections"
+          label={
+            tasks.collection
+              ? `${formatDate(tasks.collection.createdAt)} - ${tasks.collection.name}`
+              : 'Please wait...'
+          }
+        />
+        <section className="list-header">
+          <ListHeaderSearchBar
+            search={search}
+            setSearch={setSearch}
+            action={() =>
+              dispatch(
+                taskUpdateQueryParts({
+                  queryPart: 'keywords',
+                  value: search.keywords,
+                  refreshPage: true,
+                }),
+              )
+            }
+            searchType={
               <DropDownMenu
                 wrapperClass="list-drop-down-wrapper"
                 listClass="list-drop-down-menu"
@@ -220,27 +207,15 @@ const Tasks: React.FC = () => {
                 action={(value) =>
                   setSearch({
                     ...search,
-                    searchType: value as tTaskQueryParts['searchType'],
+                    searchType: value,
                   })
                 }
                 optionIcon={<AiOutlineRightCircle className="icon" />}
               />
-              <FcSearch
-                className="icon-wrapper click"
-                onClick={() =>
-                  search.keywords.length && updateTaskQuery(search.keywords, search.searchType)
-                }
-              />
-            </div>
-          </div>
+            }
+          />
           <div className="action-bar">
             <div>
-              <nav>
-                <a className="icon-wrapper click" href={'/'}>
-                  <AiOutlineLeftCircle className="icon" />
-                  <span>Back to collections</span>
-                </a>
-              </nav>
               <nav>
                 <label
                   className="icon-wrapper click"
@@ -345,4 +320,4 @@ const Tasks: React.FC = () => {
   );
 };
 
-export default Tasks;
+export default TaskList;

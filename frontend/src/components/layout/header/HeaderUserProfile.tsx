@@ -8,7 +8,7 @@ type tProps = {
   hideMenu: string;
 };
 
-const HeaderUserProfile = (props: tProps) => {
+const HeaderUserProfile: React.FC<tProps> = (props) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.user);
@@ -18,8 +18,8 @@ const HeaderUserProfile = (props: tProps) => {
     '/users/register': 'Register',
   };
   const userLogOut = {
-    logout: 'Log out',
     '/users/profile': 'My profile',
+    logout: 'Log out',
   };
 
   const action = (value: string) => {
@@ -33,11 +33,12 @@ const HeaderUserProfile = (props: tProps) => {
   return (
     <DropDownMenu
       wrapperClass="header-drop-down-wrapper"
-      listClass={`${props.hideMenu} header-drop-down-list`}
+      listClass={`${props.hideMenu} header-drop-down-list right-end`}
       optionClass="icon-wrapper click"
       trigger={
-        <button className="header-menu-list-trigger">
-          <BsPerson />
+        <button className="header-menu-element">
+          <BsPerson className="icon" />
+          <span>Me</span>
         </button>
       }
       options={user.data._id ? userLogOut : userLogIn}

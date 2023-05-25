@@ -8,16 +8,16 @@ type tProps = {
   setFormData: React.Dispatch<React.SetStateAction<tTaskFormData>>;
 };
 
-const TagEditor: React.FC<tProps> = ({ index, tag, formData, setFormData }) => {
+const TagEditor: React.FC<tProps> = (props) => {
   return (
     <div className="tag-form-block">
       <div
         className="icon-wrapper circle click"
         title="Remove tag"
         onClick={() =>
-          setFormData({
-            ...formData,
-            tags: formData.tags.filter((tagCurr, indexCurr) => indexCurr !== index),
+          props.setFormData({
+            ...props.formData,
+            tags: props.formData.tags.filter((_, indexCurr) => indexCurr !== props.index),
           })
         }
       >
@@ -28,14 +28,14 @@ const TagEditor: React.FC<tProps> = ({ index, tag, formData, setFormData }) => {
         minLength={2}
         maxLength={30}
         onChange={(e) =>
-          setFormData({
-            ...formData,
-            tags: formData.tags.map((tagCurr, indexCurr) =>
-              indexCurr === index ? e.target.value : tagCurr,
+          props.setFormData({
+            ...props.formData,
+            tags: props.formData.tags.map((tagCurr, indexCurr) =>
+              indexCurr === props.index ? e.target.value : tagCurr,
             ),
           })
         }
-        value={tag}
+        value={props.tag}
       />
     </div>
   );

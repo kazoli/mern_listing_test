@@ -12,7 +12,6 @@ import {
   collectionToogleHighlighted,
   collectionUpdateQueryParts,
 } from '../../app/collection/collectionSlice';
-import { FcSearch } from 'react-icons/fc';
 import {
   AiOutlineCloseCircle,
   AiOutlineExclamationCircle,
@@ -30,12 +29,13 @@ import {
 } from '../../app/collection/collectionInitialStates';
 import DropDownMenu from '../general/DropDownMenu';
 import DropDownListLabel from '../general/DropDownListLabel';
+import ListHeaderSearchBar from '../list/ListHeaderSearchBar';
 
 type tSearch = {
   keywords: tCollectionQueryParts['keywords'];
 };
 
-const Collections: React.FC = () => {
+const CollectionList: React.FC = () => {
   useEffect(() => {
     // set page title
     document.title = 'Collections';
@@ -111,12 +111,12 @@ const Collections: React.FC = () => {
     }
   }, [dispatch, collections.data, collections.queryParts, collections.status, collections.message]);
 
-  const updateCollectionQuery = (keywords: tSearch['keywords']) => {
+  const updateCollectionQuery = () => {
     // set redux keywords and request a page refresh
     dispatch(
       collectionUpdateQueryParts({
         queryPart: 'keywords',
-        value: keywords,
+        value: search.keywords,
         refreshPage: true,
       }),
     );
@@ -154,25 +154,20 @@ const Collections: React.FC = () => {
         {collections.refreshButton && (
           <RefreshButton action={() => dispatch(collectionRefreshPage())} />
         )}
-        <section className="filter-wrapper">
-          <div className="search-bar">
-            <input
-              className="search-input"
-              type="text"
-              placeholder="Enter keywords"
-              onChange={(e) =>
-                setSearch({
-                  ...search,
-                  keywords: e.target.value,
-                })
-              }
-              value={search.keywords}
-            />
-            <FcSearch
-              className="icon-wrapper click"
-              onClick={() => search.keywords.length && updateCollectionQuery(search.keywords)}
-            />
-          </div>
+        <section className="list-header">
+          <ListHeaderSearchBar<typeof search>
+            search={search}
+            setSearch={setSearch}
+            action={() =>
+              dispatch(
+                collectionUpdateQueryParts({
+                  queryPart: 'keywords',
+                  value: search.keywords,
+                  refreshPage: true,
+                }),
+              )
+            }
+          />
           <div className="action-bar">
             <section>
               <nav>
@@ -186,7 +181,7 @@ const Collections: React.FC = () => {
               </nav>
               {collections.resetSearch && (
                 <nav>
-                  <label className="icon-wrapper click" onClick={() => updateCollectionQuery('')}>
+                  <label className="icon-wrapper click" onClick={() => updateCollectionQuery()}>
                     <AiOutlineCloseCircle className="icon" />
                     <span>Reset search</span>
                   </label>
@@ -265,4 +260,4 @@ const Collections: React.FC = () => {
   );
 };
 
-export default Collections;
+export default CollectionList;

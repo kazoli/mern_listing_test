@@ -1,15 +1,15 @@
-type tProps = {
+type tProps<T> = {
   wrapperClass: string;
   listClass: string;
   optionClass: string;
   trigger: JSX.Element;
-  options: { [key: string]: string };
-  action: (value: string) => void;
+  options: T;
+  action: (value: keyof T) => void;
   ignoredOption?: string;
   optionIcon?: JSX.Element;
 };
 
-const DropDownMenu: React.FC<tProps> = (props) => {
+const DropDownMenu = <T extends { [key: string]: string }>(props: tProps<T>) => {
   return (
     <div className={props.wrapperClass}>
       {props.trigger}

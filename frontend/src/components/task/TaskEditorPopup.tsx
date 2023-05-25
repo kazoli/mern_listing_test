@@ -23,11 +23,11 @@ export type tTaskFormData = {
   complete: tTaskData['complete'];
 };
 
-const TaskEditorPopup: React.FC<tProps> = ({ task, collection_id }) => {
+const TaskEditorPopup: React.FC<tProps> = (props) => {
   const dispatch = useAppDispatch();
   const [formData, setFormData] = useState<tTaskFormData>({
     _id: '',
-    collection_id: collection_id,
+    collection_id: props.collection_id,
     name: '',
     tags: [],
     complete: false,
@@ -46,8 +46,8 @@ const TaskEditorPopup: React.FC<tProps> = ({ task, collection_id }) => {
       return;
     }
     // highlight the updated task
-    if (task) {
-      dispatch(taskToogleHighlighted(task._id));
+    if (props.task) {
+      dispatch(taskToogleHighlighted(props.task._id));
     }
     // udpate or create a task
     dispatch(formData._id ? updateTask(formData) : createTask(formData));
@@ -65,16 +65,16 @@ const TaskEditorPopup: React.FC<tProps> = ({ task, collection_id }) => {
 
   useEffect(() => {
     // existing task data load into form
-    if (task) {
+    if (props.task) {
       setFormData({
-        _id: task._id,
-        collection_id: task.collection_id,
-        name: task.name,
-        tags: task.tags,
-        complete: task.complete,
+        _id: props.task._id,
+        collection_id: props.task.collection_id,
+        name: props.task.name,
+        tags: props.task.tags,
+        complete: props.task.complete,
       });
     }
-  }, [task]);
+  }, [props.task]);
 
   return (
     <PopUp>

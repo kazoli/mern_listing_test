@@ -10,7 +10,7 @@ type tProps = {
   loading?: boolean;
 };
 
-const DefaultLayout = (props: tProps) => {
+const DefaultLayout: React.FC<tProps> = (props) => {
   useEffect(() => {
     // scroll top in case of page change
     scrollToElement();

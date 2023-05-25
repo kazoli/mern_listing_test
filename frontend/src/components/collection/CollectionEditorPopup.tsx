@@ -20,7 +20,7 @@ type tCollectionFormData = {
   name: tCollectionData['name'];
 };
 
-const CollectionEditorPopup: React.FC<tProps> = ({ collection }) => {
+const CollectionEditorPopup: React.FC<tProps> = (props) => {
   const dispatch = useAppDispatch();
   const [formData, setFormData] = useState<tCollectionFormData>({
     _id: '',
@@ -35,8 +35,8 @@ const CollectionEditorPopup: React.FC<tProps> = ({ collection }) => {
       return;
     }
     // highlight the updated collection
-    if (collection) {
-      dispatch(collectionToogleHighlighted(collection._id));
+    if (props.collection) {
+      dispatch(collectionToogleHighlighted(props.collection._id));
     }
     // udpate or create a collection
     dispatch(formData._id ? updateCollection(formData) : createCollection(formData));
@@ -54,13 +54,13 @@ const CollectionEditorPopup: React.FC<tProps> = ({ collection }) => {
 
   useEffect(() => {
     // existing collection data load into form
-    if (collection) {
+    if (props.collection) {
       setFormData({
-        _id: collection._id,
-        name: collection.name,
+        _id: props.collection._id,
+        name: props.collection.name,
       });
     }
-  }, [collection]);
+  }, [props.collection]);
 
   return (
     <PopUp>

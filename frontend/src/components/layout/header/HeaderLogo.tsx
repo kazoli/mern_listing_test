@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { HiOutlineClipboardList } from 'react-icons/hi';
 
-function HeaderLogo() {
+const HeaderLogo: React.FC = () => {
   return (
     <NavLink to="/" className="header-logo-wrapper">
       <span className="header-logo-text">Task</span>
@@ -9,6 +9,6 @@ function HeaderLogo() {
       <span className="header-logo-text">Manager</span>
     </NavLink>
   );
-}
+};
 
 export default HeaderLogo;
