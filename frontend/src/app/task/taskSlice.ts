@@ -14,25 +14,6 @@ const taskSlice = createSlice({
     },
     taskBuildURL: (state) => {
       buildUrl<tTaskQueryParts>(state.queryParts);
-
-      // TODO delete after testing
-      // //query elements array
-      // let query: string[] = [];
-      // // build query based on queryParts
-      // let key: keyof tTaskQueryParts;
-      // for (key in state.queryParts) {
-      //   if (state.queryParts[key].length) {
-      //     query.push(`${key}=${state.queryParts[key]}`);
-      //   }
-      // }
-      // // join the query elments into a string or get empty
-      // const queryString: string = query.length ? encodeURI('?' + query.join('&')) : '';
-      // // change old URL with the new one in the browser
-      // window.history.pushState(
-      //   {},
-      //   '',
-      //   window.location.origin + window.location.pathname + queryString,
-      // );
     },
     taskRefreshPage: (state) => {
       state.refreshButton = false;

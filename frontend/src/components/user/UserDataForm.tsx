@@ -1,4 +1,4 @@
-import { tButtons } from '../../app/general/types';
+import { tButton } from '../../app/general/types';
 import { tUserDataSave } from '../../app/user/userTypes';
 import { userFormLabels, userValidationLimits } from '../../app/user/userInitialStates';
 import FormInput from '../form/FormInput';
@@ -8,7 +8,7 @@ type tProps = {
   formData: tUserDataSave;
   setFormData: React.Dispatch<React.SetStateAction<tUserDataSave>>;
   formErrors: tUserDataSave;
-  buttons: tButtons;
+  buttons: tButton[];
 };
 
 const UserDataForm: React.FC<tProps> = (props) => {

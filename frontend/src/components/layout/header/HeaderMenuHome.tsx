@@ -1,7 +1,7 @@
 import { AiOutlineHome } from 'react-icons/ai';
 import { NavLink } from 'react-router-dom';
 
-const HeaderHome: React.FC = () => {
+const HeaderMenuHome: React.FC = () => {
   return (
     <NavLink to="/" className="header-menu-element">
       <AiOutlineHome className="icon" />
@@ -10,4 +10,4 @@ const HeaderHome: React.FC = () => {
   );
 };
 
-export default HeaderHome;
+export default HeaderMenuHome;

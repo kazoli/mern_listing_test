@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 
 type tProps = {
-  label: string;
+  label?: string;
   type: string;
   value: string;
   action: (value: string) => void;

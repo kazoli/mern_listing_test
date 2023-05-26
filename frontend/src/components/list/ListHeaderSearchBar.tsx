@@ -1,3 +1,4 @@
+import { tObject } from '../../app/general/types';
 import { FcSearch } from 'react-icons/fc';
 
 type tProps<T> = {
@@ -7,7 +8,7 @@ type tProps<T> = {
   searchType?: JSX.Element;
 };
 
-const ListHeaderSearchBar = <T extends { [key: string]: string }>(props: tProps<T>) => {
+const ListHeaderSearchBar = <T extends tObject>(props: tProps<T>) => {
   return (
     <div className="list-header-search-bar">
       <input

@@ -8,7 +8,7 @@ type tProps = {
   hideMenu: string;
 };
 
-const HeaderUserProfile: React.FC<tProps> = (props) => {
+const HeaderMenuUser: React.FC<tProps> = (props) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.user);
@@ -47,4 +47,4 @@ const HeaderUserProfile: React.FC<tProps> = (props) => {
   );
 };
 
-export default HeaderUserProfile;
+export default HeaderMenuUser;

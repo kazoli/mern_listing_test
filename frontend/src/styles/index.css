@@ -369,11 +369,11 @@ footer .layout-positioner {
 
 /* ICON START */
 .icon-wrapper {
-  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 10px;
+  border: none;
   border-radius: 3rem;
   box-shadow: 0 0 2px 0 #b0b0b0, inset 0 0 1px 0 #b0b0b0;
   background: #ffffff;
@@ -407,8 +407,8 @@ footer .layout-positioner {
 }
 
 .icon-wrapper.warning {
-  box-shadow: 0 0 2px 0 #b0b0b0, inset 0 0 1px 0 #b0b0b0;
   background: #ffffff;
+  box-shadow: 0 0 2px 0 #b0b0b0, inset 0 0 1px 0 #b0b0b0;
   color: inherit;
   cursor: auto;
 }
@@ -589,6 +589,7 @@ textarea.autosize {
   background: #fdfdfd;
   box-shadow: 0 0 3px 1px #c0c0c0, inset 0 0 10px 0 #f0f0f0;
   border-radius: 30px;
+  gap: 15px;
 }
 
 .list-header-title {
@@ -614,7 +615,6 @@ textarea.autosize {
 
 .list-header-search-bar {
   width: 100%;
-  margin: 0 0 15px 0;
   display: flex;
   align-items: center;
   flex-wrap: wrap;
@@ -630,15 +630,11 @@ textarea.autosize {
 
 .list-header-search-block {
   display: flex;
-  flex: 1 1 auto;
+  flex-wrap: wrap;
   gap: 10px;
 }
 
-.list-drop-down-wrapper {
-  flex: 1 1 auto;
-}
-
-.action-bar {
+.list-header-action-bar {
   width: 100%;
   display: flex;
   flex-wrap: wrap;
@@ -646,10 +642,14 @@ textarea.autosize {
   gap: 10px;
 }
 
-.action-bar > section {
+.list-header-action-block {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+}
+
+.list-drop-down-wrapper {
+  flex: 1 1 auto;
 }
 
 .list-drop-down-menu {
@@ -826,7 +826,7 @@ textarea.autosize {
     position: absolute;
     top: -150px;
     right: 0;
-    width: 100vw;
+    width: 100%;
     justify-content: flex-end;
     box-shadow: inset 0 0 10px 0 #e0e0e0, 0 0 5px 1px #cccccc;
     background: #fcfcfc;
@@ -856,15 +856,21 @@ textarea.autosize {
     padding: 30px 5px;
   }
 
-  .action-bar > *,
-  .action-bar > * > * {
+  .list-header {
+    gap: 10px;
+  }
+
+  .list-header-search-block,
+  .list-header-search-block .list-drop-down-wrapper,
+  .list-header-action-block,
+  .list-header-action-block > * {
     width: 100%;
   }
 
-  .action-bar ul {
-    left: 0;
-    right: 0;
-    margin: 0 25px;
+  .list-header-action-block ul,
+  .list-header-search-block .list-drop-down-wrapper ul {
+    left: 25px;
+    right: 25px;
   }
 
   .popup-container {
@@ -881,10 +887,12 @@ textarea.autosize {
 @media (pointer: coarse) {
   .icon-wrapper:hover .icon {
     background: #d2ecff;
+    box-shadow: 0 0 3px 0 #909090, inset 0 0 10px 0 #6ac1ff;
   }
 
   .icon-wrapper:active .icon {
     background: #fee48f;
+    box-shadow: 0 0 5px 0 #909090, inset 0 0 10px 0 #ffc400;
   }
 
   .tag-form-block .icon-wrapper:hover .icon {

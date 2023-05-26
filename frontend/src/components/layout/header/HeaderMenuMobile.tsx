@@ -5,7 +5,7 @@ type tProps = {
   setShowMenu: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const HeaderMobileMenu: React.FC<tProps> = (props) => {
+const HeaderMenuMobile: React.FC<tProps> = (props) => {
   return (
     <div className="header-menu-element mobile" onClick={() => props.setShowMenu(!props.showMenu)}>
       {props.showMenu ? <BsMenuDown className="icon" /> : <BsMenuUp className="icon" />}
@@ -14,4 +14,4 @@ const HeaderMobileMenu: React.FC<tProps> = (props) => {
   );
 };
 
-export default HeaderMobileMenu;
+export default HeaderMenuMobile;

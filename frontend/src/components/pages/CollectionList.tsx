@@ -2,6 +2,7 @@ import { toast } from 'react-toastify';
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../app/general/hooks';
 import { useCheckLoggedIn } from '../../app/user/userHooks';
+import { tButton, tListHeaderActionDropDowns } from '../../app/general/types';
 import { tCollectionQueryParts } from '../../app/collection/collectionTypes';
 import { getCollections } from '../../app/collection/collectionThunks';
 import {
@@ -13,27 +14,16 @@ import {
   collectionUpdateQueryParts,
 } from '../../app/collection/collectionSlice';
 import {
-  AiOutlineCloseCircle,
-  AiOutlineExclamationCircle,
-  AiOutlinePlusCircle,
-  AiOutlineRightCircle,
-} from 'react-icons/ai';
-import DefaultLayout from '../layout/DefaultLayout';
-import Paginator from '../general/Paginator';
-import CollectionEditorPopup from '../collection/CollectionEditorPopup';
-import RefreshButton from '../general/RefreshButton';
-import Collection from '../collection/Collection';
-import {
   collectionListLimit,
   collectionListSort,
 } from '../../app/collection/collectionInitialStates';
-import DropDownMenu from '../general/DropDownMenu';
-import DropDownListLabel from '../general/DropDownListLabel';
-import ListHeaderSearchBar from '../list/ListHeaderSearchBar';
-
-type tSearch = {
-  keywords: tCollectionQueryParts['keywords'];
-};
+import { AiOutlineExclamationCircle } from 'react-icons/ai';
+import DefaultLayout from '../layout/DefaultLayout';
+import Paginator from '../general/Paginator';
+import CollectionEditorPopup from '../collection/CollectionEditorPopup';
+import ButtonRefresh from '../general/ButtonRefresh';
+import ListHeader from '../list/ListHeader';
+import Collection from '../collection/Collection';
 
 const CollectionList: React.FC = () => {
   useEffect(() => {
@@ -47,10 +37,45 @@ const CollectionList: React.FC = () => {
   const dispatch = useAppDispatch();
   const collections = useAppSelector((state) => state.collections);
 
-  const [search, setSearch] = useState<tSearch>({
+  const [search, setSearch] = useState({
     keywords: '',
   });
 
+  const listHeaderActionButtons: tButton[] = [
+    { text: 'Add a new collection', action: () => dispatch(collectionToogleEditor(true)) },
+  ];
+
+  const listHeaderActionDropDowns: tListHeaderActionDropDowns = [
+    {
+      triggerText: collectionListSort[collections.queryParts.sort],
+      ignoredOption: collections.queryParts.sort,
+      options: collectionListSort,
+      action: (value) => updateCollectionQuery('sort', value as string),
+    },
+    {
+      triggerText: collectionListLimit[collections.queryParts.limit],
+      ignoredOption: collections.queryParts.limit,
+      options: collectionListLimit,
+      action: (value) => updateCollectionQuery('limit', value as string),
+    },
+  ];
+
+  const updateCollectionQuery = (
+    queryPart: keyof tCollectionQueryParts,
+    value: string,
+    refresh: boolean = true,
+  ) => {
+    // set redux keywords and request a page refresh
+    dispatch(
+      collectionUpdateQueryParts({
+        queryPart: queryPart,
+        value: value,
+        refreshPage: refresh,
+      }),
+    );
+  };
+
+  // TODO need a general hook for it
   useEffect(() => {
     let timerId: NodeJS.Timeout;
     // if page refreshing has triggered then it requests data from backend
@@ -62,6 +87,7 @@ const CollectionList: React.FC = () => {
     return () => clearTimeout(timerId);
   }, [dispatch, collections.refreshPage]);
 
+  // TODO need a general hook for it
   useEffect(() => {
     // set highlighted false
     if (collections.highlighted !== false) {
@@ -111,31 +137,12 @@ const CollectionList: React.FC = () => {
     }
   }, [dispatch, collections.data, collections.queryParts, collections.status, collections.message]);
 
-  const updateCollectionQuery = () => {
-    // set redux keywords and request a page refresh
-    dispatch(
-      collectionUpdateQueryParts({
-        queryPart: 'keywords',
-        value: search.keywords,
-        refreshPage: true,
-      }),
-    );
-  };
-
   const paginator: JSX.Element = (
     <Paginator
       page={collections.queryParts.page}
       isNextPage={collections.isNextPage}
       refreshPage={collections.refreshPage}
-      selectAction={(value) =>
-        dispatch(
-          collectionUpdateQueryParts({
-            queryPart: 'page',
-            value: value,
-            refreshPage: true,
-          }),
-        )
-      }
+      selectAction={(value) => updateCollectionQuery('page', value as string)}
     />
   );
 
@@ -152,86 +159,15 @@ const CollectionList: React.FC = () => {
           />
         )}
         {collections.refreshButton && (
-          <RefreshButton action={() => dispatch(collectionRefreshPage())} />
+          <ButtonRefresh action={() => dispatch(collectionRefreshPage())} />
         )}
-        <section className="list-header">
-          <ListHeaderSearchBar<typeof search>
-            search={search}
-            setSearch={setSearch}
-            action={() =>
-              dispatch(
-                collectionUpdateQueryParts({
-                  queryPart: 'keywords',
-                  value: search.keywords,
-                  refreshPage: true,
-                }),
-              )
-            }
-          />
-          <div className="action-bar">
-            <section>
-              <nav>
-                <label
-                  className="icon-wrapper click"
-                  onClick={() => dispatch(collectionToogleEditor(true))}
-                >
-                  <AiOutlinePlusCircle className="icon" />
-                  <span>Add a new collection</span>
-                </label>
-              </nav>
-              {collections.resetSearch && (
-                <nav>
-                  <label className="icon-wrapper click" onClick={() => updateCollectionQuery()}>
-                    <AiOutlineCloseCircle className="icon" />
-                    <span>Reset search</span>
-                  </label>
-                </nav>
-              )}
-            </section>
-            <section>
-              <DropDownMenu
-                wrapperClass="list-drop-down-wrapper"
-                listClass="list-drop-down-menu"
-                optionClass="icon-wrapper click"
-                trigger={
-                  <DropDownListLabel text={collectionListSort[collections.queryParts.sort]} />
-                }
-                ignoredOption={collections.queryParts.sort}
-                options={collectionListSort}
-                action={(value) =>
-                  dispatch(
-                    collectionUpdateQueryParts({
-                      queryPart: 'sort',
-                      value: value,
-                      refreshPage: true,
-                    }),
-                  )
-                }
-                optionIcon={<AiOutlineRightCircle className="icon" />}
-              />
-              <DropDownMenu
-                wrapperClass="list-drop-down-wrapper"
-                listClass="list-drop-down-menu"
-                optionClass="icon-wrapper click"
-                trigger={
-                  <DropDownListLabel text={collectionListLimit[collections.queryParts.limit]} />
-                }
-                ignoredOption={collections.queryParts.limit}
-                options={collectionListLimit}
-                action={(value) =>
-                  dispatch(
-                    collectionUpdateQueryParts({
-                      queryPart: 'limit',
-                      value: value,
-                      refreshPage: true,
-                    }),
-                  )
-                }
-                optionIcon={<AiOutlineRightCircle className="icon" />}
-              />
-            </section>
-          </div>
-        </section>
+        <ListHeader
+          search={search}
+          setSearch={setSearch}
+          action={() => updateCollectionQuery('keywords', search.keywords)}
+          listHeaderActionButtons={listHeaderActionButtons}
+          listHeaderActionDropDowns={listHeaderActionDropDowns}
+        />
         {collections.data && collections.data.length > 0 ? (
           <>
             {paginator}

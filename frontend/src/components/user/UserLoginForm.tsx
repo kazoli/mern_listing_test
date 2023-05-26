@@ -1,4 +1,4 @@
-import { tButtons } from '../../app/general/types';
+import { tButton } from '../../app/general/types';
 import { tUserDataLogin } from '../../app/user/userTypes';
 import { userFormLabels } from '../../app/user/userInitialStates';
 import FormInput from '../form/FormInput';
@@ -8,7 +8,7 @@ type tProps = {
   formData: tUserDataLogin;
   setFormData: React.Dispatch<React.SetStateAction<tUserDataLogin>>;
   formErrors: tUserDataLogin;
-  buttons: tButtons;
+  buttons: tButton[];
 };
 
 const UserLoginForm: React.FC<tProps> = (props) => {
