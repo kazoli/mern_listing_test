@@ -1,8 +1,9 @@
 import { tButton } from '../../app/general/types';
 import { tUserDataLogin } from '../../app/user/userTypes';
 import { userFormLabels } from '../../app/user/userInitialStates';
-import FormInput from '../form/FormInput';
+import FormInputBlock from '../form/FormInputBlock';
 import FormButtonBlock from '../form/FormButtonBlock';
+import UserPasswordBlock from './UserPasswordBlock';
 
 type tProps = {
   formData: tUserDataLogin;
@@ -14,22 +15,20 @@ type tProps = {
 const UserLoginForm: React.FC<tProps> = (props) => {
   return (
     <section>
-      <FormInput
+      <FormInputBlock
         label={userFormLabels.email}
         type="email"
         value={props.formData.email}
         action={(value) => props.setFormData((prevState) => ({ ...prevState, email: value }))}
-        placeholder="Enter your email"
         error={props.formErrors.email}
+        placeholder="Enter your email"
       />
-      <FormInput
+      <UserPasswordBlock
         label={userFormLabels.password}
-        type="password"
-        value={props.formData.password}
+        password={props.formData.password}
         action={(value) => props.setFormData((prevState) => ({ ...prevState, password: value }))}
-        placeholder="Enter your password"
-        autocomplete="off"
         error={props.formErrors.password}
+        placeholder="Enter your password"
       />
       <FormButtonBlock buttons={props.buttons} />
     </section>

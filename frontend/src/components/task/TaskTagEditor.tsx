@@ -1,24 +1,24 @@
 import { AiOutlineCloseCircle } from 'react-icons/ai';
-import { tTaskFormData } from './TaskEditorPopup';
+import { tTaskDataSave } from '../../app/task/taskTypes';
 
 type tProps = {
   index: number;
   tag: string;
-  formData: tTaskFormData;
-  setFormData: React.Dispatch<React.SetStateAction<tTaskFormData>>;
+  tags: tTaskDataSave['tags'];
+  setFormData: React.Dispatch<React.SetStateAction<tTaskDataSave>>;
 };
 
 const TagEditor: React.FC<tProps> = (props) => {
   return (
-    <div className="tag-form-block">
+    <div className="form-multi-line">
       <div
         className="icon-wrapper circle click"
         title="Remove tag"
         onClick={() =>
-          props.setFormData({
-            ...props.formData,
-            tags: props.formData.tags.filter((_, indexCurr) => indexCurr !== props.index),
-          })
+          props.setFormData((prevState) => ({
+            ...prevState,
+            tags: props.tags.filter((_, indexCurr) => indexCurr !== props.index),
+          }))
         }
       >
         <AiOutlineCloseCircle className="icon" />
@@ -28,12 +28,12 @@ const TagEditor: React.FC<tProps> = (props) => {
         minLength={2}
         maxLength={30}
         onChange={(e) =>
-          props.setFormData({
-            ...props.formData,
-            tags: props.formData.tags.map((tagCurr, indexCurr) =>
+          props.setFormData((prevState) => ({
+            ...prevState,
+            tags: props.tags.map((tagCurr, indexCurr) =>
               indexCurr === props.index ? e.target.value : tagCurr,
             ),
-          })
+          }))
         }
         value={props.tag}
       />

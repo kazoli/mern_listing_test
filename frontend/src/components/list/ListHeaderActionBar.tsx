@@ -1,5 +1,5 @@
 import { tButton, tListHeaderActionDropDowns } from '../../app/general/types';
-import { AiOutlineCloseCircle, AiOutlinePlusCircle, AiOutlineRightCircle } from 'react-icons/ai';
+import { AiOutlineRightCircle } from 'react-icons/ai';
 import DropDownMenu from '../general/DropDownMenu';
 import DropDownListLabel from '../general/DropDownListLabel';
 import ButtonIcon from '../general/ButtonIcon';
@@ -14,12 +14,13 @@ const ListHeaderActionBar: React.FC<tProps> = (props) => {
     <div className="list-header-action-bar">
       <div className="list-header-action-block">
         {props.buttons.map((button) => (
-          <ButtonIcon text={button.text} action={button.action} />
+          <ButtonIcon key={button.text} text={button.text} action={button.action} />
         ))}
       </div>
       <div className="list-header-action-block">
         {props.dropDowns.map((dropDown) => (
           <DropDownMenu
+            key={dropDown.triggerText}
             wrapperClass="list-drop-down-wrapper"
             listClass="list-drop-down-menu"
             optionClass="icon-wrapper click"

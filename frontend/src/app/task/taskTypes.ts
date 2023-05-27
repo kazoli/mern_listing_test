@@ -1,6 +1,21 @@
 import { tCollectionData } from '../collection/collectionTypes';
 import { tTypeMap } from '../general/types';
 
+// Type of full task data validation limits
+export type tTaskFormLabels = {
+  name: string;
+  tags: string;
+};
+
+// Type of full task data validation limits
+export type tTaskValidationLimits = {
+  minName: number;
+  maxName: number;
+  minTag: number;
+  maxTag: number;
+  totalTag: number;
+};
+
 // Type of posted task data
 export type tTaskDataSave = {
   _id: string;
@@ -12,8 +27,6 @@ export type tTaskDataSave = {
 
 // Type of full task data
 export type tTaskData = tTaskDataSave & {
-  _id: string;
-  collection_id: string;
   createdAt: string;
   updatedAt: string;
 };

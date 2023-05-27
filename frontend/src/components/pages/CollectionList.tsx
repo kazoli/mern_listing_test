@@ -41,9 +41,32 @@ const CollectionList: React.FC = () => {
     keywords: '',
   });
 
+  const updateCollectionQuery = (
+    queryPart: keyof tCollectionQueryParts,
+    value: string,
+    refresh: boolean = true,
+  ) => {
+    // set redux keywords and request a page refresh
+    dispatch(
+      collectionUpdateQueryParts({
+        queryPart: queryPart,
+        value: value,
+        refreshPage: refresh,
+      }),
+    );
+  };
+
   const listHeaderActionButtons: tButton[] = [
     { text: 'Add a new collection', action: () => dispatch(collectionToogleEditor(true)) },
   ];
+  if (collections.resetSearch) {
+    listHeaderActionButtons.push({
+      text: 'Reset search',
+      action: () => {
+        updateCollectionQuery('keywords', '');
+      },
+    });
+  }
 
   const listHeaderActionDropDowns: tListHeaderActionDropDowns = [
     {
@@ -60,34 +83,17 @@ const CollectionList: React.FC = () => {
     },
   ];
 
-  const updateCollectionQuery = (
-    queryPart: keyof tCollectionQueryParts,
-    value: string,
-    refresh: boolean = true,
-  ) => {
-    // set redux keywords and request a page refresh
-    dispatch(
-      collectionUpdateQueryParts({
-        queryPart: queryPart,
-        value: value,
-        refreshPage: refresh,
-      }),
-    );
-  };
-
-  // TODO need a general hook for it
   useEffect(() => {
     let timerId: NodeJS.Timeout;
-    // if page refreshing has triggered then it requests data from backend
+    // if page refreshing has been triggered then it requests data from backend
     if (collections.refreshPage) {
-      // waiting 50 ms for creating query string in URL
+      // waits for a while to create query string in URL
       timerId = setTimeout(() => dispatch(getCollections(window.location.search)), 150);
     }
     // if redirect occurs because of JWT missing, then cancel dispatch
     return () => clearTimeout(timerId);
   }, [dispatch, collections.refreshPage]);
 
-  // TODO need a general hook for it
   useEffect(() => {
     // set highlighted false
     if (collections.highlighted !== false) {
@@ -173,9 +179,9 @@ const CollectionList: React.FC = () => {
             {paginator}
             <section className="list-container">
               <div className="list-grid">
-                {collections.data?.map((collection, index) => (
+                {collections.data.map((collection, index) => (
                   <Collection
-                    key={index}
+                    key={collection._id}
                     index={index}
                     collection={collection}
                     highlighted={collections.highlighted}

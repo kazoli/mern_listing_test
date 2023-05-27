@@ -56,6 +56,20 @@ const TaskList: React.FC = () => {
     searchType: 'default',
   });
 
+  const updateTaskQuery = (
+    queryPart: keyof tTaskQueryParts,
+    value: string,
+    refresh: boolean = true,
+  ) => {
+    dispatch(
+      taskUpdateQueryParts({
+        queryPart: queryPart,
+        value: value,
+        refreshPage: refresh,
+      }),
+    );
+  };
+
   const listHeaderActionButtons: tButton[] = [
     { text: 'Add a new task', action: () => dispatch(taskToogleEditor(true)) },
   ];
@@ -90,26 +104,11 @@ const TaskList: React.FC = () => {
     },
   ];
 
-  const updateTaskQuery = (
-    queryPart: keyof tTaskQueryParts,
-    value: string,
-    refresh: boolean = true,
-  ) => {
-    dispatch(
-      taskUpdateQueryParts({
-        queryPart: queryPart,
-        value: value,
-        refreshPage: refresh,
-      }),
-    );
-  };
-
-  // TODO need a general hook for it
   useEffect(() => {
     let timerId: NodeJS.Timeout;
-    // if page refreshing has triggered then it requests data from backend
+    // if page refreshing has been triggered then it requests data from backend
     if (tasks.refreshPage) {
-      // waiting 50 ms for creating query string in URL
+      // waits for a while to create query string in URL
       timerId = setTimeout(
         () => dispatch(getTasks(params.collection_id + window.location.search)),
         150,
@@ -119,7 +118,6 @@ const TaskList: React.FC = () => {
     return () => clearTimeout(timerId);
   }, [dispatch, tasks.refreshPage, params.collection_id]);
 
-  // TODO need a general hook for it
   useEffect(() => {
     // set highlighted false
     if (tasks.highlighted !== false) {
@@ -227,7 +225,7 @@ const TaskList: React.FC = () => {
             <section className="list-container">
               <div className="list-grid">
                 {tasks.data.map((task, index) => (
-                  <Task key={index} index={index} task={task} highlighted={tasks.highlighted} />
+                  <Task key={task._id} index={index} task={task} highlighted={tasks.highlighted} />
                 ))}
               </div>
             </section>

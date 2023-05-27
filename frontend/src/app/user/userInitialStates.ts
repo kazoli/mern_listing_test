@@ -1,6 +1,6 @@
 import { tUserFormLabels, tUserState, tUserValidationLimits } from './userTypes';
 
-// Form label names to forms and validations
+// Form label names to user forms and validations
 export const userFormLabels: tUserFormLabels = {
   name: 'Full name',
   email: 'Email',

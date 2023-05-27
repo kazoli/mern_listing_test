@@ -1,13 +1,24 @@
 import { tTypeMap } from '../general/types';
 
+// Type of full collection data validation limits
+export type tCollectionFormLabels = {
+  name: string;
+};
+
+// Type of full collection data validation limits
+export type tCollectionValidationLimits = {
+  minName: number;
+  maxName: number;
+};
+
 // Type of posted collection data
 export type tCollectionDataSave = {
+  _id: string;
   name: string;
 };
 
 // Type of full collection data
 export type tCollectionData = tCollectionDataSave & {
-  _id: string;
   user_id: string;
   createdAt: string;
   updatedAt: string;

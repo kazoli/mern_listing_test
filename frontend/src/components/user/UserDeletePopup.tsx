@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useAppDispatch } from '../../app/general/hooks';
 import { deleteUser } from '../../app/user/userThunks';
+import { userFormLabels } from '../../app/user/userInitialStates';
 import PopUp from '../general/PopUp';
 import FormButtonBlock from '../form/FormButtonBlock';
-import FormInput from '../form/FormInput';
-import { userFormLabels } from '../../app/user/userInitialStates';
+import UserPasswordBlock from './UserPasswordBlock';
 
 type tProps = {
   setDeleteConfirm: React.Dispatch<React.SetStateAction<boolean>>;
@@ -27,17 +27,15 @@ const UserDeletePopup: React.FC<tProps> = (props) => {
   return (
     <PopUp>
       <div className="form-block text">
-        All your collections and tasks will be deleted as well. Are you sure to continue the
+        All of your collections and tasks will be deleted as well. Are you sure to continue the
         deletion your profile?
       </div>
-      <FormInput
+      <UserPasswordBlock
         label={userFormLabels.password}
-        type="password"
-        value={password}
+        password={password}
         action={(value) => setPassword(value)}
-        placeholder="Enter your password"
-        autocomplete="off"
         error=""
+        placeholder="Enter your password"
       />
       <FormButtonBlock buttons={buttons} />
     </PopUp>

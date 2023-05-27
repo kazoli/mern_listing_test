@@ -4,28 +4,23 @@ import {
   tTaskListCompletion,
   tTaskListLimit,
   tTaskListSort,
+  tTaskFormLabels,
+  tTaskValidationLimits,
 } from './taskTypes';
 
-// Initial state of task slice
-export const taskInitialState: tTaskState = {
-  status: 'idle',
-  highlighted: false,
-  refreshPage: false,
-  refreshButton: false,
-  editor: false,
-  resetSearch: false,
-  collection: null,
-  data: [],
-  message: '',
-  isNextPage: false,
-  queryParts: {
-    keywords: '',
-    searchType: 'default',
-    completion: 'default',
-    sort: 'default',
-    limit: 'default',
-    page: '',
-  },
+// Form label names to task form and validations
+export const taskFormLabels: tTaskFormLabels = {
+  name: 'Task name',
+  tags: 'Tags',
+};
+
+// Validation limits to task fields
+export const taskValidationLimits: tTaskValidationLimits = {
+  minName: 3,
+  maxName: 200,
+  minTag: 2,
+  maxTag: 30,
+  totalTag: 3,
 };
 
 // Task list sorting options
@@ -55,4 +50,26 @@ export const taskListLimit: tTaskListLimit = {
   default: '12 / page',
   p36: '36 / page',
   p60: '60 / page',
+};
+
+// Initial state of task slice
+export const taskInitialState: tTaskState = {
+  status: 'idle',
+  highlighted: false,
+  refreshPage: false,
+  refreshButton: false,
+  editor: false,
+  resetSearch: false,
+  collection: null,
+  data: [],
+  message: '',
+  isNextPage: false,
+  queryParts: {
+    keywords: '',
+    searchType: 'default',
+    completion: 'default',
+    sort: 'default',
+    limit: 'default',
+    page: '',
+  },
 };

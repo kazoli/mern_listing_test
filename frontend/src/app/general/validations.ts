@@ -12,9 +12,6 @@ export const validateText = async (
   if (!value) {
     return `${element} cannot be empty or missing`;
   }
-  if (!value.match(/[A-Za-z0-9]/gi)) {
-    return `${element} needs to contain at least one number or letter without accents`;
-  }
   if (value.length < minLength) {
     return `${element} needs to be at least ${minLength} characters long`;
   }
@@ -58,26 +55,7 @@ export const validateBoolean = async (element: string, value: string) => {
     : `${element} needs to be boolean value`;
 };
 
-export const processName = (value: string, params: tValidation['name']) => {
-  //remove starting and trailing spaces
-  value = value.trim();
-  if (!value.match(/[a-z0-9]/gi)) {
-    toast.error('Name field needs to contain one number or letter without accents', {
-      toastId: 'name-letter',
-    });
-    return false;
-  } else if (value.length < params.minLength || value.length > params.maxLength) {
-    toast.error(
-      `Name field length needs to be between ${params.minLength} and ${params.maxLength} characters`,
-      {
-        toastId: 'name-length',
-      },
-    );
-    return false;
-  }
-  return true;
-};
-
+// TODO DELETE
 export const processTags = (values: string[], params: tValidation['tag']) => {
   if (values.length > params.maxNumber) {
     toast.error(`Maximum ${params.maxNumber} tags can be added`, {

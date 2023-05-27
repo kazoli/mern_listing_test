@@ -1,8 +1,9 @@
 import { tButton } from '../../app/general/types';
 import { tUserDataSave } from '../../app/user/userTypes';
 import { userFormLabels, userValidationLimits } from '../../app/user/userInitialStates';
-import FormInput from '../form/FormInput';
+import FormInputBlock from '../form/FormInputBlock';
 import FormButtonBlock from '../form/FormButtonBlock';
+import UserPasswordBlock from './UserPasswordBlock';
 
 type tProps = {
   formData: tUserDataSave;
@@ -14,46 +15,42 @@ type tProps = {
 const UserDataForm: React.FC<tProps> = (props) => {
   return (
     <section>
-      <FormInput
+      <FormInputBlock
         label={userFormLabels.name}
         type="text"
         value={props.formData.name}
         action={(value) => props.setFormData((prevState) => ({ ...prevState, name: value }))}
-        placeholder={`From ${userValidationLimits.minName} to ${userValidationLimits.maxName} letters`}
         error={props.formErrors.name}
+        placeholder={`From ${userValidationLimits.minName} to ${userValidationLimits.maxName} letters`}
       />
-      <FormInput
+      <FormInputBlock
         label={userFormLabels.email}
         type="email"
         value={props.formData.email}
         action={(value) => props.setFormData((prevState) => ({ ...prevState, email: value }))}
-        placeholder="Enter a valid email format"
         error={props.formErrors.email}
+        placeholder="Enter a valid email format"
       />
-      <FormInput
+      <UserPasswordBlock
         label={
           props.formData.oldPassword === undefined
             ? userFormLabels.password
             : userFormLabels.newPassword
         }
-        type="password"
-        value={props.formData.password}
+        password={props.formData.password}
         action={(value) => props.setFormData((prevState) => ({ ...prevState, password: value }))}
-        placeholder={`From ${userValidationLimits.minPassword} to ${userValidationLimits.maxPassword} characters`}
-        autocomplete="off"
         error={props.formErrors.password}
+        placeholder={`From ${userValidationLimits.minPassword} to ${userValidationLimits.maxPassword} characters`}
       />
       {props.formData.oldPassword !== undefined && (
-        <FormInput
+        <UserPasswordBlock
           label={userFormLabels.oldPassword}
-          type="password"
-          value={props.formData.oldPassword}
+          password={props.formData.oldPassword}
           action={(value) =>
             props.setFormData((prevState) => ({ ...prevState, oldPassword: value }))
           }
-          placeholder="Only when new email or password would be saved"
-          autocomplete="off"
           error={props.formErrors.oldPassword!}
+          placeholder="Only when new email or password would be saved"
         />
       )}
       <FormButtonBlock buttons={props.buttons} />
