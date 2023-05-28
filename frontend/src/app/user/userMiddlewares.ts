@@ -3,18 +3,18 @@ import { validateEmail, validateText, validatePassword } from '../general/valida
 import { userFormLabels, userValidationLimits } from './userInitialStates';
 
 // User register validation
-export const userValidateRegister = async (
+export const userValidateRegister = (
   formData: tUserDataSave,
   setFormErrors: React.Dispatch<React.SetStateAction<tUserDataSave>>,
 ) => {
-  const name = await validateText(
+  const name = validateText(
     userFormLabels.name,
     formData.name,
     userValidationLimits.minName,
     userValidationLimits.maxName,
   );
-  const email = await validateEmail(userFormLabels.email, formData.email);
-  const password = await validatePassword(
+  const email = validateEmail(userFormLabels.email, formData.email);
+  const password = validatePassword(
     userFormLabels.password,
     formData.password,
     userValidationLimits.minPassword,
@@ -29,13 +29,13 @@ export const userValidateRegister = async (
 };
 
 // User login validation
-export const userValidateLogin = async (
+export const userValidateLogin = (
   formData: tUserDataLogin,
   setFormErrors: React.Dispatch<React.SetStateAction<tUserDataLogin>>,
 ) => {
-  const email = await validateEmail(userFormLabels.email, formData.email);
+  const email = validateEmail(userFormLabels.email, formData.email);
   // just only check out password is not empty, validity check in backend
-  const password = await validateText(userFormLabels.password, formData.password, 0, 1000);
+  const password = validateText(userFormLabels.password, formData.password, 0, 1000);
   setFormErrors({
     email,
     password,
@@ -44,21 +44,21 @@ export const userValidateLogin = async (
 };
 
 // User register validation
-export const userValidateProfile = async (
+export const userValidateProfile = (
   userData: tUserData,
   formData: tUserDataSave,
   setFormErrors: React.Dispatch<React.SetStateAction<tUserDataSave>>,
 ) => {
   if (userData.name !== formData.name || userData.email !== formData.email || formData.password) {
-    const name = await validateText(
+    const name = validateText(
       userFormLabels.name,
       formData.name,
       userValidationLimits.minName,
       userValidationLimits.maxName,
     );
-    const email = await validateEmail(userFormLabels.email, formData.email);
+    const email = validateEmail(userFormLabels.email, formData.email);
     const password = formData.password
-      ? await validatePassword(
+      ? validatePassword(
           userFormLabels.password,
           formData.password,
           userValidationLimits.minPassword,
@@ -67,7 +67,7 @@ export const userValidateProfile = async (
       : '';
     const oldPassword =
       userData.email !== formData.email || formData.password
-        ? await validateText(userFormLabels.oldPassword, formData.oldPassword!, 0, 1000)
+        ? validateText(userFormLabels.oldPassword, formData.oldPassword!, 0, 1000)
         : '';
     setFormErrors({
       name,

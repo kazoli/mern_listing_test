@@ -1,9 +1,7 @@
 import validator from 'validator';
-import { toast } from 'react-toastify';
-import { tValidation } from './vaildationTypes';
 
 // Validate an input
-export const validateText = async (
+export const validateText = (
   element: string,
   value: string,
   minLength: number,
@@ -16,18 +14,18 @@ export const validateText = async (
     return `${element} needs to be at least ${minLength} characters long`;
   }
   if (value.length > maxLength) {
-    return `${element} can be ${maxLength} characters long`;
+    return `${element} can be maximum ${maxLength} characters long`;
   }
   return '';
 };
 
 // Validate an email
-export const validateEmail = async (element: string, value: string) => {
+export const validateEmail = (element: string, value: string) => {
   return validator.isEmail(value) ? '' : `${element} needs to be valid format`;
 };
 
 // Validate the password is strong enough
-export const validatePassword = async (
+export const validatePassword = (
   element: string,
   value: string,
   minLength: number,
@@ -49,34 +47,8 @@ export const validatePassword = async (
 };
 
 // Validate a boolean
-export const validateBoolean = async (element: string, value: string) => {
+export const validateBoolean = (element: string, value: string) => {
   return validator.isBoolean(String(value), { loose: false })
     ? ''
     : `${element} needs to be boolean value`;
-};
-
-// TODO DELETE
-export const processTags = (values: string[], params: tValidation['tag']) => {
-  if (values.length > params.maxNumber) {
-    toast.error(`Maximum ${params.maxNumber} tags can be added`, {
-      toastId: 'tag-max-number',
-    });
-    return false;
-  }
-  let tagError = false;
-  values.map((tag) => {
-    tag = tag.trim();
-    if (tag.length < params.minLength || tag.length > params.maxLength) tagError = true;
-    return tag;
-  });
-  if (tagError) {
-    toast.error(
-      `All tags need to be between ${params.minLength} and ${params.maxLength} characters length`,
-      {
-        toastId: 'tag-length',
-      },
-    );
-    return false;
-  }
-  return true;
 };

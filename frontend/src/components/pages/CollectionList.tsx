@@ -1,4 +1,3 @@
-import { toast } from 'react-toastify';
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../app/general/hooks';
 import { useCheckLoggedIn } from '../../app/user/userHooks';
@@ -17,13 +16,14 @@ import {
   collectionListLimit,
   collectionListSort,
 } from '../../app/collection/collectionInitialStates';
-import { AiOutlineExclamationCircle } from 'react-icons/ai';
 import DefaultLayout from '../layout/DefaultLayout';
 import Paginator from '../general/Paginator';
 import CollectionEditorPopup from '../collection/CollectionEditorPopup';
 import ButtonRefresh from '../general/ButtonRefresh';
 import ListHeader from '../list/ListHeader';
-import Collection from '../collection/Collection';
+import CollectionListElement from '../collection/CollectionListElement';
+import ListBodyEmpty from '../list/ListBodyEmpty';
+import ListBody from '../list/ListBody';
 
 const CollectionList: React.FC = () => {
   useEffect(() => {
@@ -109,29 +109,11 @@ const CollectionList: React.FC = () => {
           // trigger to request first data from backend
           dispatch(collectionRefreshPage());
         } else {
-          // error occured
-          toast.error(collections.message);
-          // reset status to idle and remove message
+          // reset status to idle
           dispatch(collectionResetState());
         }
       } else {
-        if (collections.message !== '') {
-          switch (collections.status) {
-            case 'failed':
-              // server returns error
-              toast.error(collections.message);
-              break;
-            case 'warning':
-              // server returns success but with a message
-              toast.warn(collections.message, { toastId: 'warn' });
-              break;
-            case 'idle':
-              // server returns success, message comes from reducers
-              toast.success(collections.message, { toastId: 'success' });
-              break;
-          }
-        }
-        // reset status to idle and remove message
+        // reset status to idle
         dispatch(collectionResetState());
         // rebuild url for browser by returned and valid filter values
         dispatch(collectionBuildURL());
@@ -141,16 +123,7 @@ const CollectionList: React.FC = () => {
         });
       }
     }
-  }, [dispatch, collections.data, collections.queryParts, collections.status, collections.message]);
-
-  const paginator: JSX.Element = (
-    <Paginator
-      page={collections.queryParts.page}
-      isNextPage={collections.isNextPage}
-      refreshPage={collections.refreshPage}
-      selectAction={(value) => updateCollectionQuery('page', value as string)}
-    />
-  );
+  }, [dispatch, collections.data, collections.queryParts, collections.status]);
 
   return (
     <DefaultLayout loading={collections.status === 'loading'}>
@@ -175,27 +148,26 @@ const CollectionList: React.FC = () => {
           listHeaderActionDropDowns={listHeaderActionDropDowns}
         />
         {collections.data && collections.data.length > 0 ? (
-          <>
-            {paginator}
-            <section className="list-container">
-              <div className="list-grid">
-                {collections.data.map((collection, index) => (
-                  <Collection
-                    key={collection._id}
-                    index={index}
-                    collection={collection}
-                    highlighted={collections.highlighted}
-                  />
-                ))}
-              </div>
-            </section>
-            {paginator}
-          </>
+          <ListBody
+            paginator={
+              <Paginator
+                page={collections.queryParts.page}
+                isNextPage={collections.isNextPage}
+                refreshPage={collections.refreshPage}
+                selectAction={(value) => updateCollectionQuery('page', value as string)}
+              />
+            }
+            children={collections.data.map((collection, index) => (
+              <CollectionListElement
+                key={collection._id}
+                index={index}
+                collection={collection}
+                highlighted={collections.highlighted}
+              />
+            ))}
+          />
         ) : (
-          <section className="list-empty-container">
-            <AiOutlineExclamationCircle className="icon" />
-            <span>No collection found</span>
-          </section>
+          <ListBodyEmpty text="No collection found" />
         )}
       </>
     </DefaultLayout>

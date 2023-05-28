@@ -1,14 +1,17 @@
-import React from 'react';
-import { AiOutlineExclamationCircle } from 'react-icons/ai';
 import { taskFormLabels, taskValidationLimits } from '../../app/task/taskInitialStates';
-import { tTaskDataSave } from '../../app/task/taskTypes';
-import TagEditor from './TaskTagEditor';
-import ButtonIcon from '../general/ButtonIcon';
+import { tTaskDataErrors, tTaskDataSave } from '../../app/task/taskTypes';
+import { AiOutlineCloseCircle, AiOutlinePlusCircle } from 'react-icons/ai';
 import FormBlock from '../form/FormBlock';
+import ButtonIcon from '../general/ButtonIcon';
+import FormWarning from '../form/FormWarning';
+import FromInputElement from '../form/FromInputElement';
+import ButtonIconCircle from '../general/ButtonIconCircle';
 
 type tProps = {
   tags: tTaskDataSave['tags'];
   setFormData: React.Dispatch<React.SetStateAction<tTaskDataSave>>;
+  errors: tTaskDataErrors['tags'];
+  setFormErrors: React.Dispatch<React.SetStateAction<tTaskDataErrors>>;
 };
 
 const TaskTagBlock: React.FC<tProps> = (props) => {
@@ -19,33 +22,60 @@ const TaskTagBlock: React.FC<tProps> = (props) => {
           {props.tags.length < taskValidationLimits.totalTag ? (
             <ButtonIcon
               text="Add a new tag"
-              action={() =>
+              action={() => {
                 props.setFormData((prevState) => ({
                   ...prevState,
                   tags: ['', ...prevState.tags],
-                }))
-              }
+                }));
+                props.setFormErrors((prevState) => ({
+                  ...prevState,
+                  tags: ['', ...prevState.tags],
+                }));
+              }}
+              icon={<AiOutlinePlusCircle className="icon" />}
             />
           ) : (
-            <div className="icon-wrapper warning">
-              <AiOutlineExclamationCircle className="icon" />
-              <span>{`Maximum ${taskValidationLimits.totalTag} tags can be added to a task`}</span>
-            </div>
-          )}
-          {props.tags.length > 0 && (
-            <div className="form-multi-line-block">
-              {props.tags.map((tag, index) => (
-                <TagEditor
-                  key={index}
-                  index={index}
-                  tag={tag}
-                  tags={props.tags}
-                  setFormData={props.setFormData}
-                />
-              ))}
-            </div>
+            <FormWarning
+              text={`Maximum ${taskValidationLimits.totalTag} tags can be added to a task`}
+            />
           )}
         </div>
+        {props.tags.length > 0 && (
+          <div className="form-multi-line-block scroll-bar">
+            {props.tags.map((tag, index) => (
+              <FromInputElement
+                key={index}
+                type="text"
+                value={tag}
+                action={(value) =>
+                  props.setFormData((prevState) => ({
+                    ...prevState,
+                    tags: props.tags.map((tagCurr, indexCurr) =>
+                      indexCurr === index ? value : tagCurr,
+                    ),
+                  }))
+                }
+                error={props.errors[index]}
+                placeholder={`From ${taskValidationLimits.minTag} to ${taskValidationLimits.maxTag} characters`}
+                leftIcon={
+                  <ButtonIconCircle
+                    action={() => {
+                      props.setFormData((prevState) => ({
+                        ...prevState,
+                        tags: props.tags.filter((_, indexCurr) => indexCurr !== index),
+                      }));
+                      props.setFormErrors((prevState) => ({
+                        ...prevState,
+                        tags: props.errors.filter((_, indexCurr) => indexCurr !== index),
+                      }));
+                    }}
+                    icon={<AiOutlineCloseCircle className="icon" />}
+                  />
+                }
+              />
+            ))}
+          </div>
+        )}
       </>
     </FormBlock>
   );

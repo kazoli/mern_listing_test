@@ -1,9 +1,10 @@
-import { AiOutlineDelete, AiOutlineEdit, AiOutlineRightCircle } from 'react-icons/ai';
-import { useAppDispatch } from '../../app/general/hooks';
+import { NavLink } from 'react-router-dom';
 import { tCollectionData, tCollectionState } from '../../app/collection/collectionTypes';
+import { useAppDispatch } from '../../app/general/hooks';
 import { collectionToogleEditor } from '../../app/collection/collectionSlice';
 import { deleteCollection } from '../../app/collection/collectionThunks';
 import { formatDate } from '../../app/general/middlewares';
+import { AiOutlineDelete, AiOutlineEdit, AiOutlineRightCircle } from 'react-icons/ai';
 
 type tProps = {
   index: number;
@@ -11,7 +12,7 @@ type tProps = {
   highlighted: tCollectionState['highlighted'];
 };
 
-const Collection: React.FC<tProps> = (props) => {
+const CollectionListElement: React.FC<tProps> = (props) => {
   const dispatch = useAppDispatch();
 
   return (
@@ -20,7 +21,7 @@ const Collection: React.FC<tProps> = (props) => {
         props.highlighted === props.collection._id ? 'list-wrapper highlighted' : 'list-wrapper'
       }
     >
-      <div className="list-element-top-part">
+      <div className="list-element-top-wrapper">
         <div className="list-element-title">{props.collection.name}</div>
         <div className="list-element-feature-wrapper">
           <p>
@@ -32,10 +33,10 @@ const Collection: React.FC<tProps> = (props) => {
             <span>{formatDate(props.collection.updatedAt)}</span>
           </p>
         </div>
-        <a className="list-element icon-wrapper click" href={`/tasks/${props.collection._id}`}>
+        <NavLink to={`/tasks/${props.collection._id}`} className="list-element icon-wrapper click">
           <AiOutlineRightCircle className="icon" />
           <span>Go to tasks</span>
-        </a>
+        </NavLink>
       </div>
       <div className="list-element-icon-wrapper">
         <AiOutlineEdit
@@ -53,4 +54,4 @@ const Collection: React.FC<tProps> = (props) => {
   );
 };
 
-export default Collection;
+export default CollectionListElement;

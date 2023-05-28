@@ -32,11 +32,9 @@ const UserProfile: React.FC = () => {
   });
 
   const onSubmit = () => {
-    userValidateProfile(user.data, formData, setFormErrors).then((submit) => {
-      if (submit) {
-        dispatch(updateUser(formData));
-      }
-    });
+    if (userValidateProfile(user.data, formData, setFormErrors)) {
+      dispatch(updateUser(formData));
+    }
   };
   const buttons = [
     {

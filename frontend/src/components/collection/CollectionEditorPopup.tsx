@@ -1,5 +1,9 @@
 import { useEffect, useState } from 'react';
-import { tCollectionData, tCollectionDataSave } from '../../app/collection/collectionTypes';
+import {
+  tCollectionData,
+  tCollectionDataErrors,
+  tCollectionDataSave,
+} from '../../app/collection/collectionTypes';
 import {
   collectionFormLabels,
   collectionValidationLimits,
@@ -26,22 +30,19 @@ const CollectionEditorPopup: React.FC<tProps> = (props) => {
     _id: '',
     name: '',
   });
-  const [formErrors, setFormErrors] = useState<tCollectionDataSave>({
-    _id: '',
+  const [formErrors, setFormErrors] = useState<tCollectionDataErrors>({
     name: '',
   });
 
   const onSubmit = () => {
-    collectionValidateForm(formData, setFormErrors).then((submit) => {
-      if (submit) {
-        // highlight the updated collection
-        if (props.collection) {
-          dispatch(collectionToogleHighlighted(props.collection._id));
-        }
-        // udpate or create a collection
-        dispatch(formData._id ? updateCollection(formData) : createCollection(formData));
+    if (collectionValidateForm(formData, setFormErrors)) {
+      // highlight the updated collection
+      if (props.collection) {
+        dispatch(collectionToogleHighlighted(props.collection._id));
       }
-    });
+      // udpate or create a collection
+      dispatch(formData._id ? updateCollection(formData) : createCollection(formData));
+    }
   };
 
   const buttons = [
@@ -74,10 +75,10 @@ const CollectionEditorPopup: React.FC<tProps> = (props) => {
         maxLength={collectionValidationLimits.maxName}
         value={formData.name}
         action={(value) =>
-          setFormData({
-            ...formData,
+          setFormData((prevState) => ({
+            ...prevState,
             name: value,
-          })
+          }))
         }
         preventEnter={true}
         error={formErrors.name}

@@ -11,14 +11,14 @@ type tProps = {
   highlighted: tTaskState['highlighted'];
 };
 
-const Task: React.FC<tProps> = (props) => {
+const TaskListElement: React.FC<tProps> = (props) => {
   const dispatch = useAppDispatch();
 
   return (
     <div
       className={props.highlighted === props.task._id ? 'list-wrapper highlighted' : 'list-wrapper'}
     >
-      <div className="list-element-top-part">
+      <div className="list-element-top-wrapper">
         <div className="list-element-title">{props.task.name}</div>
         <div className="list-element-feature-wrapper">
           <p>
@@ -77,4 +77,4 @@ const Task: React.FC<tProps> = (props) => {
   );
 };
 
-export default Task;
+export default TaskListElement;

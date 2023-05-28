@@ -29,11 +29,9 @@ const UserRegister: React.FC = () => {
   });
 
   const onSubmit = () => {
-    userValidateRegister(formData, setFormErrors).then((submit) => {
-      if (submit) {
-        dispatch(registerUser(formData));
-      }
-    });
+    if (userValidateRegister(formData, setFormErrors)) {
+      dispatch(registerUser(formData));
+    }
   };
   const buttons = [
     {

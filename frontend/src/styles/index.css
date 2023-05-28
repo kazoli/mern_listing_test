@@ -216,10 +216,12 @@ header {
 }
 
 .header-logo-wrapper {
+  flex: 10000 10000 270px;
+}
+
+.header-logo-link {
   display: flex;
   align-items: center;
-  cursor: pointer;
-  flex: 10000 10000 270px;
 }
 
 .header-logo-icon {
@@ -414,7 +416,8 @@ footer .layout-positioner {
 }
 
 .icon-wrapper.warning .icon {
-  background: #fee48f;
+  background: #ffc5a3;
+  box-shadow: 0 0 5px 0 #909090, inset 0 0 10px 0 #ff9e66;
 }
 
 .icon-wrapper span {
@@ -452,7 +455,7 @@ textarea.autosize {
 .form-error {
   margin: 0 20px;
   color: #ff0000;
-  width: 100%;
+  flex: 1 1 100%;
 }
 
 .form-block {
@@ -474,7 +477,7 @@ textarea.autosize {
 }
 
 .form-block label {
-  width: 100%;
+  flex: 1 1 100%;
   font-size: 1.25rem;
   padding: 0 20px;
   color: #505050;
@@ -489,7 +492,7 @@ textarea.autosize {
 
 .form-element {
   margin: 5px 10px;
-  flex: 10000 10000 auto;
+  flex: 1 1 100%;
 }
 
 .form-element-wrapper .form-element {
@@ -498,17 +501,17 @@ textarea.autosize {
 
 .form-multi-line-block {
   overflow: auto;
-  max-height: 50vh;
-  margin: 15px 0 0 0;
+  max-height: 45vh;
+  margin: 5px 0;
+  padding: 0 0 5px 0;
   border: solid #e0e0e0;
   border-width: 1px 0;
-  padding: 5px 0;
+  flex: 1 1 100%;
 }
 
-.form-multi-line {
-  display: flex;
-  align-items: center;
+.form-multi-line-block .form-element-wrapper {
   gap: 5px;
+  margin-top: 10px;
 }
 
 .from-button-wrapper {
@@ -527,6 +530,7 @@ textarea.autosize {
   transition: 0.2s all;
   border: none;
   color: #505050;
+  outline: none;
 }
 
 .form-button:hover {
@@ -605,18 +609,15 @@ textarea.autosize {
 }
 
 .list-header-search-bar {
-  width: 100%;
+  flex: 1 1 100%;
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: 10px;
 }
 
-.list-header-search-input {
-  width: 100%;
-  border-radius: 2rem;
-  transition: 0.2s;
-  flex: 10000 10000 250px;
+.list-header-search-bar .form-element-wrapper {
+  margin: 0;
 }
 
 .list-header-search-block {
@@ -626,7 +627,7 @@ textarea.autosize {
 }
 
 .list-header-action-bar {
-  width: 100%;
+  flex: 1 1 100%;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
@@ -678,7 +679,8 @@ textarea.autosize {
 
 .list-empty-container .icon {
   font-size: 1.75rem;
-  background: #ffc7a7;
+  background: #ffc5a3;
+  box-shadow: 0 0 5px 0 #909090, inset 0 0 10px 0 #ff9e66;
   border-radius: 2rem;
   flex: 1 1 auto;
 }
@@ -781,7 +783,7 @@ textarea.autosize {
 
 .list-element-icon-wrapper .icon:hover {
   box-shadow: 0 0 5px 0 #b0b0b0, inset 0 0 2px 0 #b0b0b0;
-  background: #fee180;
+  background: #fedf7c;
 }
 
 .popup-container {
@@ -807,7 +809,7 @@ textarea.autosize {
     position: absolute;
     top: -150px;
     right: 0;
-    width: 100%;
+    flex: 1 1 100%;
     justify-content: flex-end;
     box-shadow: inset 0 0 10px 0 #e0e0e0, 0 0 5px 1px #cccccc;
     background: #fcfcfc;
@@ -877,17 +879,9 @@ textarea.autosize {
   }
 
   .form-button:hover {
-    box-shadow: 0 0 3px 0 #909090, inset 0 0 15px 0 #6ac1ff;
-    background: #d2ecff;
     color: #505050;
-  }
-
-  .form-multi-line-block .icon-wrapper:hover .icon {
-    background: #ffc7a7;
-  }
-
-  .form-multi-line-block .icon-wrapper:active .icon {
-    background: #ff9e9e;
+    background: #d2ecff;
+    box-shadow: 0 0 3px 0 #909090, inset 0 0 15px 0 #6ac1ff;
   }
 }
 /*TOUCH SCREEN END*/
@@ -898,7 +892,7 @@ textarea.autosize {
 }
 
 .scroll-bar::-webkit-scrollbar-track {
-  margin: 30px 0;
+  margin: 1px 0;
 }
 
 .scroll-bar::-webkit-scrollbar-thumb {
@@ -908,6 +902,10 @@ textarea.autosize {
 
 .scroll-bar::-webkit-scrollbar-thumb:hover {
   background: #149cff;
+}
+
+.popup-container.scroll-bar::-webkit-scrollbar-track {
+  margin: 30px 0;
 }
 /*WEBKIT END*/
 

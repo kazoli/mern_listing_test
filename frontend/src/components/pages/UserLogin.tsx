@@ -27,11 +27,9 @@ const UserLogin: React.FC = () => {
   });
 
   const onSubmit = () => {
-    userValidateLogin(formData, setFormErrors).then((submit) => {
-      if (submit) {
-        dispatch(loginUser(formData));
-      }
-    });
+    if (userValidateLogin(formData, setFormErrors)) {
+      dispatch(loginUser(formData));
+    }
   };
   const buttons = [
     {

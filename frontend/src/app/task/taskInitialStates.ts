@@ -20,7 +20,7 @@ export const taskValidationLimits: tTaskValidationLimits = {
   maxName: 200,
   minTag: 2,
   maxTag: 30,
-  totalTag: 3,
+  totalTag: 10,
 };
 
 // Task list sorting options

@@ -12,6 +12,11 @@ export type tCollectionValidationLimits = {
 };
 
 // Type of posted collection data
+export type tCollectionDataErrors = {
+  name: string;
+};
+
+// Type of collection data
 export type tCollectionDataSave = {
   _id: string;
   name: string;
@@ -53,7 +58,7 @@ export type tCollectionMappedQueryParts =
 
 // Type of collection state
 export type tCollectionState = {
-  status: 'idle' | 'loading' | 'warning' | 'failed';
+  status: 'idle' | 'loading' | 'failed';
   highlighted: boolean | string;
   refreshPage: boolean;
   refreshButton: boolean;

@@ -3,7 +3,7 @@ import axios from 'axios';
 import { tCollectionData, tCollectionDataSave, tCollectionState } from './collectionTypes';
 import { errorHandler } from '../general/error';
 
-// get collections through an async thunk of redux toolkit
+// Get collections through an async thunk of redux toolkit
 export const getCollections = createAsyncThunk<tCollectionState, string, { rejectValue: string }>(
   'collections/getCollections',
   async (query, thunkAPI) => {
@@ -17,7 +17,7 @@ export const getCollections = createAsyncThunk<tCollectionState, string, { rejec
   },
 );
 
-// create a collection through an async thunk of redux toolkit
+// Create a collection through an async thunk of redux toolkit
 export const createCollection = createAsyncThunk<
   tCollectionData,
   tCollectionDataSave,
@@ -31,7 +31,7 @@ export const createCollection = createAsyncThunk<
   }
 });
 
-// update a collection through an async thunk of redux toolkit
+// Update a collection through an async thunk of redux toolkit
 export const updateCollection = createAsyncThunk<
   tCollectionData,
   tCollectionDataSave,
@@ -45,7 +45,7 @@ export const updateCollection = createAsyncThunk<
   }
 });
 
-// delete a collection through an async thunk of redux toolkit
+// Delete a collection through an async thunk of redux toolkit
 export const deleteCollection = createAsyncThunk<
   tCollectionData,
   tCollectionData['_id'],

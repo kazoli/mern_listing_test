@@ -34,7 +34,6 @@ const UserDeletePopup: React.FC<tProps> = (props) => {
         label={userFormLabels.password}
         password={password}
         action={(value) => setPassword(value)}
-        error=""
         placeholder="Enter your password"
       />
       <FormButtonBlock buttons={buttons} />

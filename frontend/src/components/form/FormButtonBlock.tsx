@@ -1,5 +1,7 @@
+import { tButton } from '../../app/general/types';
+
 type tProps = {
-  buttons: { text: string; action: () => void }[];
+  buttons: tButton[];
 };
 
 const FormButtonBlock: React.FC<tProps> = (props) => {

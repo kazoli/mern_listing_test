@@ -1,18 +1,32 @@
 import { validateText } from '../general/validations';
 import { taskFormLabels, taskValidationLimits } from './taskInitialStates';
-import { tTaskDataSave } from './taskTypes';
+import { tTaskDataErrors, tTaskDataSave } from './taskTypes';
 
 // Task form validation
-export const taskValidateForm = async (
+export const taskValidateForm = (
   formData: tTaskDataSave,
-  setFormErrors: React.Dispatch<React.SetStateAction<tTaskDataSave>>,
+  setFormErrors: React.Dispatch<React.SetStateAction<tTaskDataErrors>>,
 ) => {
-  const name = await validateText(
+  const name = validateText(
     taskFormLabels.name,
     formData.name,
     taskValidationLimits.minName,
     taskValidationLimits.maxName,
   );
-  setFormErrors((prevState) => ({ ...prevState, name }));
-  return !name;
+  let tagError = false;
+  const tags: tTaskDataErrors['tags'] = [];
+  formData.tags.forEach((tag) => {
+    const error = validateText(
+      taskFormLabels.tags,
+      tag,
+      taskValidationLimits.minTag,
+      taskValidationLimits.maxTag,
+    );
+    tags.push(error);
+    if (!tagError && error) {
+      tagError = true;
+    }
+  });
+  setFormErrors({ name, tags });
+  return !name && !tagError;
 };

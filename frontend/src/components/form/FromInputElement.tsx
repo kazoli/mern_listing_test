@@ -1,15 +1,6 @@
-import React from 'react';
+import { tInput } from '../../app/general/types';
 
-type tProps = {
-  type: string;
-  value: string;
-  action: (value: string) => void;
-  error: string;
-  autocomplete?: string;
-  placeholder?: string;
-  leftIcon?: JSX.Element;
-  rightIcon?: JSX.Element;
-};
+type tProps = tInput;
 
 const FromInputElement: React.FC<tProps> = (props) => {
   return (

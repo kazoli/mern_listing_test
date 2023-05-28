@@ -16,7 +16,13 @@ export type tTaskValidationLimits = {
   totalTag: number;
 };
 
-// Type of posted task data
+// Type of task errors
+export type tTaskDataErrors = {
+  name: string;
+  tags: string[];
+};
+
+// Type of task data
 export type tTaskDataSave = {
   _id: string;
   collection_id: string;

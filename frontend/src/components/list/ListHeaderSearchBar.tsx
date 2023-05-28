@@ -1,5 +1,6 @@
 import { tObject } from '../../app/general/types';
 import { FcSearch } from 'react-icons/fc';
+import FromInputElement from '../form/FromInputElement';
 
 type tProps<T> = {
   search: T;
@@ -11,17 +12,16 @@ type tProps<T> = {
 const ListHeaderSearchBar = <T extends tObject>(props: tProps<T>) => {
   return (
     <div className="list-header-search-bar">
-      <input
-        className="list-header-search-input"
+      <FromInputElement
         type="text"
-        placeholder="Enter keywords"
-        onChange={(e) =>
-          props.setSearch({
-            ...props.search,
-            keywords: e.target.value,
-          })
-        }
         value={props.search.keywords}
+        action={(value) =>
+          props.setSearch((prevState) => ({
+            ...prevState,
+            keywords: value,
+          }))
+        }
+        placeholder="Enter keywords"
       />
       <div className="list-header-search-block">
         {props.searchType}

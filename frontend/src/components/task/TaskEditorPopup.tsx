@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { tTaskData, tTaskDataSave } from '../../app/task/taskTypes';
+import { tTaskData, tTaskDataErrors, tTaskDataSave } from '../../app/task/taskTypes';
 import { taskFormLabels, taskValidationLimits } from '../../app/task/taskInitialStates';
 import { createTask, updateTask } from '../../app/task/taskThunks';
 import { taskToogleEditor, taskToogleHighlighted } from '../../app/task/taskSlice';
@@ -25,25 +25,20 @@ const TaskEditorPopup: React.FC<tProps> = (props) => {
     tags: [],
     complete: false,
   });
-  const [formErrors, setFormErrors] = useState<tTaskDataSave>({
-    _id: '',
-    collection_id: '',
+  const [formErrors, setFormErrors] = useState<tTaskDataErrors>({
     name: '',
     tags: [],
-    complete: false,
   });
 
   const onSubmit = () => {
-    taskValidateForm(formData, setFormErrors).then((submit) => {
-      if (submit) {
-        // highlight the updated task
-        if (props.task) {
-          dispatch(taskToogleHighlighted(props.task._id));
-        }
-        // udpate or create a task
-        dispatch(formData._id ? updateTask(formData) : createTask(formData));
+    if (taskValidateForm(formData, setFormErrors)) {
+      // highlight the updated task
+      if (props.task) {
+        dispatch(taskToogleHighlighted(props.task._id));
       }
-    });
+      // udpate or create a task
+      dispatch(formData._id ? updateTask(formData) : createTask(formData));
+    }
   };
 
   const buttons = [
@@ -79,15 +74,20 @@ const TaskEditorPopup: React.FC<tProps> = (props) => {
         maxLength={taskValidationLimits.maxName}
         value={formData.name}
         action={(value) =>
-          setFormData({
-            ...formData,
+          setFormData((prevState) => ({
+            ...prevState,
             name: value,
-          })
+          }))
         }
         preventEnter={true}
         error={formErrors.name}
       />
-      <TaskTagBlock tags={formData.tags} setFormData={setFormData} />
+      <TaskTagBlock
+        tags={formData.tags}
+        setFormData={setFormData}
+        errors={formErrors.tags}
+        setFormErrors={setFormErrors}
+      />
       <FormButtonBlock buttons={buttons} />
     </PopUp>
   );

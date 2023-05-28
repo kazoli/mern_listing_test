@@ -21,7 +21,7 @@ import {
   taskListSort,
 } from '../../app/task/taskInitialStates';
 import { formatDate } from '../../app/general/middlewares';
-import { AiOutlineExclamationCircle, AiOutlineRightCircle } from 'react-icons/ai';
+import { AiOutlineRightCircle } from 'react-icons/ai';
 import DefaultLayout from '../layout/DefaultLayout';
 import Paginator from '../general/Paginator';
 import TaskEditorPopup from '../task/TaskEditorPopup';
@@ -30,7 +30,9 @@ import ListHeaderTitle from '../list/ListHeaderTitle';
 import ListHeader from '../list/ListHeader';
 import DropDownMenu from '../general/DropDownMenu';
 import DropDownListLabel from '../general/DropDownListLabel';
-import Task from '../task/Task';
+import TaskListElement from '../task/TaskListElement';
+import ListBodyEmpty from '../list/ListBodyEmpty';
+import ListBody from '../list/ListBody';
 
 type tSearch = {
   keywords: tTaskQueryParts['keywords'];
@@ -168,15 +170,6 @@ const TaskList: React.FC = () => {
     }
   }, [dispatch, navigate, tasks.collection, tasks.queryParts, tasks.status, tasks.message]);
 
-  const paginator: JSX.Element = (
-    <Paginator
-      page={tasks.queryParts.page}
-      isNextPage={tasks.isNextPage}
-      refreshPage={tasks.refreshPage}
-      selectAction={(value) => updateTaskQuery('page', value as string)}
-    />
-  );
-
   return (
     <DefaultLayout loading={tasks.status === 'loading'}>
       <>
@@ -220,22 +213,26 @@ const TaskList: React.FC = () => {
           listHeaderActionDropDowns={listHeaderActionDropDowns}
         />
         {tasks.data && tasks.data.length > 0 ? (
-          <>
-            {paginator}
-            <section className="list-container">
-              <div className="list-grid">
-                {tasks.data.map((task, index) => (
-                  <Task key={task._id} index={index} task={task} highlighted={tasks.highlighted} />
-                ))}
-              </div>
-            </section>
-            {paginator}
-          </>
+          <ListBody
+            paginator={
+              <Paginator
+                page={tasks.queryParts.page}
+                isNextPage={tasks.isNextPage}
+                refreshPage={tasks.refreshPage}
+                selectAction={(value) => updateTaskQuery('page', value as string)}
+              />
+            }
+            children={tasks.data.map((task, index) => (
+              <TaskListElement
+                key={task._id}
+                index={index}
+                task={task}
+                highlighted={tasks.highlighted}
+              />
+            ))}
+          />
         ) : (
-          <section className="list-empty-container">
-            <AiOutlineExclamationCircle className="icon" />
-            <span>No task found</span>
-          </section>
+          <ListBodyEmpty text="No task found" />
         )}
       </>
     </DefaultLayout>
