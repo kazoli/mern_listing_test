@@ -33,7 +33,7 @@ export const taskListSearchType: tTaskListSearchType = {
 // Task list completion options
 export const taskListCompletion: tTaskListCompletion = {
   default: 'All statuses',
-  complete: 'Complete tasks only',
+  complete: 'Completed tasks only',
   incomplete: 'Incomplete tasks only',
 };
 
@@ -62,7 +62,6 @@ export const taskInitialState: tTaskState = {
   resetSearch: false,
   collection: null,
   data: [],
-  message: '',
   isNextPage: false,
   queryParts: {
     keywords: '',

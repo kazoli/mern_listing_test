@@ -7,12 +7,12 @@ import { getCollections } from '../../app/collection/collectionThunks';
 import {
   collectionBuildURL,
   collectionRefreshPage,
-  collectionResetState,
   collectionToogleEditor,
   collectionToogleHighlighted,
   collectionUpdateQueryParts,
 } from '../../app/collection/collectionSlice';
 import {
+  collectionInitialState,
   collectionListLimit,
   collectionListSort,
 } from '../../app/collection/collectionInitialStates';
@@ -21,9 +21,9 @@ import Paginator from '../general/Paginator';
 import CollectionEditorPopup from '../collection/CollectionEditorPopup';
 import ButtonRefresh from '../general/ButtonRefresh';
 import ListHeader from '../list/ListHeader';
-import CollectionListElement from '../collection/CollectionListElement';
-import ListBodyEmpty from '../list/ListBodyEmpty';
 import ListBody from '../list/ListBody';
+import ListBodyEmpty from '../list/ListBodyEmpty';
+import CollectionListElement from '../collection/CollectionListElement';
 
 const CollectionList: React.FC = () => {
   useEffect(() => {
@@ -38,7 +38,7 @@ const CollectionList: React.FC = () => {
   const collections = useAppSelector((state) => state.collections);
 
   const [search, setSearch] = useState({
-    keywords: '',
+    keywords: collectionInitialState.queryParts.keywords,
   });
 
   const updateCollectionQuery = (
@@ -63,7 +63,7 @@ const CollectionList: React.FC = () => {
     listHeaderActionButtons.push({
       text: 'Reset search',
       action: () => {
-        updateCollectionQuery('keywords', '');
+        updateCollectionQuery('keywords', collectionInitialState.queryParts.keywords);
       },
     });
   }
@@ -95,9 +95,8 @@ const CollectionList: React.FC = () => {
   }, [dispatch, collections.refreshPage]);
 
   useEffect(() => {
-    // set highlighted false
+    // cease highlighting of element
     if (collections.highlighted !== false) {
-      // this needs to be bigger than effect time
       setTimeout(() => dispatch(collectionToogleHighlighted(false)), 1500);
     }
   }, [dispatch, collections.highlighted]);
@@ -105,16 +104,9 @@ const CollectionList: React.FC = () => {
   useEffect(() => {
     if (collections.status !== 'loading') {
       if (collections.data === null) {
-        if (collections.status === 'idle') {
-          // trigger to request first data from backend
-          dispatch(collectionRefreshPage());
-        } else {
-          // reset status to idle
-          dispatch(collectionResetState());
-        }
+        // trigger to request first data from backend
+        dispatch(collectionRefreshPage());
       } else {
-        // reset status to idle
-        dispatch(collectionResetState());
         // rebuild url for browser by returned and valid filter values
         dispatch(collectionBuildURL());
         // update search fields with response data
@@ -147,7 +139,7 @@ const CollectionList: React.FC = () => {
           listHeaderActionButtons={listHeaderActionButtons}
           listHeaderActionDropDowns={listHeaderActionDropDowns}
         />
-        {collections.data && collections.data.length > 0 ? (
+        {collections.data && collections.data.length ? (
           <ListBody
             paginator={
               <Paginator

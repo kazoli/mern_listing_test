@@ -1,4 +1,3 @@
-import { toast } from 'react-toastify';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../app/general/hooks';
@@ -7,7 +6,6 @@ import { tButton, tListHeaderActionDropDowns } from '../../app/general/types';
 import { tTaskQueryParts } from '../../app/task/taskTypes';
 import { getTasks } from '../../app/task/taskThunks';
 import {
-  taskResetState,
   taskBuildURL,
   taskRefreshPage,
   taskToogleEditor,
@@ -15,6 +13,7 @@ import {
   taskUpdateQueryParts,
 } from '../../app/task/taskSlice';
 import {
+  taskInitialState,
   taskListCompletion,
   taskListLimit,
   taskListSearchType,
@@ -30,9 +29,9 @@ import ListHeaderTitle from '../list/ListHeaderTitle';
 import ListHeader from '../list/ListHeader';
 import DropDownMenu from '../general/DropDownMenu';
 import DropDownListLabel from '../general/DropDownListLabel';
-import TaskListElement from '../task/TaskListElement';
-import ListBodyEmpty from '../list/ListBodyEmpty';
 import ListBody from '../list/ListBody';
+import ListBodyEmpty from '../list/ListBodyEmpty';
+import TaskListElement from '../task/TaskListElement';
 
 type tSearch = {
   keywords: tTaskQueryParts['keywords'];
@@ -54,8 +53,8 @@ const TaskList: React.FC = () => {
   const tasks = useAppSelector((state) => state.tasks);
 
   const [search, setSearch] = useState<tSearch>({
-    keywords: '',
-    searchType: 'default',
+    keywords: taskInitialState.queryParts.keywords,
+    searchType: taskInitialState.queryParts.searchType,
   });
 
   const updateTaskQuery = (
@@ -79,8 +78,8 @@ const TaskList: React.FC = () => {
     listHeaderActionButtons.push({
       text: 'Reset search',
       action: () => {
-        updateTaskQuery('keywords', '', false);
-        updateTaskQuery('searchType', 'default');
+        updateTaskQuery('keywords', taskInitialState.queryParts.keywords, false);
+        updateTaskQuery('searchType', taskInitialState.queryParts.searchType);
       },
     });
   }
@@ -121,9 +120,8 @@ const TaskList: React.FC = () => {
   }, [dispatch, tasks.refreshPage, params.collection_id]);
 
   useEffect(() => {
-    // set highlighted false
+    // cease highlighting of element
     if (tasks.highlighted !== false) {
-      // this needs to be bigger than effect time
       setTimeout(() => dispatch(taskToogleHighlighted(false)), 1500);
     }
   }, [dispatch, tasks.highlighted]);
@@ -135,30 +133,10 @@ const TaskList: React.FC = () => {
           // trigger to request first data from backend
           dispatch(taskRefreshPage());
         } else {
-          // error occured in first loading
-          toast.error(tasks.message, { toastId: 'load-error' });
-          // return to collections
+          // return to collections because the collection cannot be found
           navigate('/');
         }
       } else {
-        if (tasks.message !== '') {
-          switch (tasks.status) {
-            case 'failed':
-              // server returns error
-              toast.error(tasks.message);
-              break;
-            case 'warning':
-              // server returns success but with a message
-              toast.warn(tasks.message, { toastId: 'warn' });
-              break;
-            case 'idle':
-              // server returns success, message comes from reducers
-              toast.success(tasks.message, { toastId: 'success' });
-              break;
-          }
-        }
-        // reset status to idle and remove message
-        dispatch(taskResetState());
         // rebuild url for browser by returned and valid filter values
         dispatch(taskBuildURL());
         // update search fields with response data
@@ -168,7 +146,7 @@ const TaskList: React.FC = () => {
         });
       }
     }
-  }, [dispatch, navigate, tasks.collection, tasks.queryParts, tasks.status, tasks.message]);
+  }, [dispatch, navigate, tasks.collection, tasks.queryParts, tasks.status]);
 
   return (
     <DefaultLayout loading={tasks.status === 'loading'}>
@@ -191,7 +169,10 @@ const TaskList: React.FC = () => {
         <ListHeader
           search={search}
           setSearch={setSearch}
-          action={() => updateTaskQuery('keywords', search.keywords)}
+          action={() => {
+            updateTaskQuery('keywords', search.keywords, false);
+            updateTaskQuery('searchType', search.searchType);
+          }}
           searchType={
             <DropDownMenu
               wrapperClass="list-drop-down-wrapper"
@@ -212,7 +193,7 @@ const TaskList: React.FC = () => {
           listHeaderActionButtons={listHeaderActionButtons}
           listHeaderActionDropDowns={listHeaderActionDropDowns}
         />
-        {tasks.data && tasks.data.length > 0 ? (
+        {tasks.data && tasks.data.length ? (
           <ListBody
             paginator={
               <Paginator

@@ -4,7 +4,7 @@ export type tTypeMap<T extends { [key: string]: any }> = {
 };
 
 // General type to key - value pair object
-export type tObject = { [key: string | number]: string };
+export type tObject = { [key: string]: string };
 
 // General type to button
 export type tButton = {

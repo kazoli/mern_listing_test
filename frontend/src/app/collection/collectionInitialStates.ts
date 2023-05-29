@@ -41,7 +41,6 @@ export const collectionInitialState: tCollectionState = {
   editor: false,
   resetSearch: false,
   data: null,
-  message: '',
   isNextPage: false,
   queryParts: {
     keywords: '',

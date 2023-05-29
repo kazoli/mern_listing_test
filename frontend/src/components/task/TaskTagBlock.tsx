@@ -5,7 +5,6 @@ import FormBlock from '../form/FormBlock';
 import ButtonIcon from '../general/ButtonIcon';
 import FormWarning from '../form/FormWarning';
 import FromInputElement from '../form/FromInputElement';
-import ButtonIconCircle from '../general/ButtonIconCircle';
 
 type tProps = {
   tags: tTaskDataSave['tags'];
@@ -58,7 +57,7 @@ const TaskTagBlock: React.FC<tProps> = (props) => {
                 error={props.errors[index]}
                 placeholder={`From ${taskValidationLimits.minTag} to ${taskValidationLimits.maxTag} characters`}
                 leftIcon={
-                  <ButtonIconCircle
+                  <ButtonIcon
                     action={() => {
                       props.setFormData((prevState) => ({
                         ...prevState,

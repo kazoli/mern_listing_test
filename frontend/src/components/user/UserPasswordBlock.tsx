@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 import FormInputBlock from '../form/FormInputBlock';
-import ButtonIconCircle from '../general/ButtonIconCircle';
+import ButtonIcon from '../general/ButtonIcon';
 
 type tProps = {
   label: string;
@@ -24,7 +24,7 @@ const UserPasswordBlock: React.FC<tProps> = (props) => {
       placeholder={props.placeholder}
       autocomplete="off"
       rightIcon={
-        <ButtonIconCircle
+        <ButtonIcon
           action={() => setVisible(!visible)}
           icon={
             visible ? <AiOutlineEye className="icon" /> : <AiOutlineEyeInvisible className="icon" />

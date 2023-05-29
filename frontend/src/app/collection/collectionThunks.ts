@@ -4,18 +4,24 @@ import { tCollectionData, tCollectionDataSave, tCollectionState } from './collec
 import { errorHandler } from '../general/error';
 
 // Get collections through an async thunk of redux toolkit
-export const getCollections = createAsyncThunk<tCollectionState, string, { rejectValue: string }>(
-  'collections/getCollections',
-  async (query, thunkAPI) => {
-    try {
-      // query string contains value of window.location.search
-      const response = await axios.get(`/api/collections/${query}`);
-      return response.data;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(errorHandler(error));
-    }
+export const getCollections = createAsyncThunk<
+  {
+    queryParts: tCollectionState['queryParts'];
+    isNextPage: tCollectionState['isNextPage'];
+    data: tCollectionState['data'];
+    message: string;
   },
-);
+  string,
+  { rejectValue: string }
+>('collections/getCollections', async (query, thunkAPI) => {
+  try {
+    // query string contains value of window.location.search
+    const response = await axios.get(`/api/collections/${query}`);
+    return response.data;
+  } catch (error) {
+    return thunkAPI.rejectWithValue(errorHandler(error));
+  }
+});
 
 // Create a collection through an async thunk of redux toolkit
 export const createCollection = createAsyncThunk<

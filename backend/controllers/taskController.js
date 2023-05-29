@@ -91,8 +91,8 @@ const getTasks = asyncHandler(async (req, res) => {
 
   // set sort
   switch (req.query.sort) {
-    default: // for return value
-      req.query.sort = 'default';
+    default:
+      req.query.sort = 'default'; // for return value
       options.sort = { name: 1 };
       break;
     case 'nameDESC':

@@ -6,7 +6,7 @@ const ButtonIcon: React.FC<tProps> = (props) => {
   return (
     <button className="icon-wrapper click" onClick={props.action}>
       {props.icon}
-      <span>{props.text}</span>
+      {props.text && <span>{props.text}</span>}
     </button>
   );
 };

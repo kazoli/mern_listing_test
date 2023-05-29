@@ -32,7 +32,7 @@ const TaskListElement: React.FC<tProps> = (props) => {
           <p>
             <label>Status</label>
             {props.task.complete ? (
-              <span className="green">Complete</span>
+              <span className="green">Completed</span>
             ) : (
               <span>Incomplete</span>
             )}

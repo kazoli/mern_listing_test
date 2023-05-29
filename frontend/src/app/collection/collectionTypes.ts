@@ -11,7 +11,7 @@ export type tCollectionValidationLimits = {
   maxName: number;
 };
 
-// Type of posted collection data
+// Type of collection data errors
 export type tCollectionDataErrors = {
   name: string;
 };
@@ -64,7 +64,6 @@ export type tCollectionState = {
   refreshButton: boolean;
   editor: boolean | number;
   resetSearch: boolean;
-  message: string;
   isNextPage: boolean;
   data: null | tCollectionData[];
   queryParts: tCollectionQueryParts;

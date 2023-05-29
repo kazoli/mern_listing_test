@@ -1,6 +1,7 @@
 import { tObject } from '../../app/general/types';
 import { FcSearch } from 'react-icons/fc';
 import FromInputElement from '../form/FromInputElement';
+import ButtonIcon from '../general/ButtonIcon';
 
 type tProps<T> = {
   search: T;
@@ -25,12 +26,10 @@ const ListHeaderSearchBar = <T extends tObject>(props: tProps<T>) => {
       />
       <div className="list-header-search-block">
         {props.searchType}
-        <div
-          className="icon-wrapper click"
-          onClick={() => props.search.keywords.length && props.action()}
-        >
-          <FcSearch className="icon uncolored" />
-        </div>
+        <ButtonIcon
+          action={() => props.search.keywords.length && props.action()}
+          icon={<FcSearch className="icon uncolored" />}
+        />
       </div>
     </div>
   );

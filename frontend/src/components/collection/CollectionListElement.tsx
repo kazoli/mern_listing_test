@@ -33,7 +33,11 @@ const CollectionListElement: React.FC<tProps> = (props) => {
             <span>{formatDate(props.collection.updatedAt)}</span>
           </p>
         </div>
-        <NavLink to={`/tasks/${props.collection._id}`} className="list-element icon-wrapper click">
+        <NavLink
+          to={`/tasks/${props.collection._id}`}
+          reloadDocument
+          className="list-element icon-wrapper click"
+        >
           <AiOutlineRightCircle className="icon" />
           <span>Go to tasks</span>
         </NavLink>

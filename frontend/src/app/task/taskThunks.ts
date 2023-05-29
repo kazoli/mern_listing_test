@@ -4,18 +4,25 @@ import { tTaskData, tTaskDataSave, tTaskState } from './taskTypes';
 import { errorHandler } from '../general/error';
 
 // get tasks through an async thunk of redux toolkit
-export const getTasks = createAsyncThunk<tTaskState, string, { rejectValue: string }>(
-  'tasks/getTasks',
-  async (query, thunkAPI) => {
-    try {
-      // query string contains value of window.location.search
-      const response = await axios.get(`/api/tasks/${query}`);
-      return response.data;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(errorHandler(error));
-    }
+export const getTasks = createAsyncThunk<
+  {
+    queryParts: tTaskState['queryParts'];
+    isNextPage: tTaskState['isNextPage'];
+    collection: tTaskState['collection'];
+    data: tTaskState['data'];
+    message: string;
   },
-);
+  string,
+  { rejectValue: string }
+>('tasks/getTasks', async (query, thunkAPI) => {
+  try {
+    // query string contains value of window.location.search
+    const response = await axios.get(`/api/tasks/${query}`);
+    return response.data;
+  } catch (error) {
+    return thunkAPI.rejectWithValue(errorHandler(error));
+  }
+});
 
 // create a task through an async thunk of redux toolkit
 export const createTask = createAsyncThunk<tTaskData, tTaskDataSave, { rejectValue: string }>(

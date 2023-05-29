@@ -27,8 +27,8 @@ const UserDeletePopup: React.FC<tProps> = (props) => {
   return (
     <PopUp>
       <div className="form-block text">
-        All of your collections and tasks will be deleted as well. Are you sure to continue the
-        deletion your profile?
+        Your all collections and tasks will be deleted too. Are you sure to continue the deletion of
+        your profile?
       </div>
       <UserPasswordBlock
         label={userFormLabels.password}

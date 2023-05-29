@@ -18,9 +18,6 @@ const collectionSlice = createSlice({
   name: 'collections',
   initialState: collectionInitialState,
   reducers: {
-    collectionResetState: (state) => {
-      state.status = 'idle';
-    },
     collectionBuildURL: (state) => {
       state.status = 'idle';
       buildUrl<tCollectionQueryParts>(state.queryParts);
@@ -31,12 +28,14 @@ const collectionSlice = createSlice({
       state.refreshPage = true;
     },
     collectionToogleEditor: (state, action: PayloadAction<tCollectionState['editor']>) => {
+      state.status = 'idle';
       state.editor = action.payload;
     },
     collectionToogleHighlighted: (
       state,
       action: PayloadAction<tCollectionState['highlighted']>,
     ) => {
+      state.status = 'idle';
       state.highlighted = action.payload;
     },
     collectionUpdateQueryParts: (
@@ -81,8 +80,9 @@ const collectionSlice = createSlice({
           toast.warn(action.payload.message);
         }
       })
-      .addCase(getCollections.rejected, (state, action) => {
+      .addCase(getCollections.rejected, (state) => {
         state.status = 'failed';
+        state.refreshPage = false;
         state.data = [];
       })
 
@@ -96,7 +96,7 @@ const collectionSlice = createSlice({
         state.highlighted = action.payload._id;
         state.data = state.data ? [action.payload, ...state.data] : [action.payload];
         toast.success(
-          'Collection successfully created. To reorder your collections, click on the blue refresh button below.',
+          'Collection successfully created. To reorder your collections, click on the refresh button.',
         );
       })
       .addCase(createCollection.rejected, (state) => {
@@ -110,6 +110,7 @@ const collectionSlice = createSlice({
         state.status = 'idle';
         state.refreshButton = true;
         state.editor = false;
+        // if data would be null
         if (state.data) {
           state.data = state.data.map((collection) =>
             collection._id === action.payload._id ? action.payload : collection,
@@ -118,7 +119,7 @@ const collectionSlice = createSlice({
           state.data = [action.payload];
         }
         toast.success(
-          'Successful update. To reorder your collections, click on the blue refresh button below.',
+          'Successful update. To reorder your collections, click on the refresh button.',
         );
       })
       .addCase(updateCollection.rejected, (state, action) => {
@@ -132,16 +133,16 @@ const collectionSlice = createSlice({
         state.status = 'idle';
         state.refreshButton = true;
         state.editor = false;
-        // if collection would be null
+        // if data would be null
         if (state.data) {
           state.data = state.data.filter((collection) => collection._id !== action.payload._id);
-          if (!state.data.length) {
+          if (state.data.length) {
+            toast.success(
+              'Successful deletion. To reorder your collections, click on the refresh button.',
+            );
+          } else {
             state.refreshPage = true;
             toast.success('Successful deletion.');
-          } else {
-            toast.success(
-              'Successful deletion. To reorder your collections, click on the blue refresh button below.',
-            );
           }
         }
       })
@@ -152,7 +153,6 @@ const collectionSlice = createSlice({
 });
 
 export const {
-  collectionResetState,
   collectionBuildURL,
   collectionRefreshPage,
   collectionToogleEditor,

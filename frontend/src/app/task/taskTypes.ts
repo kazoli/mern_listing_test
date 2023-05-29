@@ -16,7 +16,7 @@ export type tTaskValidationLimits = {
   totalTag: number;
 };
 
-// Type of task errors
+// Type of task data errors
 export type tTaskDataErrors = {
   name: string;
   tags: string[];
@@ -81,13 +81,12 @@ export type tTaskMappedQueryParts = tTypeMap<tTaskQueryParts>[keyof tTypeMap<tTa
 
 // Type of task state
 export type tTaskState = {
-  status: 'idle' | 'loading' | 'warning' | 'failed';
+  status: 'idle' | 'loading' | 'failed';
   highlighted: boolean | string;
   refreshPage: boolean;
   refreshButton: boolean;
   editor: boolean | number;
   resetSearch: boolean;
-  message: string;
   isNextPage: boolean;
   collection: null | tCollectionData;
   data: tTaskData[];

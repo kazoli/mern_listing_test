@@ -373,7 +373,6 @@ footer .layout-positioner {
 .icon-wrapper {
   display: flex;
   align-items: center;
-  justify-content: center;
   padding: 10px;
   border: none;
   border-radius: 3rem;
@@ -422,9 +421,6 @@ footer .layout-positioner {
 
 .icon-wrapper span {
   padding: 5px;
-  flex: 10000 10000 auto;
-  display: flex;
-  align-items: center;
 }
 
 /* ICON END */
@@ -589,7 +585,7 @@ textarea.autosize {
 
 .list-header-title {
   margin: 0 0 30px 0;
-  gap: 15px 5px;
+  gap: 15px 0;
 }
 
 .list-header-title .icon {

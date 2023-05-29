@@ -3,26 +3,27 @@ import { tTaskMappedQueryParts, tTaskQueryParts, tTaskState } from './taskTypes'
 import { taskInitialState } from './taskInitialStates';
 import { createTask, deleteTask, getTasks, updateTask } from './taskThunks';
 import { buildUrl } from '../general/middlewares';
+import { toast } from 'react-toastify';
 
 const taskSlice = createSlice({
   name: 'tasks',
   initialState: taskInitialState,
   reducers: {
-    taskResetState: (state) => {
-      state.status = 'idle';
-      state.message = '';
-    },
     taskBuildURL: (state) => {
+      state.status = 'idle';
       buildUrl<tTaskQueryParts>(state.queryParts);
     },
     taskRefreshPage: (state) => {
+      state.status = 'idle';
       state.refreshButton = false;
       state.refreshPage = true;
     },
     taskToogleEditor: (state, action: PayloadAction<tTaskState['editor']>) => {
+      state.status = 'idle';
       state.editor = action.payload;
     },
     taskToogleHighlighted: (state, action: PayloadAction<tTaskState['highlighted']>) => {
+      state.status = 'idle';
       state.highlighted = action.payload;
     },
     taskUpdateQueryParts: (
@@ -33,6 +34,7 @@ const taskSlice = createSlice({
         refreshPage: tTaskState['refreshPage'];
       }>,
     ) => {
+      state.status = 'idle';
       (state.queryParts[action.payload.queryPart] as tTaskMappedQueryParts) = action.payload.value;
       state.refreshPage = action.payload.refreshPage;
       if (action.payload.refreshPage) {
@@ -52,12 +54,11 @@ const taskSlice = createSlice({
         state.status = 'loading';
       })
       .addCase(getTasks.fulfilled, (state, action) => {
-        state.status = action.payload.message ? 'warning' : 'idle';
+        state.status = 'idle';
         state.refreshPage = false;
         state.collection = action.payload.collection;
         state.data = action.payload.data;
         state.resetSearch = action.payload.queryParts.keywords.length > 0;
-        state.message = action.payload.message;
         state.isNextPage = action.payload.isNextPage;
         state.queryParts.keywords = action.payload.queryParts.keywords;
         state.queryParts.searchType = action.payload.queryParts.searchType;
@@ -65,13 +66,16 @@ const taskSlice = createSlice({
         state.queryParts.sort = action.payload.queryParts.sort;
         state.queryParts.limit = action.payload.queryParts.limit;
         state.queryParts.page = action.payload.queryParts.page;
+        if (action.payload.message) {
+          toast.warn(action.payload.message);
+        }
       })
       .addCase(getTasks.rejected, (state, action) => {
         state.status = 'failed';
         state.refreshPage = false;
         state.data = [];
-        state.message = action.payload ? action.payload : 'Unknown error';
       })
+
       .addCase(createTask.pending, (state) => {
         state.status = 'loading';
       })
@@ -80,15 +84,15 @@ const taskSlice = createSlice({
         state.refreshButton = true;
         state.editor = false;
         state.highlighted = action.payload._id;
-        //if collection would be null
         state.data = state.data ? [action.payload, ...state.data] : [action.payload];
-        state.message =
-          'Task successfully created. To reorder your tasks, click on the blue refresh button below.';
+        toast.success(
+          'Task successfully created. To reorder your tasks, click on the refresh button.',
+        );
       })
       .addCase(createTask.rejected, (state, action) => {
         state.status = 'failed';
-        state.message = action.payload ? action.payload : 'Unknown error';
       })
+
       .addCase(updateTask.pending, (state) => {
         state.status = 'loading';
       })
@@ -96,7 +100,7 @@ const taskSlice = createSlice({
         state.status = 'idle';
         state.refreshButton = true;
         state.editor = false;
-        // if collection would be null
+        // if data would be null
         if (state.data) {
           state.data = state.data.map((task) =>
             task._id === action.payload._id ? action.payload : task,
@@ -104,13 +108,12 @@ const taskSlice = createSlice({
         } else {
           state.data = [action.payload];
         }
-        state.message =
-          'Successful update. To reorder your tasks, click on the blue refresh button below.';
+        toast.success('Successful update. To reorder your tasks, click on the refresh button.');
       })
       .addCase(updateTask.rejected, (state, action) => {
         state.status = 'failed';
-        state.message = action.payload ? action.payload : 'Unknown error';
       })
+
       .addCase(deleteTask.pending, (state) => {
         state.status = 'loading';
       })
@@ -118,27 +121,26 @@ const taskSlice = createSlice({
         state.status = 'idle';
         state.refreshButton = true;
         state.editor = false;
-        // if collection would be null
+        // if data would be null
         if (state.data) {
           state.data = state.data.filter((task) => task._id !== action.payload._id);
-          if (!state.data.length) {
-            state.refreshPage = true;
-            state.message = 'Successful deletion.';
+          if (state.data.length) {
+            toast.success(
+              'Successful deletion. To reorder your tasks, click on the refresh button.',
+            );
           } else {
-            state.message =
-              'Successful deletion. To reorder your tasks, click on the blue refresh button below.';
+            state.refreshPage = true;
+            toast.success('Successful deletion.');
           }
         }
       })
       .addCase(deleteTask.rejected, (state, action) => {
         state.status = 'failed';
-        state.message = action.payload ? action.payload : 'Unknown error';
       });
   },
 });
 
 export const {
-  taskResetState,
   taskBuildURL,
   taskRefreshPage,
   taskToogleEditor,
