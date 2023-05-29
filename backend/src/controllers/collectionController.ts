@@ -1,14 +1,14 @@
-const asyncHandler = require('express-async-handler');
-const { errorTrigger } = require('../middlewares/errorMiddleware');
-const { collectionValidation } = require('../middlewares/collectionMiddleware');
-const { Collection, Task } = require('../models/index');
+import asyncHandler from 'express-async-handler';
+import { Collection, Task } from '../models/index';
+import { errorTrigger } from '../middlewares/errorMiddleware';
+import { collectionValidation } from '../middlewares/collectionMiddleware';
 
 /*
   @desc Get collections
   @route GET /api/collections
   @access Private
 */
-const getCollections = asyncHandler(async (req, res) => {
+export const getCollections = asyncHandler(async (req, res) => {
   // options for query
   let options = {
     conditions: { user_id: req.user.id }, // set user_id in conditions
@@ -121,7 +121,7 @@ const getCollections = asyncHandler(async (req, res) => {
   @route POST /api/collections
   @access Private
 */
-const createCollection = asyncHandler(async (req, res) => {
+export const createCollection = asyncHandler(async (req, res) => {
   // server side validation and processing
   req.body = collectionValidation(req.body, res);
 
@@ -145,7 +145,7 @@ const createCollection = asyncHandler(async (req, res) => {
   @route PUT /api/collections
   @access Private
 */
-const updateCollection = asyncHandler(async (req, res) => {
+export const updateCollection = asyncHandler(async (req, res) => {
   // server side validation and processing
   req.body = collectionValidation(req.body);
 
@@ -180,7 +180,7 @@ const updateCollection = asyncHandler(async (req, res) => {
   @route DELETE /api/collections/:id
   @access Private
 */
-const deleteCollection = asyncHandler(async (req, res) => {
+export const deleteCollection = asyncHandler(async (req, res) => {
   // find the collection and if exists, remove that
   const collection = await Collection.findOneAndRemove({
     _id: req.params.id,
@@ -198,10 +198,3 @@ const deleteCollection = asyncHandler(async (req, res) => {
   // return removed collection
   res.status(200).json(collection);
 });
-
-module.exports = {
-  getCollections,
-  createCollection,
-  updateCollection,
-  deleteCollection,
-};

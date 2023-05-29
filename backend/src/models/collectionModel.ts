@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
-const collectionSchema = mongoose.Schema(
+const collectionSchema = new mongoose.Schema(
   {
     user_id: {
       type: mongoose.Schema.Types.ObjectId,
@@ -19,4 +19,4 @@ const collectionSchema = mongoose.Schema(
   },
 );
 
-module.exports = mongoose.model('Collection', collectionSchema);
+export const Collection = mongoose.model('Collection', collectionSchema);

@@ -1,10 +1,10 @@
-const asyncHandler = require('express-async-handler');
-const { errorTrigger } = require('./errorMiddleware');
-const { validateText } = require('./validationMiddleware');
-const { Collection } = require('../models/index');
+import asyncHandler from 'express-async-handler';
+import { Collection } from '../models/index';
+import { errorTrigger } from '../middlewares/errorMiddleware';
+import { validateText } from './validationMiddleware';
 
 // check collection exists and user has access it
-const collectionAccess = asyncHandler(async (collection_id, user_id, res) => {
+export const collectionAccess = asyncHandler(async (collection_id, user_id, res) => {
   let collection;
   try {
     collection = await Collection.findOne({
@@ -23,7 +23,7 @@ const collectionAccess = asyncHandler(async (collection_id, user_id, res) => {
 });
 
 // validation of values of a collection
-const collectionValidation = (values, res) => {
+export const collectionValidation = (values, res) => {
   if (values.name === undefined) {
     errorTrigger(res, 422, 'Some of collection data are missing');
   }
@@ -34,9 +34,4 @@ const collectionValidation = (values, res) => {
     errorTrigger(res, 422, error);
   }
   return values;
-};
-
-module.exports = {
-  collectionAccess,
-  collectionValidation,
 };

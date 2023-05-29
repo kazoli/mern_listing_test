@@ -1,8 +1,8 @@
-const { errorTrigger } = require('./errorMiddleware');
-const { validateText, validateBoolean } = require('./validationMiddleware');
+import { errorTrigger } from '../middlewares/errorMiddleware';
+import { validateText, validateBoolean } from './validationMiddleware';
 
 // validation of values of a task
-const taskValidation = (values, res) => {
+export const taskValidation = (values, res) => {
   let error;
 
   // validate name and trim white spaces
@@ -36,8 +36,4 @@ const taskValidation = (values, res) => {
 
   // return processed and validated data to controller
   return values;
-};
-
-module.exports = {
-  taskValidation,
 };

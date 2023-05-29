@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
-const taskSchema = mongoose.Schema(
+const taskSchema = new mongoose.Schema(
   {
     collection_id: {
       type: mongoose.Schema.Types.ObjectId,
@@ -29,4 +29,4 @@ const taskSchema = mongoose.Schema(
   },
 );
 
-module.exports = mongoose.model('Task', taskSchema);
+export const Task = mongoose.model('Task', taskSchema);

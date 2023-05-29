@@ -1,15 +1,15 @@
-const asyncHandler = require('express-async-handler');
-const { errorTrigger } = require('../middlewares/errorMiddleware');
-const { taskValidation } = require('../middlewares/taskMiddleware');
-const { collectionAccess } = require('../middlewares/collectionMiddleware');
-const { Task } = require('../models/index');
+import asyncHandler from 'express-async-handler';
+import { Task } from '../models/index';
+import { errorTrigger } from '../middlewares/errorMiddleware';
+import { taskValidation } from '../middlewares/taskMiddleware';
+import { collectionAccess } from '../middlewares/collectionMiddleware';
 
 /*
   @desc Get tasks
   @route GET /api/tasks/:collection_id
   @access Private
 */
-const getTasks = asyncHandler(async (req, res) => {
+export const getTasks = asyncHandler(async (req, res) => {
   // stop and wait until related collection will be checked
   const collection = await collectionAccess(req.params.collection_id, req.user.id, res);
 
@@ -155,9 +155,9 @@ const getTasks = asyncHandler(async (req, res) => {
   @route POST /api/tasks
   @access Private
 */
-const createTask = asyncHandler(async (req, res) => {
+export const createTask = asyncHandler(async (req, res) => {
   // stop and wait until related collection will be checked
-  await collectionAccess(req.body.collection_id, req.user.id, res);
+  collectionAccess(req.body.collection_id, req.user.id, res);
 
   // server side validation and processing
   req.body = taskValidation(req.body, res);
@@ -179,7 +179,7 @@ const createTask = asyncHandler(async (req, res) => {
   @route PUT /api/tasks
   @access Private
 */
-const updateTask = asyncHandler(async (req, res) => {
+export const updateTask = asyncHandler(async (req, res) => {
   // stop and wait until related collection will be checked
   await collectionAccess(req.body.collection_id, req.user.id, res);
 
@@ -218,7 +218,7 @@ const updateTask = asyncHandler(async (req, res) => {
   @route DELETE /api/tasks/:id
   @access Private
 */
-const deleteTask = asyncHandler(async (req, res) => {
+export const deleteTask = asyncHandler(async (req, res) => {
   // stop and wait until related collection will be checked
   await collectionAccess(req.body.collection_id, req.user.id, res);
 
@@ -233,10 +233,3 @@ const deleteTask = asyncHandler(async (req, res) => {
   // return removed task
   res.status(200).json(task);
 });
-
-module.exports = {
-  getTasks,
-  createTask,
-  updateTask,
-  deleteTask,
-};

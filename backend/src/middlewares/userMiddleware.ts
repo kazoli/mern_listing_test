@@ -1,13 +1,13 @@
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
-const asyncHandler = require('express-async-handler');
-const { User } = require('../models/index');
-const { errorTrigger } = require('./errorMiddleware');
-const { validateText, validateEmail, validatePassword } = require('./validationMiddleware');
+import asyncHandler from 'express-async-handler';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
+import { User } from '../models/index';
+import { errorTrigger } from '../middlewares/errorMiddleware';
+import { validateText, validateEmail, validatePassword } from './validationMiddleware';
 
 // Set a JWT cookie for user authentication
-const setJwtCookie = (id, res) => {
-  const token = jwt.sign({ id }, process.env.JWT_SECRET, {
+export const setJwtCookie = (id, res) => {
+  const token = jwt.sign({ id }, process.env.JWT_SECRET!, {
     expiresIn: '14d',
   });
   res.cookie('jwt', token, {
@@ -19,13 +19,13 @@ const setJwtCookie = (id, res) => {
 };
 
 // Hash password
-const hashPassword = async (password) => {
+export const hashPassword = async (password) => {
   const salt = await bcrypt.genSalt(10);
   return await bcrypt.hash(password, salt);
 };
 
 // Authetntication with JWT
-const authentication = asyncHandler(async (req, res, next) => {
+export const authentication = asyncHandler(async (req, res, next) => {
   const token = req.cookies.jwt;
   if (!token) {
     errorTrigger(res, 401, 'Cookie jwt is missing');
@@ -34,7 +34,7 @@ const authentication = asyncHandler(async (req, res, next) => {
   let decoded;
   try {
     // verify token
-    decoded = jwt.verify(token, process.env.JWT_SECRET);
+    decoded = jwt.verify(token, process.env.JWT_SECRET!);
   } catch (err) {
     errorTrigger(res, 401, 'Invalid token');
   }
@@ -52,7 +52,7 @@ const authentication = asyncHandler(async (req, res, next) => {
 });
 
 // validation of user profile data
-const userProfileValidation = (values, update, res) => {
+export const userProfileValidation = (values, update, res) => {
   // check values exist
   if (
     values.name === undefined ||
@@ -94,11 +94,4 @@ const userProfileValidation = (values, update, res) => {
   }
 
   return values;
-};
-
-module.exports = {
-  setJwtCookie,
-  hashPassword,
-  authentication,
-  userProfileValidation,
 };

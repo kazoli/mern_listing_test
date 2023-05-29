@@ -1,19 +1,15 @@
-const bcrypt = require('bcryptjs');
-const asyncHandler = require('express-async-handler');
-const { User, Collection, Task } = require('../models/index');
-const { errorTrigger } = require('../middlewares/errorMiddleware');
-const {
-  setJwtCookie,
-  hashPassword,
-  userProfileValidation,
-} = require('../middlewares/userMiddleware');
+import bcrypt from 'bcryptjs';
+import asyncHandler from 'express-async-handler';
+import { User, Collection, Task } from '../models/index';
+import { errorTrigger } from '../middlewares/errorMiddleware';
+import { setJwtCookie, hashPassword, userProfileValidation } from '../middlewares/userMiddleware';
 
 /*
   @desc Register a new user
   @route POST /api/users/register
   @access Public
 */
-const registerUser = asyncHandler(async (req, res) => {
+export const registerUser = asyncHandler(async (req, res) => {
   // validate data
   req.body = userProfileValidation(req.body, false, res);
 
@@ -51,7 +47,7 @@ const registerUser = asyncHandler(async (req, res) => {
   @route POST /api/users/login
   @access Public
 */
-const loginUser = asyncHandler(async (req, res) => {
+export const loginUser = asyncHandler(async (req, res) => {
   // check email and password exist and not empty
   if (!req.body.email || !req.body.password) {
     errorTrigger(res, 400, 'Missing login data');
@@ -81,7 +77,7 @@ const loginUser = asyncHandler(async (req, res) => {
   @route GET /api/users/profile
   @access Private
 */
-const getUser = asyncHandler(async (req, res) => {
+export const getUser = asyncHandler(async (req, res) => {
   // override password
   req.user.password = '';
   res.status(200).json(req.user);
@@ -92,7 +88,7 @@ const getUser = asyncHandler(async (req, res) => {
   @route PUT /api/users/profile
   @access Private
 */
-const updateUser = asyncHandler(async (req, res) => {
+export const updateUser = asyncHandler(async (req, res) => {
   // validate data
   req.body = userProfileValidation(req.body, true, res);
 
@@ -143,7 +139,7 @@ const updateUser = asyncHandler(async (req, res) => {
   @route DELETE /api/users/profile
   @access Private
 */
-const deleteUser = asyncHandler(async (req, res) => {
+export const deleteUser = asyncHandler(async (req, res) => {
   // require password for deletion
   if (await bcrypt.compare(req.body.password, req.user.password)) {
     // find the user and if exists, remove that
@@ -172,11 +168,3 @@ const deleteUser = asyncHandler(async (req, res) => {
     errorTrigger(res, 401, 'Password is not correct');
   }
 });
-
-module.exports = {
-  registerUser,
-  loginUser,
-  updateUser,
-  getUser,
-  deleteUser,
-};

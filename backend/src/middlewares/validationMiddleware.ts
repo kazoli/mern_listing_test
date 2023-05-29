@@ -1,7 +1,7 @@
-const validator = require('validator');
+import validator from 'validator';
 
 // General text validation
-const validateText = (element, value, minLength, maxLength) => {
+export const validateText = (element, value, minLength, maxLength) => {
   if (!value) {
     return `${element} cannot be empty or missing`;
   }
@@ -15,19 +15,19 @@ const validateText = (element, value, minLength, maxLength) => {
 };
 
 // Validate a boolean
-const validateBoolean = (element, value) => {
+export const validateBoolean = (element, value) => {
   return validator.isBoolean(String(value), { loose: false })
     ? false
     : `${element} needs to be boolean value`;
 };
 
 // Validate email
-const validateEmail = (element, value) => {
+export const validateEmail = (element, value) => {
   return validator.isEmail(value) ? false : `${element} needs to be valid format`;
 };
 
 // Validate the password is strong enough
-const validatePassword = (element, value) => {
+export const validatePassword = (element, value) => {
   const minLength = 6;
   const maxLength = 30;
   const result =
@@ -43,11 +43,4 @@ const validatePassword = (element, value) => {
   return result
     ? false
     : `${element} needs to be between ${minLength} and ${maxLength} characters long and contains at least a lower and upper case letter, a number and a special character`;
-};
-
-module.exports = {
-  validateText,
-  validateBoolean,
-  validateEmail,
-  validatePassword,
 };
