@@ -1,5 +1,5 @@
 import express from 'express';
-import { authentication } from '../middlewares/userMiddleware';
+import { userAuthentication } from '../middlewares/userMiddleware';
 import {
   getCollections,
   createCollection,
@@ -11,8 +11,8 @@ export const collectionRouter = express.Router();
 
 collectionRouter
   .route('/')
-  .get(authentication, getCollections)
-  .post(authentication, createCollection)
-  .put(authentication, updateCollection);
+  .get(userAuthentication, getCollections)
+  .post(userAuthentication, createCollection)
+  .put(userAuthentication, updateCollection);
 
-collectionRouter.route('/:id').delete(authentication, deleteCollection);
+collectionRouter.route('/:id').delete(userAuthentication, deleteCollection);

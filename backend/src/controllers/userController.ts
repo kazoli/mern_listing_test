@@ -2,16 +2,21 @@ import bcrypt from 'bcryptjs';
 import asyncHandler from 'express-async-handler';
 import { User, Collection, Task } from '../models/index';
 import { errorTrigger } from '../middlewares/errorMiddleware';
-import { setJwtCookie, hashPassword, userProfileValidation } from '../middlewares/userMiddleware';
+import {
+  userSetJwtCookie,
+  userHashPassword,
+  userProfileValidation,
+} from '../middlewares/userMiddleware';
+import { tDeleteUser, tGetUser, tLoginUser, tRegisterUser, tUpdateUser } from '../types/userTypes';
 
 /*
   @desc Register a new user
   @route POST /api/users/register
   @access Public
 */
-export const registerUser = asyncHandler(async (req, res) => {
+export const registerUser: tRegisterUser = asyncHandler(async (req, res) => {
   // validate data
-  req.body = userProfileValidation(req.body, false, res);
+  req.body = userProfileValidation(req.body, res, false);
 
   // check if user exists
   const userExists = await User.findOne({ email: req.body.email });
@@ -20,7 +25,7 @@ export const registerUser = asyncHandler(async (req, res) => {
   }
 
   // get hashed password
-  const hashedPassword = await hashPassword(req.body.password);
+  const hashedPassword = await userHashPassword(req.body.password);
 
   //create user
   const user = await User.create({
@@ -29,16 +34,19 @@ export const registerUser = asyncHandler(async (req, res) => {
     password: hashedPassword,
   });
   if (user) {
+    user.password = '';
     // set a new JWT cookie
-    setJwtCookie(user.id, res);
+    userSetJwtCookie(user.id, res);
     res.status(201).json({
       _id: user.id,
       name: user.name,
+      password: '',
       email: user.email,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
     });
   } else {
-    res.status(400);
-    throw new Error('User cannot be created');
+    errorTrigger(res, 400, 'User cannot be created');
   }
 });
 
@@ -47,7 +55,7 @@ export const registerUser = asyncHandler(async (req, res) => {
   @route POST /api/users/login
   @access Public
 */
-export const loginUser = asyncHandler(async (req, res) => {
+export const loginUser: tLoginUser = asyncHandler(async (req, res) => {
   // check email and password exist and not empty
   if (!req.body.email || !req.body.password) {
     errorTrigger(res, 400, 'Missing login data');
@@ -61,11 +69,14 @@ export const loginUser = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email: req.body.email });
   if (user && (await bcrypt.compare(req.body.password, user.password))) {
     // set a new JWT cookie
-    setJwtCookie(user.id, res);
+    userSetJwtCookie(user.id, res);
     res.status(200).json({
       _id: user.id,
       name: user.name,
+      password: '',
       email: user.email,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
     });
   } else {
     errorTrigger(res, 401, 'Bad login data');
@@ -77,10 +88,10 @@ export const loginUser = asyncHandler(async (req, res) => {
   @route GET /api/users/profile
   @access Private
 */
-export const getUser = asyncHandler(async (req, res) => {
+export const getUser: tGetUser = asyncHandler(async (req, res) => {
   // override password
-  req.user.password = '';
-  res.status(200).json(req.user);
+  res.locals.user.password = '';
+  res.status(200).json(res.locals.user);
 });
 
 /*
@@ -88,18 +99,18 @@ export const getUser = asyncHandler(async (req, res) => {
   @route PUT /api/users/profile
   @access Private
 */
-export const updateUser = asyncHandler(async (req, res) => {
+export const updateUser: tUpdateUser = asyncHandler(async (req, res) => {
   // validate data
-  req.body = userProfileValidation(req.body, true, res);
+  req.body = userProfileValidation(req.body, res, true);
 
   let fields = {};
-  if (req.body.email !== req.user.email || req.body.password) {
+  if (req.body.email !== res.locals.user.email || req.body.password) {
     // require old password to check
-    if (await bcrypt.compare(req.body.oldPassword, req.user.password)) {
+    if (await bcrypt.compare(req.body.oldPassword!, res.locals.user.password)) {
       const password =
         !req.body.password || req.body.password === req.body.oldPassword
-          ? req.user.password
-          : await hashPassword(req.body.password);
+          ? res.locals.user.password
+          : await userHashPassword(req.body.password);
       fields = {
         name: req.body.name,
         email: req.body.email,
@@ -115,9 +126,9 @@ export const updateUser = asyncHandler(async (req, res) => {
     };
   }
   // save new data
-  const user = await User.findOneAndUpdate(
+  const updatedUser = await User.findOneAndUpdate(
     {
-      _id: req.user.id,
+      _id: res.locals.user._id,
     },
     {
       $set: fields,
@@ -127,11 +138,18 @@ export const updateUser = asyncHandler(async (req, res) => {
       upsert: false, // true - creates new if given does not exist
     },
   );
-  res.status(200).json({
-    _id: req.user._id,
-    name: user.name,
-    email: user.email,
-  });
+  if (updatedUser) {
+    res.status(200).json({
+      _id: updatedUser.id,
+      name: updatedUser.name,
+      password: '',
+      email: updatedUser.email,
+      createdAt: updatedUser.createdAt,
+      updatedAt: updatedUser.updatedAt,
+    });
+  } else {
+    errorTrigger(res, 401, 'User cannot be found or updated');
+  }
 });
 
 /*
@@ -139,31 +157,31 @@ export const updateUser = asyncHandler(async (req, res) => {
   @route DELETE /api/users/profile
   @access Private
 */
-export const deleteUser = asyncHandler(async (req, res) => {
+export const deleteUser: tDeleteUser = asyncHandler(async (req, res) => {
   // require password for deletion
-  if (await bcrypt.compare(req.body.password, req.user.password)) {
+  if (await bcrypt.compare(req.body.password, res.locals.user.password)) {
     // find the user and if exists, remove that
-    const user = await User.findOneAndRemove({
-      _id: req.user.id,
+    const removedUser = await User.findOneAndRemove({
+      _id: res.locals.user._id,
     });
 
-    if (user) {
+    if (removedUser) {
       // find all collection ids related to user
       const collections = await Collection.find({
-        user_id: req.user.id,
+        user_id: res.locals.user._id,
       }).select('_id');
       const collectionIds = collections.map((collection) => collection._id);
 
       // delete all collections related to deleted user
-      await Collection.deleteMany({ user_id: req.user.id });
+      await Collection.deleteMany({ user_id: res.locals.user._id });
       //delete all tasks related to deleted collections
       await Task.deleteMany({ collection_id: { $in: collectionIds } });
     } else {
-      errorTrigger(res, 401, 'User cannot be deleted');
+      errorTrigger(res, 401, 'User cannot be found or deleted');
     }
 
     // return removed user
-    res.status(200).json(user);
+    res.status(200).json(res.locals.user);
   } else {
     errorTrigger(res, 401, 'Password is not correct');
   }

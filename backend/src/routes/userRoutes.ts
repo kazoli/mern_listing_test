@@ -1,5 +1,5 @@
 import express from 'express';
-import { authentication } from '../middlewares/userMiddleware';
+import { userAuthentication } from '../middlewares/userMiddleware';
 import {
   registerUser,
   loginUser,
@@ -16,6 +16,6 @@ userRouter.route('/login').post(loginUser);
 
 userRouter
   .route('/profile')
-  .get(authentication, getUser)
-  .put(authentication, updateUser)
-  .delete(authentication, deleteUser);
+  .get(userAuthentication, getUser)
+  .put(userAuthentication, updateUser)
+  .delete(userAuthentication, deleteUser);

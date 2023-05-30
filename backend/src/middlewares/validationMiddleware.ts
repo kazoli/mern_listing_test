@@ -1,7 +1,12 @@
 import validator from 'validator';
 
 // General text validation
-export const validateText = (element, value, minLength, maxLength) => {
+export const validateText = (
+  element: string,
+  value: string,
+  minLength: number,
+  maxLength: number,
+) => {
   if (!value) {
     return `${element} cannot be empty or missing`;
   }
@@ -11,23 +16,23 @@ export const validateText = (element, value, minLength, maxLength) => {
   if (value.length > maxLength) {
     return `${element} can be ${maxLength} characters long`;
   }
-  return false;
+  return '';
 };
 
 // Validate a boolean
-export const validateBoolean = (element, value) => {
+export const validateBoolean = (element: string, value: string) => {
   return validator.isBoolean(String(value), { loose: false })
-    ? false
+    ? ''
     : `${element} needs to be boolean value`;
 };
 
 // Validate email
-export const validateEmail = (element, value) => {
-  return validator.isEmail(value) ? false : `${element} needs to be valid format`;
+export const validateEmail = (element: string, value: string) => {
+  return validator.isEmail(value) ? '' : `${element} needs to be valid format`;
 };
 
 // Validate the password is strong enough
-export const validatePassword = (element, value) => {
+export const validatePassword = (element: string, value: string) => {
   const minLength = 6;
   const maxLength = 30;
   const result =
@@ -41,6 +46,6 @@ export const validatePassword = (element, value) => {
       returnScore: false,
     });
   return result
-    ? false
+    ? ''
     : `${element} needs to be between ${minLength} and ${maxLength} characters long and contains at least a lower and upper case letter, a number and a special character`;
 };

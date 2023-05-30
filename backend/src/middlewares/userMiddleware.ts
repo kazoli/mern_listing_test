@@ -4,10 +4,16 @@ import bcrypt from 'bcryptjs';
 import { User } from '../models/index';
 import { errorTrigger } from '../middlewares/errorMiddleware';
 import { validateText, validateEmail, validatePassword } from './validationMiddleware';
+import {
+  tUserAuthentication,
+  tUserHashPassword,
+  tUserProfileValidation,
+  tUserSetJwtCookie,
+} from '../types/userTypes';
 
-// Set a JWT cookie for user authentication
-export const setJwtCookie = (id, res) => {
-  const token = jwt.sign({ id }, process.env.JWT_SECRET!, {
+// Set a JWT cookie for user userAuthentication
+export const userSetJwtCookie: tUserSetJwtCookie = (userId, res) => {
+  const token = jwt.sign(userId, process.env.JWT_SECRET!, {
     expiresIn: '14d',
   });
   res.cookie('jwt', token, {
@@ -19,40 +25,46 @@ export const setJwtCookie = (id, res) => {
 };
 
 // Hash password
-export const hashPassword = async (password) => {
+export const userHashPassword: tUserHashPassword = async (password) => {
   const salt = await bcrypt.genSalt(10);
-  return await bcrypt.hash(password, salt);
+  return bcrypt.hash(password, salt);
 };
 
 // Authetntication with JWT
-export const authentication = asyncHandler(async (req, res, next) => {
+export const userAuthentication: tUserAuthentication = asyncHandler(async (req, res, next) => {
   const token = req.cookies.jwt;
   if (!token) {
     errorTrigger(res, 401, 'Cookie jwt is missing');
   }
 
-  let decoded;
-  try {
-    // verify token
-    decoded = jwt.verify(token, process.env.JWT_SECRET!);
-  } catch (err) {
+  // verify token
+  const userID = jwt.verify(token, process.env.JWT_SECRET!);
+
+  if (userID) {
+    // get user from the token
+    const user = await User.findById(userID);
+    if (user) {
+      userSetJwtCookie(user.id, res);
+      res.locals.user = {
+        _id: user.id,
+        name: user.name,
+        password: user.password,
+        email: user.email,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      };
+    } else {
+      errorTrigger(res, 401, 'User cannot be found');
+    }
+  } else {
     errorTrigger(res, 401, 'Invalid token');
   }
-
-  // get user from the token
-  req.user = await User.findById(decoded.id);
-  if (!req.user) {
-    errorTrigger(res, 401, 'User cannot be found');
-  }
-
-  // set a new JWT cookie
-  setJwtCookie(req.user.id, res);
 
   next();
 });
 
 // validation of user profile data
-export const userProfileValidation = (values, update, res) => {
+export const userProfileValidation: tUserProfileValidation = (values, res, update) => {
   // check values exist
   if (
     values.name === undefined ||
@@ -68,7 +80,7 @@ export const userProfileValidation = (values, update, res) => {
   values.email = values.email.trim();
   values.password = values.password.trim();
 
-  let error;
+  let error: string;
   // validate name field
   error = validateText('Full name', values.name, 3, 200);
   if (error) {
@@ -81,7 +93,7 @@ export const userProfileValidation = (values, update, res) => {
     errorTrigger(res, 422, error);
   }
 
-  if (update) {
+  if (update && values.oldPassword) {
     values.oldPassword = values.oldPassword.trim();
   }
 
