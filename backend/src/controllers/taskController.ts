@@ -3,33 +3,47 @@ import { Task } from '../models/index';
 import { errorTrigger } from '../middlewares/errorMiddleware';
 import { taskValidation } from '../middlewares/taskMiddleware';
 import { collectionAccess } from '../middlewares/collectionMiddleware';
+import {
+  tCreateTask,
+  tDeleteTask,
+  tGetTasks,
+  tGetTasksOptions,
+  tUpdateTask,
+} from '../types/taskTypes';
 
 /*
   @desc Get tasks
   @route GET /api/tasks/:collection_id
   @access Private
 */
-export const getTasks = asyncHandler(async (req, res) => {
-  // stop and wait until related collection will be checked
-  const collection = await collectionAccess(req.params.collection_id, req.user.id, res);
+export const getTasks: tGetTasks = asyncHandler(async (req, res) => {
+  // check and get collection
+  const collection = await collectionAccess(req.params.collection_id, res.locals.user._id, res);
 
   // options for query
-  let options = {
+  let options: tGetTasksOptions = {
     conditions: { collection_id: req.params.collection_id },
     limit: 0,
     skip: 0,
     nextSkip: 0,
     sort: {},
     collation: { locale: 'en', strength: 2 },
+    queryParts: {
+      keywords: '',
+      searchType: 'default',
+      completion: 'default',
+      limit: 'default',
+      sort: 'default',
+      page: '',
+    },
   };
 
   // set conditions and remove starting and trailing spaces
-  let keywords;
-  if (req.query.keywords && (req.query.keywords = req.query.keywords.trim())) {
+  if (req.query.keywords && (options.queryParts.keywords = req.query.keywords.trim())) {
     // remove extra spaces among words
     // escaping all special characters for regex
     // set OR conditions among words for database query
-    keywords = req.query.keywords
+    const keywords = options.queryParts.keywords
       .replace(/\s+/g, ' ')
       .replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
       .replace(/\s+/g, '|');
@@ -41,69 +55,69 @@ export const getTasks = asyncHandler(async (req, res) => {
           $regex: keywords,
           $options: 'i',
         };
+        options.queryParts.searchType = req.query.searchType; // for return value
         break;
       default:
         options.conditions['$or'] = [
           { name: { $regex: keywords, $options: 'i' } },
           { tags: { $regex: keywords, $options: 'i' } },
         ];
-        req.query.searchType = 'default'; // for return value
     }
-  } else {
-    req.query.keywords = ''; // for return value
-    req.query.searchType = 'default'; // for return value
   }
 
   // show incomplete / complete / both
   switch (req.query.completion) {
     case 'complete':
       options.conditions.complete = true;
+      options.queryParts.completion = req.query.completion; // for return value
       break;
     case 'incomplete':
       options.conditions.complete = false;
+      options.queryParts.completion = req.query.completion; // for return value
       break;
     default:
-      req.query.completion = 'default'; // for return value
   }
 
   // set limit
   switch (req.query.limit) {
     case 'p36':
       options.limit = 36;
+      options.queryParts.limit = req.query.limit; // for return value
       break;
     case 'p60':
       options.limit = 60;
+      options.queryParts.limit = req.query.limit; // for return value
       break;
     default:
       options.limit = 12;
-      req.query.limit = 'default'; // for return value
   }
 
   // set page
-  if (req.query.page && req.query.page.match(/^\d+$/) && req.query.page > 1) {
-    const page = parseInt(req.query.page);
+  let page: number;
+  if (req.query.page && req.query.page.match(/^\d+$/) && (page = parseInt(req.query.page)) > 1) {
     options.skip = options.limit * (page - 1);
     options.nextSkip = options.limit * page;
+    options.queryParts.page = req.query.page; // for return value
   } else {
     options.nextSkip = options.limit;
-    req.query.page = ''; // for return value
   }
 
   // set sort
   switch (req.query.sort) {
-    default:
-      req.query.sort = 'default'; // for return value
-      options.sort = { name: 1 };
-      break;
     case 'nameDESC':
       options.sort = { name: -1 };
+      options.queryParts.sort = req.query.sort; // for return value
       break;
     case 'createdASC':
       options.sort = { createdAt: 1 };
+      options.queryParts.sort = req.query.sort; // for return value
       break;
     case 'createdDESC':
       options.sort = { createdAt: -1 };
+      options.queryParts.sort = req.query.sort; // for return value
       break;
+    default:
+      options.sort = { name: 1 };
   }
 
   // loop to handle fallback to page 1 if no results at bigger page number
@@ -135,14 +149,7 @@ export const getTasks = asyncHandler(async (req, res) => {
 
   // return tasks found
   res.status(200).json({
-    queryParts: {
-      keywords: req.query.keywords,
-      searchType: req.query.searchType,
-      sort: req.query.sort,
-      completion: req.query.completion,
-      limit: req.query.limit,
-      page: req.query.page,
-    },
+    queryParts: options.queryParts,
     isNextPage: isNextPage.length > 0,
     message: message,
     collection: collection,
@@ -155,23 +162,27 @@ export const getTasks = asyncHandler(async (req, res) => {
   @route POST /api/tasks
   @access Private
 */
-export const createTask = asyncHandler(async (req, res) => {
-  // stop and wait until related collection will be checked
-  collectionAccess(req.body.collection_id, req.user.id, res);
+export const createTask: tCreateTask = asyncHandler(async (req, res) => {
+  // check collection
+  await collectionAccess(req.body.collection_id, res.locals.user._id, res);
 
   // server side validation and processing
-  req.body = taskValidation(req.body, res);
+  const validationResults = taskValidation(req.body, res);
 
   // create task
   const task = await Task.create({
-    collection_id: req.body.collection_id,
-    name: req.body.name,
-    complete: req.body.complete,
-    tags: req.body.tags,
+    collection_id: validationResults.collection_id,
+    name: validationResults.name,
+    complete: validationResults.complete,
+    tags: validationResults.tags,
   });
 
-  // return created task
-  res.status(200).json(task);
+  if (task) {
+    // return created task
+    res.status(200).json(task);
+  } else {
+    errorTrigger(res, 409, 'Task could not be created');
+  }
 });
 
 /*
@@ -179,12 +190,12 @@ export const createTask = asyncHandler(async (req, res) => {
   @route PUT /api/tasks
   @access Private
 */
-export const updateTask = asyncHandler(async (req, res) => {
-  // stop and wait until related collection will be checked
-  await collectionAccess(req.body.collection_id, req.user.id, res);
+export const updateTask: tUpdateTask = asyncHandler(async (req, res) => {
+  // check collection
+  await collectionAccess(req.body.collection_id, res.locals.user._id, res);
 
   // server side validation and processing
-  req.body = taskValidation(req.body);
+  const validationResults = taskValidation(req.body, res);
 
   // if task exists then it will be updated
   const task = await Task.findOneAndUpdate(
@@ -193,9 +204,9 @@ export const updateTask = asyncHandler(async (req, res) => {
     },
     {
       $set: {
-        name: req.body.name,
-        complete: req.body.complete,
-        tags: req.body.tags,
+        name: validationResults.name,
+        complete: validationResults.complete,
+        tags: validationResults.tags,
       },
     },
     {
@@ -204,13 +215,12 @@ export const updateTask = asyncHandler(async (req, res) => {
     },
   );
 
-  // if no task exists
-  if (!task) {
+  if (task) {
+    // return updated task
+    res.status(200).json(task);
+  } else {
     errorTrigger(res, 401, 'Task cannot be found');
   }
-
-  // return updated task
-  res.status(200).json(task);
 });
 
 /*
@@ -218,18 +228,17 @@ export const updateTask = asyncHandler(async (req, res) => {
   @route DELETE /api/tasks/:id
   @access Private
 */
-export const deleteTask = asyncHandler(async (req, res) => {
-  // stop and wait until related collection will be checked
-  await collectionAccess(req.body.collection_id, req.user.id, res);
+export const deleteTask: tDeleteTask = asyncHandler(async (req, res) => {
+  // check collection
+  await collectionAccess(req.params.collection_id, res.locals.user._id, res);
 
   // find the task and if exists, remove that
   const task = await Task.findOneAndRemove({ _id: req.params.id });
 
-  // if no task exists
-  if (!task) {
+  if (task) {
+    // return deleted task
+    res.status(200).json(task);
+  } else {
     errorTrigger(res, 401, 'Task cannot be found');
   }
-
-  // return removed task
-  res.status(200).json(task);
 });

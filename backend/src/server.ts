@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import express from 'express';
+import helmet from 'helmet';
 import path from 'path';
 import cookieParser from 'cookie-parser';
 import { connectDB } from './config/db';
@@ -22,6 +23,9 @@ app.use(cookieParser());
 // parse query
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// helmet helps secure express apps by setting HTTP response headers
+app.use(helmet());
 
 // router part
 app.use('/api/users', userRouter);

@@ -70,7 +70,14 @@ const TaskListElement: React.FC<tProps> = (props) => {
         <AiOutlineDelete
           className="icon click"
           title="Delete task"
-          onClick={() => dispatch(deleteTask(props.task._id))}
+          onClick={() =>
+            dispatch(
+              deleteTask({
+                collection_id: props.task.collection_id,
+                _id: props.task._id,
+              }),
+            )
+          }
         />
       </div>
     </div>

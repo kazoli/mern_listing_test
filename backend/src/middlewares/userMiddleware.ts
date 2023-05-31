@@ -12,8 +12,8 @@ import {
 } from '../types/userTypes';
 
 // Set a JWT cookie for user userAuthentication
-export const userSetJwtCookie: tUserSetJwtCookie = (userId, res) => {
-  const token = jwt.sign(userId, process.env.JWT_SECRET!, {
+export const userSetJwtCookie: tUserSetJwtCookie = (_id, res) => {
+  const token = jwt.sign({ _id }, process.env.JWT_SECRET!, {
     expiresIn: '14d',
   });
   res.cookie('jwt', token, {
@@ -38,11 +38,11 @@ export const userAuthentication: tUserAuthentication = asyncHandler(async (req, 
   }
 
   // verify token
-  const userID = jwt.verify(token, process.env.JWT_SECRET!);
+  const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { _id: string };
 
-  if (userID) {
+  if (decoded) {
     // get user from the token
-    const user = await User.findById(userID);
+    const user = await User.findById(decoded._id);
     if (user) {
       userSetJwtCookie(user.id, res);
       res.locals.user = {
@@ -50,8 +50,6 @@ export const userAuthentication: tUserAuthentication = asyncHandler(async (req, 
         name: user.name,
         password: user.password,
         email: user.email,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt,
       };
     } else {
       errorTrigger(res, 401, 'User cannot be found');

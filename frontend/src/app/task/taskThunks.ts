@@ -53,12 +53,12 @@ export const updateTask = createAsyncThunk<tTaskData, tTaskDataSave, { rejectVal
 // delete a task through an async thunk of redux toolkit
 export const deleteTask = createAsyncThunk<
   tTaskData,
-  tTaskDataSave['_id'],
+  { collection_id: tTaskDataSave['collection_id']; _id: tTaskDataSave['_id'] },
   { rejectValue: string }
->('tasks/deleteTask', async (task_id, thunkAPI) => {
+>('tasks/deleteTask', async (taskData, thunkAPI) => {
   try {
     // query string contains task ID and query string to get collection after deletion
-    const response = await axios.delete(`/api/tasks/${task_id}`);
+    const response = await axios.delete(`/api/tasks/${taskData.collection_id}/${taskData._id}`);
     return response.data;
   } catch (error) {
     return thunkAPI.rejectWithValue(errorHandler(error));

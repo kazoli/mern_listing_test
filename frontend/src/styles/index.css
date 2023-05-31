@@ -382,6 +382,7 @@ footer .layout-positioner {
   text-decoration: none;
   transition: 0.2s all;
   color: inherit;
+  outline: none;
 }
 
 .icon-wrapper:hover {

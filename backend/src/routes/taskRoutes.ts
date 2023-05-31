@@ -9,4 +9,4 @@ taskRouter.route('/:collection_id').get(userAuthentication, getTasks);
 taskRouter.route('/').post(userAuthentication, createTask).put(userAuthentication, updateTask);
 
 // :id is task ID
-taskRouter.route('/:id').delete(userAuthentication, deleteTask);
+taskRouter.route('/:collection_id/:id').delete(userAuthentication, deleteTask);

@@ -34,17 +34,9 @@ export const registerUser: tRegisterUser = asyncHandler(async (req, res) => {
     password: hashedPassword,
   });
   if (user) {
-    user.password = '';
     // set a new JWT cookie
     userSetJwtCookie(user.id, res);
-    res.status(201).json({
-      _id: user.id,
-      name: user.name,
-      password: '',
-      email: user.email,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
-    });
+    res.status(201).json(user);
   } else {
     errorTrigger(res, 400, 'User cannot be created');
   }
@@ -70,14 +62,7 @@ export const loginUser: tLoginUser = asyncHandler(async (req, res) => {
   if (user && (await bcrypt.compare(req.body.password, user.password))) {
     // set a new JWT cookie
     userSetJwtCookie(user.id, res);
-    res.status(200).json({
-      _id: user.id,
-      name: user.name,
-      password: '',
-      email: user.email,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
-    });
+    res.status(200).json(user);
   } else {
     errorTrigger(res, 401, 'Bad login data');
   }
@@ -126,7 +111,7 @@ export const updateUser: tUpdateUser = asyncHandler(async (req, res) => {
     };
   }
   // save new data
-  const updatedUser = await User.findOneAndUpdate(
+  const user = await User.findOneAndUpdate(
     {
       _id: res.locals.user._id,
     },
@@ -138,15 +123,9 @@ export const updateUser: tUpdateUser = asyncHandler(async (req, res) => {
       upsert: false, // true - creates new if given does not exist
     },
   );
-  if (updatedUser) {
-    res.status(200).json({
-      _id: updatedUser.id,
-      name: updatedUser.name,
-      password: '',
-      email: updatedUser.email,
-      createdAt: updatedUser.createdAt,
-      updatedAt: updatedUser.updatedAt,
-    });
+  if (user) {
+    user.password = '';
+    res.status(200).json(user);
   } else {
     errorTrigger(res, 401, 'User cannot be found or updated');
   }
@@ -161,11 +140,11 @@ export const deleteUser: tDeleteUser = asyncHandler(async (req, res) => {
   // require password for deletion
   if (await bcrypt.compare(req.body.password, res.locals.user.password)) {
     // find the user and if exists, remove that
-    const removedUser = await User.findOneAndRemove({
+    const user = await User.findOneAndRemove({
       _id: res.locals.user._id,
     });
 
-    if (removedUser) {
+    if (user) {
       // find all collection ids related to user
       const collections = await Collection.find({
         user_id: res.locals.user._id,
@@ -176,12 +155,11 @@ export const deleteUser: tDeleteUser = asyncHandler(async (req, res) => {
       await Collection.deleteMany({ user_id: res.locals.user._id });
       //delete all tasks related to deleted collections
       await Task.deleteMany({ collection_id: { $in: collectionIds } });
+      // return removed user
+      res.status(200).json(user);
     } else {
       errorTrigger(res, 401, 'User cannot be found or deleted');
     }
-
-    // return removed user
-    res.status(200).json(res.locals.user);
   } else {
     errorTrigger(res, 401, 'Password is not correct');
   }

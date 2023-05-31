@@ -1,28 +1,18 @@
 import { RequestHandler, Response } from 'express';
 
-// Type for user data in DB
-type tUserData = {
-  _id: string;
-  name: string;
-  email: string;
-  password: string;
-  createdAt: NativeDate;
-  updatedAt: NativeDate;
-};
-
 // Type for user delete request body
 type tUserDeleteRequest = {
-  password: tUserData['password'];
+  password: string;
 };
 
 // Type for user login request body
 type tUserLoginRequest = tUserDeleteRequest & {
-  email: tUserData['name'];
+  email: string;
 };
 
 // Type for user register request body
 type tUserRegisterRequest = tUserLoginRequest & {
-  name: tUserData['name'];
+  name: string;
 };
 
 // Type for user profile request body
@@ -30,22 +20,22 @@ type tUserProfileRequest = tUserRegisterRequest & {
   oldPassword?: string;
 };
 
-// Type for user JWT cookie setting function
+// Type for user JWT cookie setting middleware function
 export type tUserSetJwtCookie = {
-  (userId: tUserData['_id'], res: Response): void;
+  (userId: string, res: Response): void;
 };
 
-// Type for user JWT cookie setting function
+// Type for user password hashing middleware function
 export type tUserHashPassword = {
-  (password: tUserData['password']): Promise<string>;
+  (password: string): Promise<string>;
 };
 
-// Type for user profile validation function
+// Type for user profile validation middleware function
 export type tUserProfileValidation = {
   (values: tUserProfileRequest, res: Response, update: boolean): tUserProfileRequest;
 };
 
-// Type for user authentication function
+// Type for user authentication middleware function
 export type tUserAuthentication = RequestHandler<
   {}, // request params
   {}, // response body
@@ -56,7 +46,7 @@ export type tUserAuthentication = RequestHandler<
 // Type for register user controller function
 export type tRegisterUser = RequestHandler<
   {}, // request params
-  tUserData, // response body
+  {}, // response body
   tUserRegisterRequest, // request body
   {} // request query
 >;
@@ -64,7 +54,7 @@ export type tRegisterUser = RequestHandler<
 // Type for login user controller function
 export type tLoginUser = RequestHandler<
   {}, // request params
-  tUserData, // response body
+  {}, // response body
   tUserLoginRequest, // request body
   {} // request query
 >;
@@ -72,7 +62,7 @@ export type tLoginUser = RequestHandler<
 // Type for get user controller function
 export type tGetUser = RequestHandler<
   {}, // request params
-  tUserData, // response body
+  {}, // response body
   {}, // request body
   {} // request query
 >;
@@ -80,7 +70,7 @@ export type tGetUser = RequestHandler<
 // Type for update user controller function
 export type tUpdateUser = RequestHandler<
   {}, // request params
-  tUserData, // response body
+  {}, // response body
   tUserProfileRequest, // request body
   {} // request query
 >;
@@ -88,7 +78,7 @@ export type tUpdateUser = RequestHandler<
 // Type for delete user controller function
 export type tDeleteUser = RequestHandler<
   {}, // request params
-  tUserData, // response body
+  {}, // response body
   tUserDeleteRequest, // request body
   {} // request query
 >;

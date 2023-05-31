@@ -21,9 +21,7 @@ export const validateText = (
 
 // Validate a boolean
 export const validateBoolean = (element: string, value: string) => {
-  return validator.isBoolean(String(value), { loose: false })
-    ? ''
-    : `${element} needs to be boolean value`;
+  return validator.isBoolean(value, { loose: false }) ? '' : `${element} needs to be boolean value`;
 };
 
 // Validate email
