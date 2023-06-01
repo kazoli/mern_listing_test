@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../app/general/hooks';
 import { useCheckLoggedIn } from '../../app/user/userHooks';
-import { tButton, tListHeaderActionDropDowns } from '../../app/general/types';
+import { tButton, tCustomConfirm, tListHeaderActionDropDowns } from '../../app/general/types';
 import { tCollectionQueryParts } from '../../app/collection/collectionTypes';
 import { getCollections } from '../../app/collection/collectionThunks';
 import {
@@ -40,6 +40,7 @@ const CollectionList: React.FC = () => {
   const [search, setSearch] = useState({
     keywords: collectionInitialState.queryParts.keywords,
   });
+  const [deleteConfirm, setDeleteConfirm] = useState<undefined | tCustomConfirm>(undefined);
 
   const updateCollectionQuery = (
     queryPart: keyof tCollectionQueryParts,
@@ -118,7 +119,7 @@ const CollectionList: React.FC = () => {
   }, [dispatch, collections.data, collections.queryParts, collections.status]);
 
   return (
-    <DefaultLayout loading={collections.status === 'loading'}>
+    <DefaultLayout loading={collections.status === 'loading'} customConfirm={deleteConfirm}>
       <>
         {collections.editor !== false && (
           <CollectionEditorPopup
@@ -155,6 +156,7 @@ const CollectionList: React.FC = () => {
                 index={index}
                 collection={collection}
                 highlighted={collections.highlighted}
+                setDeleteConfirm={setDeleteConfirm}
               />
             ))}
           />

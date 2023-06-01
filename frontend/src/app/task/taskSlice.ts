@@ -9,6 +9,7 @@ const taskSlice = createSlice({
   name: 'tasks',
   initialState: taskInitialState,
   reducers: {
+    taskReset: () => taskInitialState,
     taskBuildURL: (state) => {
       state.status = 'idle';
       buildUrl<tTaskQueryParts>(state.queryParts);
@@ -141,6 +142,7 @@ const taskSlice = createSlice({
 });
 
 export const {
+  taskReset,
   taskBuildURL,
   taskRefreshPage,
   taskToogleEditor,

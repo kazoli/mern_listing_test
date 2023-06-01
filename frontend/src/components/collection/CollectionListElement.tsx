@@ -1,8 +1,9 @@
 import { NavLink } from 'react-router-dom';
-import { tCollectionData, tCollectionState } from '../../app/collection/collectionTypes';
 import { useAppDispatch } from '../../app/general/hooks';
-import { collectionToogleEditor } from '../../app/collection/collectionSlice';
+import { tCustomConfirm } from '../../app/general/types';
+import { tCollectionData, tCollectionState } from '../../app/collection/collectionTypes';
 import { deleteCollection } from '../../app/collection/collectionThunks';
+import { collectionToogleEditor } from '../../app/collection/collectionSlice';
 import { formatDate } from '../../app/general/middlewares';
 import { AiOutlineDelete, AiOutlineEdit, AiOutlineRightCircle } from 'react-icons/ai';
 
@@ -10,10 +11,19 @@ type tProps = {
   index: number;
   collection: tCollectionData;
   highlighted: tCollectionState['highlighted'];
+  setDeleteConfirm: React.Dispatch<React.SetStateAction<tCustomConfirm | undefined>>;
 };
 
 const CollectionListElement: React.FC<tProps> = (props) => {
   const dispatch = useAppDispatch();
+  const deleteConfirm = {
+    text: `By deletion of "${props.collection.name}" collection, all of related tasks will also be deleted. Are you sure to contine?`,
+    continueAction: () => {
+      props.setDeleteConfirm(undefined);
+      dispatch(deleteCollection(props.collection._id));
+    },
+    cancelAction: () => props.setDeleteConfirm(undefined),
+  };
 
   return (
     <div
@@ -51,7 +61,7 @@ const CollectionListElement: React.FC<tProps> = (props) => {
         <AiOutlineDelete
           className="icon click"
           title="Delete collection"
-          onClick={() => dispatch(deleteCollection(props.collection._id))}
+          onClick={() => props.setDeleteConfirm(deleteConfirm)}
         />
       </div>
     </div>

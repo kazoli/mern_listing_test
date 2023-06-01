@@ -1,5 +1,7 @@
 import { useEffect } from 'react';
+import { tCustomConfirm } from '../../app/general/types';
 import { scrollToElement } from '../../app/general/middlewares';
+import CustomConfirm from '../general/CustomConfirm';
 import Header from './header/Header';
 import Loading from './general/Loading';
 import Footer from './footer/Footer';
@@ -8,6 +10,7 @@ import JumpTop from './general/JumpTop';
 type tProps = {
   children: JSX.Element;
   loading?: boolean;
+  customConfirm?: tCustomConfirm;
 };
 
 const DefaultLayout: React.FC<tProps> = (props) => {
@@ -19,6 +22,7 @@ const DefaultLayout: React.FC<tProps> = (props) => {
   return (
     <>
       {props.loading && <Loading />}
+      {props.customConfirm && <CustomConfirm {...props.customConfirm} />}
       <Header />
       <main className="layout-positioner">{props.children}</main>
       <Footer />

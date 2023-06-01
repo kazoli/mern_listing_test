@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../app/general/hooks';
 import { useCheckLoggedIn } from '../../app/user/userHooks';
-import { tButton, tListHeaderActionDropDowns } from '../../app/general/types';
+import { tButton, tCustomConfirm, tListHeaderActionDropDowns } from '../../app/general/types';
 import { tTaskQueryParts } from '../../app/task/taskTypes';
 import { getTasks } from '../../app/task/taskThunks';
 import {
@@ -56,6 +56,7 @@ const TaskList: React.FC = () => {
     keywords: taskInitialState.queryParts.keywords,
     searchType: taskInitialState.queryParts.searchType,
   });
+  const [deleteConfirm, setDeleteConfirm] = useState<undefined | tCustomConfirm>(undefined);
 
   const updateTaskQuery = (
     queryPart: keyof tTaskQueryParts,
@@ -149,7 +150,7 @@ const TaskList: React.FC = () => {
   }, [dispatch, navigate, tasks.collection, tasks.queryParts, tasks.status]);
 
   return (
-    <DefaultLayout loading={tasks.status === 'loading'}>
+    <DefaultLayout loading={tasks.status === 'loading'} customConfirm={deleteConfirm}>
       <>
         {params.collection_id && tasks.editor !== false && (
           <TaskEditorPopup
@@ -209,6 +210,7 @@ const TaskList: React.FC = () => {
                 index={index}
                 task={task}
                 highlighted={tasks.highlighted}
+                setDeleteConfirm={setDeleteConfirm}
               />
             ))}
           />

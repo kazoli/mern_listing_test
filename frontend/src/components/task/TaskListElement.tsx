@@ -1,18 +1,33 @@
 import { useAppDispatch } from '../../app/general/hooks';
+import { tCustomConfirm } from '../../app/general/types';
+import { tTaskData, tTaskState } from '../../app/task/taskTypes';
 import { deleteTask, updateTask } from '../../app/task/taskThunks';
 import { taskToogleEditor } from '../../app/task/taskSlice';
-import { AiOutlineCheck, AiOutlineDelete, AiOutlineEdit, AiOutlineReload } from 'react-icons/ai';
-import { tTaskData, tTaskState } from '../../app/task/taskTypes';
 import { formatDate } from '../../app/general/middlewares';
+import { AiOutlineCheck, AiOutlineDelete, AiOutlineEdit, AiOutlineReload } from 'react-icons/ai';
 
 type tProps = {
   index: number;
   task: tTaskData;
   highlighted: tTaskState['highlighted'];
+  setDeleteConfirm: React.Dispatch<React.SetStateAction<tCustomConfirm | undefined>>;
 };
 
 const TaskListElement: React.FC<tProps> = (props) => {
   const dispatch = useAppDispatch();
+  const deleteConfirm = {
+    text: `Are your sure to continue to delete "${props.task.name}" task?`,
+    continueAction: () => {
+      props.setDeleteConfirm(undefined);
+      dispatch(
+        deleteTask({
+          collection_id: props.task.collection_id,
+          _id: props.task._id,
+        }),
+      );
+    },
+    cancelAction: () => props.setDeleteConfirm(undefined),
+  };
 
   return (
     <div
@@ -70,14 +85,7 @@ const TaskListElement: React.FC<tProps> = (props) => {
         <AiOutlineDelete
           className="icon click"
           title="Delete task"
-          onClick={() =>
-            dispatch(
-              deleteTask({
-                collection_id: props.task.collection_id,
-                _id: props.task._id,
-              }),
-            )
-          }
+          onClick={() => props.setDeleteConfirm(deleteConfirm)}
         />
       </div>
     </div>

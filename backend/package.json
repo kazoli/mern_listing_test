@@ -1,15 +1,16 @@
 {
-  "name": "mern_listing_test",
+  "name": "backend",
+  "description": "MERN lisiting test backend",
   "version": "1.0.0",
-  "description": "MERN lisiting test",
+  "author": "Kazoli",
+  "license": "MIT",
   "main": "server.js",
   "scripts": {
-    "build": "npx tsc",
+    "build": "rimraf dist && npx tsc",
+    "prestart": "npm run build",
     "start": "node dist/server.js",
     "server": "ts-node-dev --respawn src/server.ts"
   },
-  "author": "Kazoli",
-  "license": "MIT",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cli-color": "^2.0.3",
@@ -20,6 +21,7 @@
     "helmet": "^7.0.0",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.2.1",
+    "rimraf": "^5.0.1",
     "validator": "^13.9.0"
   },
   "devDependencies": {

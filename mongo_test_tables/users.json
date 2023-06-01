@@ -1,0 +1,40 @@
+[{
+  "_id": {
+    "$oid": "646ddfaa5c5210a57923b3d4"
+  },
+  "name": "User Name 1",
+  "email": "user_1@email.com",
+  "password": "$2a$10$ExKgQk.RRE.SExhvjsxIsu0fLZ0x9aevx1SlsfBO/5NVrwl9d6qsG",
+  "createdAt": {
+    "$date": "2023-05-24T09:58:02.813Z"
+  },
+  "updatedAt": {
+    "$date": "2023-05-31T13:38:11.602Z"
+  }
+},{
+  "_id": {
+    "$oid": "646de0845c5210a57923b3da"
+  },
+  "name": "User Name 2",
+  "email": "user_2@email.com",
+  "password": "$2a$10$Ki.5J6CNDji6GFw1M0U3W.avjAB4COvGWNcfd23WORKFgGd4yHvri",
+  "createdAt": {
+    "$date": "2023-05-24T10:01:40.093Z"
+  },
+  "updatedAt": {
+    "$date": "2023-05-24T10:01:40.093Z"
+  }
+},{
+  "_id": {
+    "$oid": "6471ff37c0170e43a179bb26"
+  },
+  "name": "User Name 3",
+  "email": "user_3@email.com",
+  "password": "$2a$10$FPfBLUWGQ/UaY4qPJ.5/3eSHdHDOVFL2D4qOBP3sWhTrEniKSScsq",
+  "createdAt": {
+    "$date": "2023-05-27T13:01:43.839Z"
+  },
+  "updatedAt": {
+    "$date": "2023-05-27T13:01:43.839Z"
+  }
+}]

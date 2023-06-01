@@ -97,7 +97,7 @@ export const getCollections: tGetCollections = asyncHandler(async (req, res) => 
     if (fallback) {
       options.skip = 0;
       options.nextSkip = options.limit;
-      req.query.page = ''; // for return value
+      options.queryParts.page = ''; // for return value
       message = 'Redirect to first page because requested page cannot be found';
     }
   } while (fallback);

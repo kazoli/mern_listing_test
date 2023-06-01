@@ -1,0 +1,43 @@
+[{
+  "_id": {
+    "$oid": "646f535d0c0ecc38b535b38a"
+  },
+  "user_id": {
+    "$oid": "646ddfaa5c5210a57923b3d4"
+  },
+  "name": "Test Collection 1",
+  "createdAt": {
+    "$date": "2023-05-25T12:23:57.924Z"
+  },
+  "updatedAt": {
+    "$date": "2023-05-28T16:23:27.323Z"
+  }
+},{
+  "_id": {
+    "$oid": "647084ef06330f28fad97e54"
+  },
+  "user_id": {
+    "$oid": "646ddfaa5c5210a57923b3d4"
+  },
+  "name": "Test Collection 2",
+  "createdAt": {
+    "$date": "2023-05-26T10:07:43.179Z"
+  },
+  "updatedAt": {
+    "$date": "2023-06-01T11:51:24.261Z"
+  }
+},{
+  "_id": {
+    "$oid": "64789b8a89c7ce7fcba33b2e"
+  },
+  "user_id": {
+    "$oid": "646de0845c5210a57923b3da"
+  },
+  "name": "Collection 1",
+  "createdAt": {
+    "$date": "2023-06-01T13:22:18.140Z"
+  },
+  "updatedAt": {
+    "$date": "2023-06-01T13:22:18.140Z"
+  }
+}]

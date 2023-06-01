@@ -24,7 +24,7 @@ export const useCheckLoggedIn = (navigateToLogin: boolean) => {
     } else {
       if (navigateToLogin) {
         // if no jwt and needs to navigate to login
-        navigate({ pathname: '/users/login', search: '' }, { replace: true });
+        navigate({ pathname: '/users/login', search: '' }, { replace: false });
       } else if (!user.data._id) {
         // if no jwt but has user data, then logs out user
         dispatch(logOutUser());

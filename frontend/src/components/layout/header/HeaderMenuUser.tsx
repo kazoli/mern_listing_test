@@ -1,6 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../app/general/hooks';
 import { logOutUser } from '../../../app/user/userSlice';
+import { collectionReset } from '../../../app/collection/collectionSlice';
+import { taskReset } from '../../../app/task/taskSlice';
 import { BsPerson } from 'react-icons/bs';
 import DropDownMenu from '../../general/DropDownMenu';
 
@@ -25,6 +27,8 @@ const HeaderMenuUser: React.FC<tProps> = (props) => {
   const action = (value: string) => {
     if (value === 'logout') {
       dispatch(logOutUser());
+      dispatch(collectionReset());
+      dispatch(taskReset());
     } else {
       navigate(value);
     }

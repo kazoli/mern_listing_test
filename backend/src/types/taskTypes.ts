@@ -64,7 +64,7 @@ export type tGetTasks = RequestHandler<
 // Type for create task controller function
 export type tCreateTask = RequestHandler<
   {}, // request params
-  Object, // response body
+  {}, // response body
   tTaskCreateRequest, // request body
   {} // request query
 >;
@@ -72,7 +72,7 @@ export type tCreateTask = RequestHandler<
 // Type for update task controller function
 export type tUpdateTask = RequestHandler<
   {}, // request params
-  Object, // response body
+  {}, // response body
   tTaskUpdateRequest, // request body
   {} // request query
 >;
@@ -83,7 +83,7 @@ export type tDeleteTask = RequestHandler<
     collection_id: string;
     id: string;
   }, // request params
-  Object, // response body
+  {}, // response body
   {}, // request body
   {} // request query
 >;

@@ -6,20 +6,19 @@ export type tTypeMap<T extends { [key: string]: any }> = {
 // General type to key - value pair object
 export type tObject = { [key: string]: string };
 
+// General type to custom confirm
+export type tCustomConfirm = {
+  text: string;
+  continueAction: () => void;
+  cancelAction: () => void;
+};
+
 // General type to button
 export type tButton = {
   text?: string;
   icon?: JSX.Element;
   action: () => void;
 };
-
-// General type to list header drop downs
-export type tListHeaderActionDropDowns = {
-  triggerText: string;
-  ignoredOption: string;
-  options: tObject;
-  action: (value: keyof tObject) => void;
-}[];
 
 // General type to an input element
 export type tInput = {
@@ -32,3 +31,11 @@ export type tInput = {
   leftIcon?: JSX.Element;
   rightIcon?: JSX.Element;
 };
+
+// General type to list header drop downs
+export type tListHeaderActionDropDowns = {
+  triggerText: string;
+  ignoredOption: string;
+  options: tObject;
+  action: (value: keyof tObject) => void;
+}[];

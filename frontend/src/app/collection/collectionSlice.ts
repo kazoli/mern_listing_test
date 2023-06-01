@@ -18,6 +18,7 @@ const collectionSlice = createSlice({
   name: 'collections',
   initialState: collectionInitialState,
   reducers: {
+    collectionReset: () => collectionInitialState,
     collectionBuildURL: (state) => {
       state.status = 'idle';
       buildUrl<tCollectionQueryParts>(state.queryParts);
@@ -153,6 +154,7 @@ const collectionSlice = createSlice({
 });
 
 export const {
+  collectionReset,
   collectionBuildURL,
   collectionRefreshPage,
   collectionToogleEditor,

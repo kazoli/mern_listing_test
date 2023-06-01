@@ -60,7 +60,7 @@ export type tGetCollections = RequestHandler<
 // Type for create collection controller function
 export type tCreateCollection = RequestHandler<
   {}, // request params
-  Object, // response body
+  {}, // response body
   tCollectionCreateRequest, // request body
   {} // request query
 >;
@@ -68,7 +68,7 @@ export type tCreateCollection = RequestHandler<
 // Type for update collection controller function
 export type tUpdateCollection = RequestHandler<
   {}, // request params
-  Object, // response body
+  {}, // response body
   tCollectionUpdateRequest, // request body
   {} // request query
 >;
@@ -76,7 +76,7 @@ export type tUpdateCollection = RequestHandler<
 // Type for delete collection controller function
 export type tDeleteCollection = RequestHandler<
   { id: string }, // request params
-  Object, // response body
+  {}, // response body
   {}, // request body
   {} // request query
 >;
