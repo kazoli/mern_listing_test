@@ -7,7 +7,7 @@ FEATURES
 - User registration, login, update and delete with all related collections and tasks.
 - Collections can be created, updated and deleted with all related tasks.
 - Tasks can be created, updated, deleted and set to completed or incomplete. More tags can be added to every task.
-- All listing can be search by keywords, in case of tasks filtering by name or tags too. Listings can be ordered in different ways. By adding, updating and deleting elements in tasks, a list refresh button will apear to avoid unpredicted list changing based on given list ordering.
+- All listing can be searched by keywords, in case of tasks, filtered by name or tags too. Listings can be ordered in different ways. By adding, updating and deleting elements in lists, a refresh button will apear to avoid unpredicted list changing that comes from current list ordering.
 
 MONGODB SETUP
 
