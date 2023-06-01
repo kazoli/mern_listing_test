@@ -1,13 +1,13 @@
 DESCRIPTION
 
-Mongo, express, react, node based listing of test tasks related to users. React with redux-toolkit and typescript. Backend is also in typescript. Authentication wit JWT cookie.
+Mongo, express, react, node based listing of test tasks related to users. React with redux-toolkit and typescript. Backend is also in typescript. Authentication with JWT cookie.
 
 FEATURES
 
 - User registration, login, update and delete with all related collections and tasks.
 - Collections can be created, updated and deleted with all related tasks.
 - Tasks can be created, updated, deleted and set to completed or incomplete. More tags can be added to every task.
-- All listing can be searched by keywords, in case of tasks, filtered by name or tags too. Listings can be ordered in different ways. By adding, updating and deleting elements in lists, a refresh button will apear to avoid unpredicted list changing that comes from current list ordering.
+- All listing can be searched by keywords, in case of tasks, filtering by name and / or tag is availalbe too. Listings can be ordered in different ways. By adding, updating and deleting elements in lists, a refresh button will apear and it helps to avoid unpredicted list changing that comes from current list ordering.
 
 MONGODB SETUP
 
@@ -51,5 +51,5 @@ DOCKER SETUP
 1. Change to development mode in .env file in the backend folder: "NODE_ENV = development"
 2. Change mongo URI in .env file in the backend folder: "MONGO_URI = mongodb://mongodb/mern_test"
 3. Change the proxy inside package.json file in the frontend folder: "proxy": "http://backend:5000"
-4. In command line go into main parent folder and run: "docker-compose up"
+4. In command line go into the main folder and run: "docker-compose up"
 5. If "MongooseServerSelectionError: connect ECONNREFUSED 127.0.0.1:27017" error comes, try to restart backend image inside docker
