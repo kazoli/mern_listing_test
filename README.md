@@ -17,16 +17,19 @@ MONGODB SETUP
 PRELOADED TEST USERS FROM MONGODB TEST TABLES
 
 1. More collections and many tasks
-   email: user_1@email.com
-   password: User_1
+
+   - email: user_1@email.com
+   - password: User_1
 
 2. Few collections and some tasks
-   email: user_2@email.com
-   password: User_2
+
+   - email: user_2@email.com
+   - password: User_2
 
 3. No related collection and task
-   email: user_3@email.com
-   password: User_3
+
+   - email: user_3@email.com
+   - password: User_3
 
 DEVELOPMENT
 
