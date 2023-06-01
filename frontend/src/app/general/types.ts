@@ -1,10 +1,10 @@
+// General type to key - value pair objects
+export type tObject = { [key: string]: any };
+
 // General type mapping
-export type tTypeMap<T extends { [key: string]: any }> = {
+export type tTypeMap<T extends tObject> = {
   [Key in keyof T]: T[Key];
 };
-
-// General type to key - value pair object
-export type tObject = { [key: string]: string };
 
 // General type to custom confirm
 export type tCustomConfirm = {

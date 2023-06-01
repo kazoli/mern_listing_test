@@ -1,3 +1,5 @@
+import { tObject } from '../../app/general/types';
+
 type tProps<T> = {
   wrapperClass: string;
   listClass: string;
@@ -9,7 +11,7 @@ type tProps<T> = {
   optionIcon?: JSX.Element;
 };
 
-const DropDownMenu = <T extends { [key: string]: string }>(props: tProps<T>) => {
+const DropDownMenu = <T extends tObject>(props: tProps<T>) => {
   return (
     <div className={props.wrapperClass}>
       {props.trigger}

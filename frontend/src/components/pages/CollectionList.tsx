@@ -17,7 +17,7 @@ import {
   collectionListSort,
 } from '../../app/collection/collectionInitialStates';
 import DefaultLayout from '../layout/DefaultLayout';
-import Paginator from '../general/Paginator';
+import Paginator from '../list/Paginator';
 import CollectionEditorPopup from '../collection/CollectionEditorPopup';
 import ButtonRefresh from '../general/ButtonRefresh';
 import ListHeader from '../list/ListHeader';

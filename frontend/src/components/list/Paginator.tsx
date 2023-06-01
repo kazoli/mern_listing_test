@@ -1,11 +1,9 @@
 import { AiOutlineLeft, AiOutlineRight, AiOutlineVerticalRight } from 'react-icons/ai';
-import { tTaskQueryParts, tTaskState } from '../../app/task/taskTypes';
 
-// TODO general types for page, isNextPage, refreshPage
 type tProps = {
-  page: tTaskQueryParts['page'];
-  isNextPage: tTaskState['isNextPage'];
-  refreshPage: tTaskState['refreshPage'];
+  page: string;
+  isNextPage: boolean;
+  refreshPage: boolean;
   selectAction: (value: string) => void;
 };
 

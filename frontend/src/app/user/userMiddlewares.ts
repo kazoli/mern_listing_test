@@ -43,7 +43,7 @@ export const userValidateLogin = (
   return !email && !password;
 };
 
-// User register validation
+// User profile validation
 export const userValidateProfile = (
   userData: tUserData,
   formData: tUserDataSave,

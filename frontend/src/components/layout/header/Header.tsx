@@ -7,7 +7,7 @@ const Header: React.FC = () => {
   const [positionClass, setpositionClass] = useState(initialClass);
   const hideMenu = initialClass === positionClass ? initialClass : 'hidden';
 
-  // header show only at up scrolling
+  // header appears only at up scrolling
   useEffect(() => {
     const prev = { top: window.scrollY, positionClass: initialClass };
     const updateScrollDirection = () => {

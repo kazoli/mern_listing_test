@@ -3,7 +3,7 @@ import axios from 'axios';
 import { tTaskData, tTaskDataSave, tTaskState } from './taskTypes';
 import { errorHandler } from '../general/error';
 
-// get tasks through an async thunk of redux toolkit
+// Get tasks through an async thunk of redux toolkit
 export const getTasks = createAsyncThunk<
   {
     queryParts: tTaskState['queryParts'];
@@ -24,7 +24,7 @@ export const getTasks = createAsyncThunk<
   }
 });
 
-// create a task through an async thunk of redux toolkit
+// Create a task through an async thunk of redux toolkit
 export const createTask = createAsyncThunk<tTaskData, tTaskDataSave, { rejectValue: string }>(
   'tasks/createTask',
   async (taskData, thunkAPI) => {
@@ -37,7 +37,7 @@ export const createTask = createAsyncThunk<tTaskData, tTaskDataSave, { rejectVal
   },
 );
 
-// update a task through an async thunk of redux toolkit
+// Update a task through an async thunk of redux toolkit
 export const updateTask = createAsyncThunk<tTaskData, tTaskDataSave, { rejectValue: string }>(
   'tasks/updateTask',
   async (taskData, thunkAPI) => {
@@ -50,7 +50,7 @@ export const updateTask = createAsyncThunk<tTaskData, tTaskDataSave, { rejectVal
   },
 );
 
-// delete a task through an async thunk of redux toolkit
+// Delete a task through an async thunk of redux toolkit
 export const deleteTask = createAsyncThunk<
   tTaskData,
   { collection_id: tTaskDataSave['collection_id']; _id: tTaskDataSave['_id'] },

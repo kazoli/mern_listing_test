@@ -1,6 +1,6 @@
-import { tCustomConfirm } from '../../app/general/types';
-import FormButtonBlock from '../form/FormButtonBlock';
-import PopUp from './PopUp';
+import { tCustomConfirm } from '../../../app/general/types';
+import PopUp from '../../general/PopUp';
+import FormButtonBlock from '../../form/FormButtonBlock';
 
 type tProps = tCustomConfirm;
 

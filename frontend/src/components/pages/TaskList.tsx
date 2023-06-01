@@ -22,7 +22,7 @@ import {
 import { formatDate } from '../../app/general/middlewares';
 import { AiOutlineRightCircle } from 'react-icons/ai';
 import DefaultLayout from '../layout/DefaultLayout';
-import Paginator from '../general/Paginator';
+import Paginator from '../list/Paginator';
 import TaskEditorPopup from '../task/TaskEditorPopup';
 import RefreshButton from '../general/ButtonRefresh';
 import ListHeaderTitle from '../list/ListHeaderTitle';

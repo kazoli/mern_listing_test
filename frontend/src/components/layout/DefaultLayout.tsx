@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import { tCustomConfirm } from '../../app/general/types';
 import { scrollToElement } from '../../app/general/middlewares';
-import CustomConfirm from '../general/CustomConfirm';
-import Header from './header/Header';
 import Loading from './general/Loading';
+import CustomConfirm from './general/CustomConfirm';
+import Header from './header/Header';
 import Footer from './footer/Footer';
 import JumpTop from './general/JumpTop';
 

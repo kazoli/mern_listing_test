@@ -1,3 +1,4 @@
+import { tObject } from './types';
 import jsCookie from 'js-cookie';
 
 // Cookie maganager
@@ -14,7 +15,7 @@ export const cookieManager = {
 };
 
 // Build URL
-export const buildUrl = <t extends { [key: string]: string }>(queryParts: t) => {
+export const buildUrl = <t extends tObject>(queryParts: t) => {
   //query elements array
   let query: string[] = [];
   // build query based on queryParts
@@ -31,8 +32,8 @@ export const buildUrl = <t extends { [key: string]: string }>(queryParts: t) => 
 
 // Scroll to an element
 export const scrollToElement = (
-  element: Element | (Window & typeof globalThis) = window,
   behavior: 'auto' | 'smooth' = 'auto',
+  element: Element | (Window & typeof globalThis) = window,
 ) => {
   element.scrollTo({
     top: 0,
