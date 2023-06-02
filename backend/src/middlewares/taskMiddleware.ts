@@ -4,7 +4,7 @@ import { validateText, validateBoolean } from './validationMiddleware';
 
 // validation of values of a task
 export const taskValidation: tTaskValidation = (values, res) => {
-  let error;
+  let error: string;
 
   // validate name and trim white spaces
   values.name = values.name.trim();

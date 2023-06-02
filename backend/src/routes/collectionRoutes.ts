@@ -15,4 +15,4 @@ collectionRouter
   .post(userAuthentication, createCollection)
   .put(userAuthentication, updateCollection);
 
-collectionRouter.route('/:id').delete(userAuthentication, deleteCollection);
+collectionRouter.route('/:_id').delete(userAuthentication, deleteCollection);

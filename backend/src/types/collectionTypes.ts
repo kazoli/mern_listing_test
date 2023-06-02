@@ -1,4 +1,5 @@
 import { RequestHandler, Response } from 'express';
+import { SortOrder } from 'mongoose';
 
 // Type for collection create request body
 type tCollectionCreateRequest = {
@@ -29,7 +30,7 @@ export type tGetCollectionsOptions = {
   limit: number;
   skip: number;
   nextSkip: number;
-  sort: {};
+  sort: { [key: string]: SortOrder };
   collation: {
     locale: string;
     strength: number;
@@ -75,7 +76,7 @@ export type tUpdateCollection = RequestHandler<
 
 // Type for delete collection controller function
 export type tDeleteCollection = RequestHandler<
-  { id: string }, // request params
+  { _id: string }, // request params
   {}, // response body
   {}, // request body
   {} // request query

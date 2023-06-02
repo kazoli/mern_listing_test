@@ -1,4 +1,5 @@
 import { RequestHandler, Response } from 'express';
+import { SortOrder } from 'mongoose';
 
 // Type for task create request body
 type tTaskCreateRequest = {
@@ -30,7 +31,7 @@ export type tGetTasksOptions = {
   limit: number;
   skip: number;
   nextSkip: number;
-  sort: {};
+  sort: { [key: string]: SortOrder };
   collation: {
     locale: string;
     strength: number;
@@ -81,7 +82,7 @@ export type tUpdateTask = RequestHandler<
 export type tDeleteTask = RequestHandler<
   {
     collection_id: string;
-    id: string;
+    _id: string;
   }, // request params
   {}, // response body
   {}, // request body

@@ -152,21 +152,23 @@ a {
 /* LOADING START */
 .loading-wrapper {
   position: fixed;
-  z-index: 1000000;
   top: 50px;
   left: 50%;
   transform: translate(-50%, -50%);
+  max-width: 95%;
+  width: max-content;
+  z-index: 1000000;
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 2rem;
   padding: 10px;
   border-radius: 5rem;
   background: #ffffff;
   box-shadow: 0 0 20px 1px #b0b0b0, inset 0 0 1px 0 #b0b0b0, inset 0 0 25px 0 #8fd0ff;
+  font-size: 2rem;
 }
 
-.loading-spinner {
+.loading-wrapper span {
   padding: 15px;
   border: 8px solid;
   border-color: #000 transparent #555 transparent;
@@ -386,8 +388,8 @@ footer .layout-positioner {
 }
 
 .icon-wrapper:hover {
-  box-shadow: 0 0 5px 0 #b0b0b0, inset 0 0 1px 0 #b0b0b0;
-  background: #fafafa;
+  background: #f9f9f9;
+  box-shadow: 0 0 5px 0 #909090, inset 0 0 1px 0 #909090;
 }
 
 .icon-wrapper .icon {
@@ -657,11 +659,6 @@ textarea.autosize {
 .list-drop-down-menu li {
   margin: 10px 0;
   padding: 10px;
-}
-
-.list-drop-down-menu li:hover {
-  background: #f0f0f0 !important;
-  box-shadow: 0 0 5px 0 #909090, inset 0 0 1px 0 #909090 !important;
 }
 
 .list-empty-container {

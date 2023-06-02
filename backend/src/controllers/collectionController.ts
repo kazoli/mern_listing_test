@@ -177,19 +177,19 @@ export const updateCollection: tUpdateCollection = asyncHandler(async (req, res)
 
 /*
   @desc Delete a collection
-  @route DELETE /api/collections/:id
+  @route DELETE /api/collections/:_id
   @access Private
 */
 export const deleteCollection: tDeleteCollection = asyncHandler(async (req, res) => {
   // find the collection and if exists, remove that
   const collection = await Collection.findOneAndRemove({
-    _id: req.params.id,
+    _id: req.params._id,
     user_id: res.locals.user._id,
   });
 
   if (collection) {
     // remove related tasks too
-    await Task.deleteMany({ collection_id: req.params.id });
+    await Task.deleteMany({ collection_id: req.params._id });
     // return deleted collection
     res.status(200).json(collection);
   } else {

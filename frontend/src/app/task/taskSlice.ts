@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { tTaskMappedQueryParts, tTaskQueryParts, tTaskState } from './taskTypes';
 import { taskInitialState } from './taskInitialStates';
 import { createTask, deleteTask, getTasks, updateTask } from './taskThunks';
-import { buildUrl } from '../general/middlewares';
+import { buildUrl, scrollToElement } from '../general/middlewares';
 import { toast } from 'react-toastify';
 
 const taskSlice = createSlice({
@@ -42,7 +42,10 @@ const taskSlice = createSlice({
         // hide refresh button
         state.refreshButton = false;
         // if page selector was the trigger to not set default the page number
-        if (action.payload.queryPart !== 'page') {
+        if (action.payload.queryPart === 'page') {
+          // scroll up to top paginator container if bottom was the triggerer
+          scrollToElement('smooth', 'nearest', '.paginator-container');
+        } else {
           // set page default to avoid redirect first page message from server
           state.queryParts.page = '';
         }

@@ -9,6 +9,8 @@ declare global {
         name: string;
         email: string;
         password: string;
+        createdAt: NativeDate;
+        updatedAt: NativeDate;
       };
     }
   }

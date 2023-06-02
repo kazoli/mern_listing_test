@@ -12,27 +12,28 @@ import { errorHandler } from './middlewares/errorMiddleware';
 dotenv.config();
 const port = process.env.PORT || 5000;
 
-// call DB connection
+// Call DB connection
 connectDB();
 
+// Instantiates express app
 const app = express();
 
-// parse cookies
+// Parse cookies
 app.use(cookieParser());
 
-// parse query
+// Parse request body and query
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// helmet helps secure express apps by setting HTTP response headers
+// Helmet helps secure express apps by setting HTTP response headers
 app.use(helmet());
 
-// router part
+// Routers
 app.use('/api/users', userRouter);
 app.use('/api/collections', collectionRouter);
 app.use('/api/tasks', taskRouter);
 
-// serve frontend
+// Serve frontend
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../../frontend/build')));
   app.get('*', (req, res) =>
@@ -42,8 +43,8 @@ if (process.env.NODE_ENV === 'production') {
   app.get('/', (req, res) => res.send('Please set to production first!'));
 }
 
-// call error handler from middlewares
+// Call error handler from middlewares
 app.use(errorHandler);
 
-// port to which backend is listening to handle requests
+// Port that backend is listening to handle requests
 app.listen(port, () => console.log(`Server started on port ${port}`)).on('error', console.error);

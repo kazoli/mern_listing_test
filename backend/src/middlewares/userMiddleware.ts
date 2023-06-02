@@ -13,14 +13,15 @@ import {
 
 // Set a JWT cookie for user userAuthentication
 export const userSetJwtCookie: tUserSetJwtCookie = (_id, res) => {
+  const expiresInDays = 14;
   const token = jwt.sign({ _id }, process.env.JWT_SECRET!, {
-    expiresIn: '14d',
+    expiresIn: `${expiresInDays}d`,
   });
   res.cookie('jwt', token, {
     httpOnly: false,
     secure: true,
     sameSite: 'strict',
-    maxAge: 1209600000, // 14 day
+    maxAge: expiresInDays * 86400000, // milliseconds
   });
 };
 
@@ -50,6 +51,8 @@ export const userAuthentication: tUserAuthentication = asyncHandler(async (req, 
         name: user.name,
         password: user.password,
         email: user.email,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
       };
     } else {
       errorTrigger(res, 401, 'User cannot be found');

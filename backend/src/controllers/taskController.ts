@@ -225,7 +225,7 @@ export const updateTask: tUpdateTask = asyncHandler(async (req, res) => {
 
 /*
   @desc Delete a task
-  @route DELETE /api/tasks/:id
+  @route DELETE /api/tasks/:collection_id/:_id
   @access Private
 */
 export const deleteTask: tDeleteTask = asyncHandler(async (req, res) => {
@@ -233,7 +233,7 @@ export const deleteTask: tDeleteTask = asyncHandler(async (req, res) => {
   await collectionAccess(req.params.collection_id, res.locals.user._id, res);
 
   // find the task and if exists, remove that
-  const task = await Task.findOneAndRemove({ _id: req.params.id });
+  const task = await Task.findOneAndRemove({ _id: req.params._id });
 
   if (task) {
     // return deleted task

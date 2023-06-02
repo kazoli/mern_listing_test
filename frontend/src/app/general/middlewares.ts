@@ -33,13 +33,15 @@ export const buildUrl = <t extends tObject>(queryParts: t) => {
 // Scroll to an element
 export const scrollToElement = (
   behavior: 'auto' | 'smooth' = 'auto',
-  element: Element | (Window & typeof globalThis) = window,
+  verticalPosition: 'start' | 'center' | 'end' | 'nearest' = 'start',
+  elementSelector: string = 'html',
 ) => {
-  element.scrollTo({
-    top: 0,
-    left: 0,
-    behavior: behavior,
-  });
+  const element = document.querySelector(elementSelector);
+  if (element) {
+    element.scrollIntoView({ behavior: behavior, block: verticalPosition, inline: 'nearest' });
+  } else {
+    console.error('The DOM element cannot be not found based on the specified element identifier');
+  }
 };
 
 // Format a date
