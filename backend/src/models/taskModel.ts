@@ -9,10 +9,12 @@ const taskSchema = new mongoose.Schema(
     },
     name: {
       type: String,
+      default: '',
       required: [true, 'Name field of task must have to be set'],
     },
     complete: {
       type: Boolean,
+      default: false,
       required: [true, 'Complete field of task must have to be set'],
     },
     tags: [

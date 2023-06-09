@@ -53,3 +53,4 @@ DOCKER SETUP
 3. Change the proxy inside package.json file in the frontend folder: "proxy": "http://backend:5000"
 4. In command line go into the main folder and run: "docker-compose up"
 5. If "MongooseServerSelectionError: connect ECONNREFUSED 127.0.0.1:27017" error comes, try to restart backend image inside docker
+6. Open in browser: http://localhost:3000/

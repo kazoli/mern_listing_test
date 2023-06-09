@@ -9,7 +9,7 @@ type tTaskCreateRequest = {
   tags: string[];
 };
 
-// Type for task create request body
+// Type for task update request body
 type tTaskUpdateRequest = tTaskCreateRequest & {
   _id: string;
 };

@@ -9,6 +9,7 @@ const collectionSchema = new mongoose.Schema(
     },
     name: {
       type: String,
+      default: '',
       required: [true, 'Name field of collection must have to be set'],
     },
   },
