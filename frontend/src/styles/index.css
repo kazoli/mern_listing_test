@@ -788,6 +788,7 @@ textarea.autosize {
   padding: 15px;
   max-height: 100vh;
   overflow: auto;
+  margin: 0 20px;
 }
 
 /* LIST END */
@@ -851,7 +852,7 @@ textarea.autosize {
   }
 
   .popup-container {
-    width: 95vw;
+    margin: 0 10px;
   }
 
   .task-tag-edit-container {
